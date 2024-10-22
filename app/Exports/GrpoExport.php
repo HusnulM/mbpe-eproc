@@ -19,6 +19,7 @@ class GrpoExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
         $query = DB::table('v_grpo_v2');
 
         if(isset($req->datefrom) && isset($req->dateto)){

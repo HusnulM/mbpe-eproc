@@ -20,6 +20,8 @@ class StockHistoryDetailExport implements FromCollection, WithHeadings, WithMapp
     */
     public function collection()
     {
+        $req = $this->req;
+
         $query = DB::table('v_inv_move_details');
 
         $strDate  = $req->dtlDate1;

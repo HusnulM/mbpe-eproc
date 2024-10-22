@@ -19,6 +19,8 @@ class CostPerkendaraanExport implements FromCollection, WithHeadings, WithMappin
     */
     public function collection()
     {
+        $req = $this->req;
+
         $query = DB::table('v_summary_cost01');
 
         if(isset($req->nopol)){

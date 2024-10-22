@@ -19,6 +19,8 @@ class CostPerprojectExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
+
         $query = DB::table('v_summary_cost02');
 
         if(isset($req->nopol)){

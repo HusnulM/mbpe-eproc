@@ -19,6 +19,8 @@ class CostExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
+
         $query = DB::table('v_report_cost');
 
         if(isset($req->mekanik)){

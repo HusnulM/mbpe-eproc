@@ -20,6 +20,8 @@ class TransferExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
+
         $query = DB::table('v_report_transfer');
 
         if(isset($req->datefrom) && isset($req->dateto)){

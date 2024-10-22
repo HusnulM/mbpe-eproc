@@ -19,6 +19,8 @@ class DetailCostExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
+
         $query = DB::table('v_detail_cost');
 
         if(isset($req->nopol)){

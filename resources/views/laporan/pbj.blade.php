@@ -89,6 +89,7 @@
                                     <th>Unit</th>
                                     <th>Figure</th>
                                     <th>Remark</th>
+                                    <th>Kode Budget</th>
                                     <th>Approval Status</th>
                                     <!-- <th></th> -->
                                 </thead>
@@ -182,6 +183,7 @@
                     {data: "unit"},
                     {data: "figure" },
                     {data: "remark" },
+                    {data: "budget_code"},
                     {data: "approvestat",
                         render: function (data, type, row){
                             if(row.approvestat == "O"){

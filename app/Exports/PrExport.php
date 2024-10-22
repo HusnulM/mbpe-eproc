@@ -19,6 +19,7 @@ class PrExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
         $query = DB::table('v_rpr01');
 
         if(isset($req->department)){
@@ -63,7 +64,7 @@ class PrExport implements FromCollection, WithHeadings, WithMapping
             $row->pbjnumber,
             $row->pbjitem,
             $row->budget_code,
-            $row->periode,
+            // $row->periode,
             $row->createdon,
             $row->createdby,
         ];
@@ -86,7 +87,7 @@ class PrExport implements FromCollection, WithHeadings, WithMapping
                 "NO. PBJ",
                 "PBJ. Item",
                 "Budget Cost Code",
-                "Budget Period",
+                // "Budget Period",
                 "Created Date",
                 "Created By",
         ];

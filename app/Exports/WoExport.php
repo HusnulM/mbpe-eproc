@@ -19,6 +19,8 @@ class WoExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
+
         $query = DB::table('v_rwo01');
 
         if(isset($req->mekanik)){
@@ -31,9 +33,9 @@ class WoExport implements FromCollection, WithHeadings, WithMapping
             if($req->approvalstat === "O"){
                 $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');                
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');                
+                $query->where('approvestat', 'R');
             }
         }
 

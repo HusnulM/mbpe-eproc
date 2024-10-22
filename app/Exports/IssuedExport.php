@@ -20,6 +20,8 @@ class IssuedExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
+
         $query = DB::table('v_rissue');
 
         if(isset($req->datefrom) && isset($req->dateto)){

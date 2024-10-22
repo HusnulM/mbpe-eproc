@@ -19,6 +19,8 @@ class CeklistAllExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
+
         $query = DB::table('v_checklist_kendaraan');
 
         if(isset($req->datefrom) && isset($req->dateto)){

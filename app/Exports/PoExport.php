@@ -19,6 +19,7 @@ class PoExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
         $query = DB::table('v_rpo_v2');
 
         if(isset($req->department)){
@@ -67,8 +68,8 @@ class PoExport implements FromCollection, WithHeadings, WithMapping
             $row->price*$row->quantity,
             $row->currency,
             $row->prnum ?? null,
-            $row->budget_code,
-            $row->budget_period,
+            // $row->budget_code,
+            $row->budget_code_num,
             $row->no_plat,
             $row->createdon,
             $row->createdby,
@@ -96,8 +97,8 @@ class PoExport implements FromCollection, WithHeadings, WithMapping
                 "Total Price",
                 "Currency",
                 "No. PR",
-                "Cost Code",
-                "Budget Period",
+                "Kode Budget",
+                // "Budget Period",
                 "Unit Code / No. Pol",
                 "Created Date",
                 "Created By",

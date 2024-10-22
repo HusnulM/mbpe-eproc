@@ -20,6 +20,9 @@ class PbjExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
+        $req = $this->req;
+        // dd($req);
+        // dd($this->req->datefrom);
         $query = DB::table('v_rpbj01');
 
         if(isset($req->department)){
@@ -32,9 +35,9 @@ class PbjExport implements FromCollection, WithHeadings, WithMapping
             if($req->approvalstat === "O"){
                 $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');                
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');                
+                $query->where('approvestat', 'R');
             }
         }
 
@@ -65,8 +68,8 @@ class PbjExport implements FromCollection, WithHeadings, WithMapping
             $row->requestor,
             $row->type_model,
             $row->mekanik,
-            $row->kode_brg_jasa,
-            $row->budget_cost_code,
+            $row->budget_code,
+            // $row->budget_cost_code,
             $row->periode,
             $row->engine_sn,
             $row->pbjitem,
@@ -97,8 +100,8 @@ class PbjExport implements FromCollection, WithHeadings, WithMapping
                 "Requestor",
                 "Type Model",
                 "Mekanik",
-                "Kode Barang/Jasa",
-                "Cost Code",
+                "Kode Budget",
+                // "Cost Code",
                 "Periode",
                 "Engine SN",
                 "PBJ Item",
