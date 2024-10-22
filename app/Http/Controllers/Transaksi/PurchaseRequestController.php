@@ -123,6 +123,7 @@ class PurchaseRequestController extends Controller
             $pbjitm   = $req['pbjitm'];
             $nopol    = $req['nopol'];
             $project  = $req['project'];
+            $kodebudget  = $req['kodebudget'];
 
             $insertData = array();
             $count = 0;
@@ -132,7 +133,9 @@ class PurchaseRequestController extends Controller
             for($i = 0; $i < sizeof($parts); $i++){
                 $qty    = $quantity[$i];
                 $qty    = str_replace(',','',$qty);
-
+                if($kodebudget[$i] == 'null'){
+                    $kodebudget[$i] = NULL;
+                }
                 $count = $count + 1;
                 $data = array(
                     'prnum'        => $ptaNumber,
@@ -145,6 +148,7 @@ class PurchaseRequestController extends Controller
                     'pbjitem'      => $pbjitm[$i] ?? 0,
                     'no_plat'      => $nopol[$i] ?? null,
                     'idproject'    => $project[$i] ?? 0,
+                    'budget_code'  => $kodebudget[$i] ?? 'NONBUDGET',
                     'createdon'    => getLocalDatabaseDateTime(),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
@@ -303,6 +307,7 @@ class PurchaseRequestController extends Controller
             $nopol    = $req['nopol'];
             $pritem   = $req['pritem'];
             $project  = $req['project'];
+            $kodebudget  = $req['kodebudget'];
 
             $insertData = array();
             $prItems    = array();
@@ -325,6 +330,7 @@ class PurchaseRequestController extends Controller
                         'pbjitem'      => $pbjitm[$i] ?? 0,
                         'no_plat'      => $nopol[$i] ?? null,
                         'idproject'    => $project[$i] ?? 0,
+                        'budget_code'  => $kodebudget[$i] ?? 'NONBUDGET',
                         'createdon'    => $prhdr->createdon,
                         'createdby'    => $prhdr->createdby
                     );
@@ -343,6 +349,7 @@ class PurchaseRequestController extends Controller
                         'pbjitem'      => $pbjitm[$i] ?? 0,
                         'no_plat'      => $nopol[$i] ?? null,
                         'idproject'    => $project[$i] ?? 0,
+                        'budget_code'  => $kodebudget[$i] ?? 'NONBUDGET',
                         'createdon'    => getLocalDatabaseDateTime(),
                         'createdby'    => Auth::user()->email ?? Auth::user()->username
                     );

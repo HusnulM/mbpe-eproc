@@ -132,8 +132,7 @@
                                                                             <th>Unit Price</th>
                                                                             <th>PBJ Number</th>
                                                                             <th>PR Number</th>
-                                                                            <th>Periode Budget</th>
-                                                                            <th>Cost Code</th>
+                                                                            <th>Kode Budget</th>
                                                                             <th>Project</th>
                                                                             <th>Remark PBJ</th>
                                                                         </thead>
@@ -147,8 +146,8 @@
                                                                                 <td>{{ number_format($row->price, 0, ',', '.') }}</td>
                                                                                 <td>{{ $row->pbjnumber }}</td>
                                                                                 <td>{{ $row->prnum }}</td>
-                                                                                <td>{{ $row->periode }}</td>
-                                                                                <td>{{ $row->budget_cost_code }}</td>
+                                                                                {{-- <td>{{ $row->periode }}</td> --}}
+                                                                                <td>{{ $row->budget_code_num }}</td>
                                                                                 <td>{{ $row->nama_project }}</td>
                                                                                 <td>{{ $row->remarkpbj }}</td>
                                                                             </tr>

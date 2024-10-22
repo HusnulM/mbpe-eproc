@@ -15,7 +15,7 @@ class ReceiptPoController extends Controller
 
     public function getApprovedPO(Request $request){
         if(isset($request->params)){
-            $params = $request->params;        
+            $params = $request->params;
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_approved_po')
@@ -57,9 +57,10 @@ class ReceiptPoController extends Controller
             $price    = $req['unitprice'];
             $ponum    = $req['ponum'];
             $poitem   = $req['poitem'];
+            $kodebudget  = $req['kodebudget'];
 
             $insertData = array();
-            $count = 0;            
+            $count = 0;
 
             for($i = 0; $i < sizeof($parts); $i++){
                 $batchNumber = generateBatchNumber();
@@ -86,6 +87,7 @@ class ReceiptPoController extends Controller
                     'poitem'       => $poitem[$i] ?? null,
                     'whscode'      => $whscode[$i],
                     'shkzg'        => '+',
+                    'budget_code'  => $kodebudget[$i],
                     'createdon'    => getLocalDatabaseDateTime(),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );

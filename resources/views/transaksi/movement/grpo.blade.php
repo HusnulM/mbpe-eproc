@@ -15,7 +15,7 @@
     </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <form action="{{ url('logistic/terimapo/save') }}" method="post">
         @csrf
@@ -60,10 +60,10 @@
                                         <table class="table table-sm">
                                             <thead>
                                                 <th>Part No. / Type</th>
-                                                <th>Description</th>
+                                                <th>Kode Budget</th>
                                                 <th>Quantity</th>
-                                                <th>Gudang</th>
                                                 <th>Unit</th>
+                                                <th>Gudang</th>
                                                 <th>Unit Price</th>
                                                 <th>PO Reference</th>
                                                 <th style="text-align:right;">
@@ -124,14 +124,14 @@
                                 <th>No PR</th>
                                 <th>Remark</th>
                                 <th style="width:50px; text-align:center;">
-                                    
+
                                 </th>
                             </thead>
                             <tbody>
 
                             </tbody>
-                        </table>  
-                    </div> 
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -145,7 +145,7 @@
 
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
-<script>    
+<script>
     $(document).ready(function(){
         var count = 0;
         let selected_po_items = [];
@@ -154,7 +154,7 @@
         $('.btn-add-po-item-based-pr').on('click', function(){
             loadListPO();
             $('#modal-list-pr').modal('show');
-        });        
+        });
 
         var fCount = 0;
         function loadListPO(){
@@ -178,7 +178,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "ponum", className: 'uid'},
                     {data: "podat", className: 'uid'},
@@ -186,20 +186,20 @@
                     {data: "matdesc"},
                     {data: "quantity", "className": "text-right"},
                     {data: "openqty", "className": "text-right"},
-                    {data: "unit"},      
-                    {data: "prnum"},  
-                    {data: "note"},      
-                    {"defaultContent": 
+                    {data: "unit"},
+                    {data: "prnum"},
+                    {data: "note"},
+                    {"defaultContent":
                         `
                         <button class='btn btn-success btn-sm button-add-pbj-to-pritem'> <i class="fa fa-plus"></i></button>
                         `,
                         "className": "text-center",
                         "width": "10%"
                     }
-                ]  
+                ]
             });
 
-            
+
 
             function checkPOSelected(poNum, poItem) {
                 return selected_po_items.some(function(el) {
@@ -208,7 +208,7 @@
                     }else{
                         return false;
                     }
-                }); 
+                });
             }
 
             function removePoItem(index){
@@ -227,16 +227,19 @@
                     $('#tbl-pbj-body').append(`
                         <tr>
                             <td>
-                            <input type="text" name="parts[]" id="parts`+fCount+`" value="`+ selected_data.material +`" class="form-control" readonly>
+                                `+ selected_data.material +` - `+ selected_data.matdesc +`
+                            <input type="hidden" name="parts[]" id="parts`+fCount+`" value="`+ selected_data.material +`" class="form-control" readonly>
                             </td>
                             <td>
-                                <input type="text" name="partdesc[]" id="partdesc`+fCount+`" value="`+ selected_data.matdesc +`" class="form-control" readonly>
+                                `+ selected_data.budget_code_num +`
+                                <input type="hidden" name="kodebudget[]" value='`+ selected_data.budget_code_num +`' class="form-control">
+                                <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" value="`+ selected_data.matdesc +`" class="form-control" readonly>
                             </td>
                             <td>
                                 <input type="text" name="quantity[]" class="form-control inputNumber" value="`+ selected_data.openqty +`" id="grqty`+fCount+`" data-openqty="`+ selected_data.openqty +`">
                             </td>
-                            <td>
-                                <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
+                            <td> `+ selected_data.unit +`
+                                <input type="hidden" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
                             </td>
                             <td>
                             <select name="whscode[]" id="find-whscode`+fCount+`" class="form-control" required></select>
@@ -270,22 +273,22 @@
                         }
                         console.log(_data)
                     });
-    
+
                     $('#btnRemove'+fCount).on('click', function(e){
                         e.preventDefault();
                         var row_index = $(this).closest("tr").index();
                         removePoItem(row_index);
                         $(this).closest("tr").remove();
                     });
-    
+
                     $('.inputNumber').on('change', function(){
                         this.value = formatRupiah(this.value,'');
                     });
-    
+
                     $('.inputNumber').on('keypress', function(e){
                         validate(e);
                     });
-    
+
                     $(document).on('select2:open', (event) => {
                         const searchField = document.querySelector(
                             `.select2-search__field`,
@@ -294,7 +297,7 @@
                             searchField.focus();
                         }
                     });
-                    $('#find-whscode'+fCount).select2({ 
+                    $('#find-whscode'+fCount).select2({
                         placeholder: 'Ketik Nama Gudang',
                         width: '100%',
                         minimumInputLength: 0,
@@ -332,26 +335,26 @@
                             cache: true
                         }
                     });
-    
+
                     function formatRupiah(angka, prefix){
                         var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
                         split   		  = number_string.split('.'),
                         sisa     		  = split[0].length % 3,
                         rupiah     		  = split[0].substr(0, sisa),
                         ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-                    
+
                         if(ribuan){
                             separator = sisa ? ',' : '';
                             rupiah += separator + ribuan.join(',');
                         }
-                    
+
                         rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
                     }
-    
+
                     function validate(evt) {
                         var theEvent = evt || window.event;
-    
+
                         // Handle paste
                         if (theEvent.type === 'paste') {
                             key = event.clipboardData.getData('text/plain');

@@ -15,7 +15,7 @@
     </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <form id="form-submit-data" method="post" enctype="multipart/form-data">
     <!-- <form id="form-submit-dataxx" action="/proc/pr/save" method="post" enctype="multipart/form-data"> -->
@@ -81,6 +81,7 @@
                                                 <th>Unit</th>
                                                 <th>PBJ Reference</th>
                                                 <th>Project</th>
+                                                <th>Kode Budget</th>
                                                 <th style="text-align:right;">
                                                     <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
                                                         <i class="fa fa-plus"></i>
@@ -93,7 +94,7 @@
                                             <tbody id="tbl-pbj-body">
 
                                             </tbody>
-                                            
+
                                         </table>
                                     </div>
                                 </div>
@@ -134,8 +135,8 @@
                             <th></th>
                         </thead>
                         <tbody></tbody>
-                    </table>  
-                </div> 
+                    </table>
+                </div>
             </div>
         </div>
         <div class="modal-footer justify-content-between">
@@ -170,15 +171,16 @@
                                 <th>Unit</th>
                                 <th>Figure</th>
                                 <th>Remark</th>
+                                <th>Kode Budget</th>
                                 <th style="width:50px; text-align:center;">
-                                    
+
                                 </th>
                             </thead>
                             <tbody>
 
                             </tbody>
-                        </table>  
-                    </div> 
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -192,7 +194,7 @@
 
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
-<script>    
+<script>
     $(document).ready(function(){
         let selected_pbj_items = [];
         let selected_items = [];
@@ -223,7 +225,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'fname'},
@@ -232,7 +234,7 @@
                     // {data: "whsname", className: 'fname'},
                     {data: "availableQty", "className": "text-right"},
                     {data: "matunit", className: 'fname'},
-                    {"defaultContent": 
+                    {"defaultContent":
                         "<button type='button' class='btn btn-primary btn-sm button-add-material'> <i class='fa fa-plus'></i> Add</button>"
                     }
                 ],
@@ -257,7 +259,7 @@
                                 <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
                                 <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                             </td>
-                            
+
                             <td>
                                 <input type="text" name="quantity[]" class="form-control inputNumber" required>
                             </td>
@@ -272,7 +274,10 @@
                             </td>
                             <td>
                                 <select name="project[]" id="find-project`+fCount+`" class="form-control"></select>
-                                
+
+                            </td>
+                            <td>
+                                <input type="text" name="kodebudget[]" id="kodebudget`+fCount+`" class="form-control" value="">
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
@@ -281,7 +286,7 @@
                             </td>
                         </tr>
                     `);
-    
+
                     $('#btnRemove'+fCount).on('click', function(e){
                         e.preventDefault();
                         var row_index = $(this).closest("tr").index();
@@ -289,7 +294,7 @@
                         $(this).closest("tr").remove();
                     });
 
-                    $('#find-project'+fCount).select2({ 
+                    $('#find-project'+fCount).select2({
                         placeholder: 'Nama Project',
                         width: '100%',
                         minimumInputLength: 0,
@@ -332,7 +337,7 @@
                     //     var data = $('#find-project'+fCount).select2('data')
                     //     console.log(data);
                     //     // $('#project'+fCount).val(data[0].idproject);
-                        
+
                     // });
                 }
             });
@@ -345,7 +350,7 @@
                 }else{
                     return false;
                 }
-            }); 
+            });
         }
 
         function removeItem(index){
@@ -377,7 +382,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "pbjnumber", className: 'uid'},
                     {data: "tgl_pbj", className: 'uid'},
@@ -387,10 +392,11 @@
                     {data: "description"},
                     {data: "quantity", "className": "text-right",},
                     {data: "openqty", "className": "text-right",},
-                    {data: "unit"},      
+                    {data: "unit"},
                     {data: "figure"},
-                    {data: "remark"},      
-                    {"defaultContent": 
+                    {data: "remark"},
+                    {data: "budget_code"},
+                    {"defaultContent":
                         `
                         <button class='btn btn-success btn-sm button-add-pbj-to-pritem'> <i class="fa fa-plus"></i></button>
                         `,
@@ -408,7 +414,7 @@
                     }else{
                         return false;
                     }
-                }); 
+                });
             }
 
             function removePbjItem(index){
@@ -419,7 +425,7 @@
                 var table = $('#tbl-pbj-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                
+
 
                 if(checkPbjSelected(selected_data.pbjnumber, selected_data.pbjitem)){
                     console.log(selected_pbj_items);
@@ -436,7 +442,7 @@
                                 <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.partnumber +`" readonly>
                                 <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.description +`" readonly>
                             </td>
-                            
+
                             <td>
                                 <input type="text" name="quantity[]" class="form-control inputNumber" value="`+_qty+`" style="text-align:right;" required>
                             </td>
@@ -453,6 +459,9 @@
                                 <input type="text" name="namaproject[]" class="form-control" value="`+ selected_data.nama_project +`" readonly>
                                 <input type="hidden" name="project[]" id="project`+fCount+`" value="`+ selected_data.idproject +`">
                             </td>
+                            <td>
+                                <input type="text" name="kodebudget[]" id="kodebudget`+fCount+`" class="form-control" value="`+ selected_data.budget_code +`" readonly>
+                            </td>
                             <td style="text-align:center;">
                                 <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">
                                     <i class="fa fa-trash"></i>
@@ -460,7 +469,7 @@
                             </td>
                         </tr>
                     `);
-        
+
                     $('#btnRemove'+fCount).on('click', function(e){
                         e.preventDefault();
                         var row_index = $(this).closest("tr").index();
@@ -469,34 +478,34 @@
 
                         console.log(selected_pbj_items);
                     });
-    
+
                     $('.inputNumber').on('change', function(){
                         this.value = formatRupiah(this.value,'');
                     });
-    
+
                     $('.inputNumber').on('keypress', function(e){
                         validate(e);
                     });
-    
+
                     function formatRupiah(angka, prefix){
                         var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
                         split   		  = number_string.split('.'),
                         sisa     		  = split[0].length % 3,
                         rupiah     		  = split[0].substr(0, sisa),
                         ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-                    
+
                         if(ribuan){
                             separator = sisa ? ',' : '';
                             rupiah += separator + ribuan.join(',');
                         }
-                    
+
                         rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
                     }
-    
+
                     function validate(evt) {
                         var theEvent = evt || window.event;
-    
+
                         // Handle paste
                         if (theEvent.type === 'paste') {
                             key = event.clipboardData.getData('text/plain');
@@ -540,7 +549,7 @@
                 },
                 error:function(error){
                     toastr.error(error)
-                    setTimeout(function(){ 
+                    setTimeout(function(){
                         location.reload();
                     }, 2000);
                 }
@@ -548,17 +557,17 @@
                 console.log(result)
                 if(result.msgtype === "200"){
                     toastr.success(result.message)
-                    setTimeout(function(){ 
+                    setTimeout(function(){
                         window.location.href = base_url+'/proc/pr';
                     }, 2000);
                 }else{
                     toastr.error(result.message)
-                    setTimeout(function(){ 
+                    setTimeout(function(){
                         location.reload();
                     }, 2000);
                 }
             }) ;
-            
+
         });
     });
 </script>

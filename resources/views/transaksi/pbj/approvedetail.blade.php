@@ -102,14 +102,14 @@
                                         <td><label>Engine S/N</label></td>
                                         <td>{{ $pbjhdr->engine_sn }}</td>
                                     </tr>
-                                    <tr>
+                                    {{-- <tr>
                                         <td><label>Cost Code</label></td>
                                         <td>{{ $pbjhdr->budget_cost_code }}</td>
                                     </tr>
                                     <tr>
                                         <td><label>Periode</label></td>
                                         <td>{{ $pbjhdr->periode }}</td>
-                                    </tr>
+                                    </tr> --}}
                                     <tr>
                                         <td><label>Project</label></td>
                                         <td>{{ $project->kode_project ?? '' }} - {{ $project->nama_project ?? '' }}</td>
@@ -198,6 +198,7 @@
                                                     <th>Unit</th>
                                                     <th>Figure</th>
                                                     <th>Remark</th>
+                                                    <th>Kode Budget</th>
                                                 </thead>
                                                 <tbody>
                                                 @foreach($pbjitem as $key => $row)
@@ -231,12 +232,15 @@
                                                         <td>
                                                             {{ $row->remark }}
                                                         </td>
+                                                        <td>
+                                                            {{ $row->budget_code }}
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="8" style="text-align: right;">
+                                                        <td colspan="9" style="text-align: right;">
                                                             <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
                                                                 <i class="fa fa-check"></i> APPROVE
                                                             </button>

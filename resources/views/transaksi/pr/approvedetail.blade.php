@@ -103,6 +103,7 @@
                                                     <th>Unit</th>
                                                     <th>PBJ Number</th>
                                                     <th>PBJ Item</th>
+                                                    <th>Kode Budget</th>
                                                 </thead>
                                                 <tbody>
                                                 @foreach($pritem as $key => $row)
@@ -135,11 +136,14 @@
                                                         <td>
                                                             {{ $row->pbjitem }}
                                                         </td>
+                                                        <td>
+                                                            {{ $row->budget_code }}
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
                                                 <tfoot>
-                                                    <td colspan="8" style="text-align: right;">
+                                                    <td colspan="9" style="text-align: right;">
                                                         <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
                                                             <i class="fa fa-check"></i> APPROVE
                                                         </button>

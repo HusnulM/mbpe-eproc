@@ -94,7 +94,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 col-md-12">
+                                    <div class="col-lg-12 col-md-12" style="display: none;">
                                         <div class="form-group">
                                             <label for="budgetcode">Budget / Cost Code</label>
                                             <select name="budgetcode" class="form-control">
@@ -104,7 +104,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 col-md-12">
+                                    <div class="col-lg-12 col-md-12" style="display: none;">
                                         <div class="form-group">
                                             <label for="periode">Budget Periode</label>
                                             <select name="periode" class="form-control">
@@ -196,7 +196,7 @@
                                                                         @foreach ($poitem as $key => $row)
                                                                             <tr>
                                                                                 <td>
-                                                                                    {{ $row->material }} - {{ $row->matdesc }}
+                                                                                    {{ $row->material }} - {{ $row->matdesc }} <br> {{ $row->budget_code_num }}
                                                                                     <input type="hidden" name="poitem[]" value="{{ $row->poitem }}">
                                                                                     <input type="hidden" name="parts[]" class="form-control" value="{{ $row->material }}">
                                                                                     <input type="hidden" name="partdesc[]" class="form-control" value="{{ $row->matdesc }}">
@@ -216,6 +216,7 @@
                                                                                     <input type="hidden" name="prref[]" value="{{ $row->prnum }}" class="form-control">
                                                                                     <input type="hidden" name="prnum[]" value="{{ $row->prnum }}" class="form-control">
                                                                                     <input type="hidden" name="pritem[]" value="{{ $row->pritem }}" class="form-control">
+                                                                                    <input type="hidden" name="kodebudget[]" value="{{ $row->budget_code_num }}" class="form-control">
                                                                                 </td>
                                                                                 <td style="text-align: center;">
                                                                                     <button type="button" class="btn btn-sm btn-danger btn-delete-po-item" data-ponum="{{ $row->ponum }}" data-poitem="{{ $row->poitem }}">
@@ -689,6 +690,7 @@
                                 <input type="text" name="prref[]" id="prref`+fCount+`" class="form-control">
                                 <input type="hidden" name="prnum[]" id="prnum`+fCount+`" value="" class="form-control">
                                 <input type="hidden" name="pritem[]" id="pritem`+fCount+`" value="" class="form-control">
+                                <input type="hidden" name="kodebudget[]" value='NONBUDGET' class="form-control">
                             </td>
                             <td style="text-align:center;">
                                 <button type="button" class="btn btn-danger btn-sm" id="btnRemove`+fCount+`">
@@ -861,7 +863,7 @@
                     $('#tbl-pbj-body').append(`
                         <tr>
                             <td>
-                                `+selected_data.material+` - `+ selected_data.matdesc +`
+                                `+selected_data.material+` - `+ selected_data.matdesc +` <br> `+ selected_data.budget_code +`
                                 <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
                                 <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                             </td>
@@ -879,6 +881,7 @@
                                 <input type="text" name="prref[]" id="prref`+fCount+`" value="`+ selected_data.prnum +`" class="form-control">
                                 <input type="hidden" name="prnum[]" id="prnum`+fCount+`" value="`+ selected_data.prnum +`" class="form-control">
                                 <input type="hidden" name="pritem[]" id="pritem`+fCount+`" value="`+ selected_data.pritem +`" class="form-control">
+                                <input type="hidden" name="kodebudget[]" value='`+ selected_data.budget_code +`' class="form-control">
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">

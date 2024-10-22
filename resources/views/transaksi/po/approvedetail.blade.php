@@ -105,6 +105,7 @@
                                                     <th>PO Item</th>
                                                     <th>Part Number</th>
                                                     <th>Description</th>
+                                                    <th>Kode Budget</th>
                                                     <th style="text-align:center;">Quantity</th>
                                                     <th>Unit</th>
                                                     <th>Unit Price</th>
@@ -129,6 +130,7 @@
                                                         <td>
                                                             {{ $row->matdesc }}
                                                         </td>
+                                                        <td>{{ $row->budget_code_num }}</td>
                                                         <td style="text-align:right;">
                                                             {{ number_format($row->quantity,3) }}
                                                         </td>
@@ -145,7 +147,7 @@
                                                 @endforeach
                                                 </tbody>
                                                 <tfoot>
-                                                    <td colspan="8" style="text-align: right;">
+                                                    <td colspan="9" style="text-align: right;">
                                                         <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
                                                             <i class="fa fa-check"></i> APPROVE
                                                         </button>

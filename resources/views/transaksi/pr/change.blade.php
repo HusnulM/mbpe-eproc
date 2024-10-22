@@ -119,6 +119,7 @@
                                                                         <th>Quantity</th>
                                                                         <th>Unit</th>
                                                                         <th>PBJ Reference</th>
+                                                                        <th>Kode Budget</th>
                                                                         <th>
                                                                             <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
                                                                                 <i class="fa fa-plus"></i>
@@ -127,14 +128,6 @@
                                                                                 <i class="fa fa-list"></i> List PBJ
                                                                             </button>
                                                                         </th>
-                                                                        <!-- <th style="text-align:right;"> -->
-                                                                            <!-- <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
-                                                                                <i class="fa fa-plus"></i>
-                                                                            </button>
-                                                                            <button type="button" class="btn btn-success btn-sm btn-select-pbj">
-                                                                                <i class="fa fa-list"></i> List PBJ
-                                                                            </button> -->
-                                                                        <!-- </th> -->
                                                                     </thead>
                                                                     <tbody id="tbl-pbj-body">
                                                                         @foreach($pritem as $key => $row)
@@ -158,6 +151,9 @@
                                                                                 <input type="hidden" class="form-control" name="pbjitem[]" value="{{ $row->pbjitem }}">
                                                                                 <input type="hidden" class="form-control" name="nopol[]" value="{{ $row->no_plat }}">
                                                                                 <input type="hidden" class="form-control" name="project[]" value="{{ $row->idproject }}">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text" name="kodebudget[]" class="form-control" value="{{ $row->budget_code }}" readonly>
                                                                             </td>
                                                                             <td style="text-align: center;">
                                                                                 <button type="button" class="btn btn-danger btn-sm btn-delete-item" data-prnum="{{ $row->prnum }}" data-pritem="{{ $row->pritem }}">
@@ -291,6 +287,7 @@
                                 <th>Unit</th>
                                 <th>Figure</th>
                                 <th>Remark</th>
+                                <th>Kode Budget</th>
                                 <th style="width:50px; text-align:center;">
 
                                 </th>
@@ -528,6 +525,9 @@
                                 <input type="hidden" name="nopol[]" id="nopol`+fCount+`" class="form-control">
                                 <input type="hidden" class="form-control" name="project[]">
                             </td>
+                            <td>
+                                <input type="text" name="kodebudget[]" id="kodebudget`+fCount+`" class="form-control" value="">
+                            </td>
                             <td style="text-align:center;">
                                 <button type="button" class="btn btn-danger btn-sm" id="btnRemove`+fCount+`">
                                     <i class="fa fa-trash"></i>
@@ -597,6 +597,7 @@
                     {data: "unit"},
                     {data: "figure"},
                     {data: "remark"},
+                    {data: "budget_code"},
                     {"defaultContent":
                         `
                         <button class='btn btn-success btn-sm button-add-pbj-to-pritem'> <i class="fa fa-plus"></i></button>
@@ -657,6 +658,9 @@
                                 <input type="hidden" name="pbjitem[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">
                                 <input type="hidden" name="nopol[]" id="nopol`+fCount+`" class="form-control" value="`+selected_data.unit_desc+`">
                                 <input type="hidden" class="form-control" name="project[]" value="`+ selected_data.idproject +`">
+                            </td>
+                            <td>
+                                <input type="text" name="kodebudget[]" id="kodebudget`+fCount+`" class="form-control" value="`+ selected_data.budget_code +`" readonly>
                             </td>
                             <td style="text-align:center;">
                                 <button type="button" class="btn btn-danger btn-sm btnRemove" id="btnRemove`+fCount+`">

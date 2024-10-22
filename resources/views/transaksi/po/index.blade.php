@@ -84,7 +84,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 col-md-12">
+                                    <div class="col-lg-12 col-md-12" style="display: none;">
                                         <div class="form-group">
                                             <label for="budgetcode">Budget / Cost Code</label>
                                             <select name="budgetcode" class="form-control">
@@ -94,7 +94,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 col-md-12">
+                                    <div class="col-lg-12 col-md-12" style="display: none;">
                                         <div class="form-group">
                                             <label for="periode">Budget Periode</label>
                                             <select name="periode" class="form-control">
@@ -496,6 +496,7 @@
                             </td>
                             <td>
                                 <select name="project[]" id="find-project`+fCount+`" class="form-control"></select>
+                                <input type="hidden" name="kodebudget[]" value='NONBUDGET' class="form-control">
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
@@ -708,7 +709,7 @@
                     $('#tbl-pbj-body').append(`
                         <tr>
                             <td>
-                                `+selected_data.material+` - `+ selected_data.matdesc +`
+                                `+selected_data.material+` - `+ selected_data.matdesc +`<br>`+ selected_data.budget_code +`
                                 <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
                                 <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                             </td>
@@ -729,6 +730,7 @@
                             <td>
                                 <input type="text" name="namaproject[]" class="form-control" value="`+ selected_data.nama_project +`" readonly>
                                 <input type="hidden" name="project[]" id="project`+fCount+`" value="`+ selected_data.idproject +`">
+                                <input type="hidden" name="kodebudget[]" value='`+ selected_data.budget_code +`' class="form-control">
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">

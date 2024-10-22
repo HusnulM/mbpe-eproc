@@ -166,6 +166,7 @@ class PurchaseOrderController extends Controller
             $prnum    = $req['prnum'];
             $pritem   = $req['pritem'];
             $project  = $req['project'];
+            $kodebudget  = $req['kodebudget'];
 
             $insertData = array();
             $poItems    = array();
@@ -214,6 +215,7 @@ class PurchaseOrderController extends Controller
                     'pritem'       => $pritem[$i] ?? 0,
                     'idproject'    => $project[$i] ?? 0,
                     'budget_code'  => $budgetCode,
+                    'budget_code_num' => $kodebudget[$i] ?? 'NONBUDGET',
                     'budget_period'=> $budgetPriod,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
@@ -253,50 +255,7 @@ class PurchaseOrderController extends Controller
                 insertOrUpdate($insertData,'t_po03');
             }
 
-            // if($req['poSolarInd'] === "1"){
 
-            //     $insertData = array();
-            //     if(isset($req['solarpbbkb'])){
-            //         $costdata = array(
-            //             'ponum'        => $ptaNumber,
-            //             'costname'     => 'PBBKB',
-            //             'costvalue'    => $req['solarpbbkb'],
-            //             'is_posolar'   => 'Y',
-            //             'createdon'    => date('Y-m-d H:m:s'),
-            //             'createdby'    => Auth::user()->email ?? Auth::user()->username
-            //         );
-            //         array_push($insertData, $costdata);
-            //         insertOrUpdate($insertData,'t_po03');
-            //     }
-
-            //     $insertData = array();
-            //     if(isset($req['solaroat'])){
-            //         $costdata = array(
-            //             'ponum'        => $ptaNumber,
-            //             'costname'     => 'OAT',
-            //             'costvalue'    => $req['solaroat'],
-            //             'is_posolar'   => 'Y',
-            //             'createdon'    => date('Y-m-d H:m:s'),
-            //             'createdby'    => Auth::user()->email ?? Auth::user()->username
-            //         );
-            //         array_push($insertData, $costdata);
-            //         insertOrUpdate($insertData,'t_po03');
-            //     }
-
-            //     $insertData = array();
-            //     if(isset($req['ppnoat'])){
-            //         $costdata = array(
-            //             'ponum'        => $ptaNumber,
-            //             'costname'     => 'PPN OAT',
-            //             'costvalue'    => $req['ppnoat'],
-            //             'is_posolar'   => 'Y',
-            //             'createdon'    => date('Y-m-d H:m:s'),
-            //             'createdby'    => Auth::user()->email ?? Auth::user()->username
-            //         );
-            //         array_push($insertData, $costdata);
-            //         insertOrUpdate($insertData,'t_po03');
-            //     }
-            // }
 
             //Insert Attachments | t_attachments
             if(isset($req['efile'])){
@@ -322,7 +281,6 @@ class PurchaseOrderController extends Controller
                     insertOrUpdate($insertFiles,'t_attachments');
                 }
             }
-            // insertOrUpdate($insertFiles,'t_attachments');
 
             //Set Approval
             $approval = DB::table('v_workflow_budget')->where('object', 'PO')->where('requester', Auth::user()->id)->get();
@@ -440,6 +398,7 @@ class PurchaseOrderController extends Controller
             $prnum    = $req['prnum'];
             $pritem   = $req['pritem'];
             $poitem   = $req['poitem'];
+            $kodebudget = $req['kodebudget'];
 
             $insertData = array();
             $poItems    = array();
@@ -480,6 +439,7 @@ class PurchaseOrderController extends Controller
                     'prnum'        => $prnum[$i] ?? 0,
                     'pritem'       => $pritem[$i] ?? 0,
                     'budget_code'  => $budgetCode,
+                    'budget_code_num' => $kodebudget[$i] ?? 'NONBUDGET',
                     'budget_period'=> $budgetPriod,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => $pohdr->createdby,

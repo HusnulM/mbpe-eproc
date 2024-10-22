@@ -338,6 +338,7 @@
 
         let _token   = $('meta[name="csrf-token"]').attr('content');
         let selected_items = [];
+        let selected_items2 = [];
         var fCount = 0;
 
         $('#btn-submit-draft').on('click', function(){
@@ -384,21 +385,21 @@
                 selected_data = [];
                 selected_data = menuTable.row($(this).closest('tr')).data();
 
-                if(checkSelectedMaterial(selected_data.material)){
-                    console.log(selected_items);
+                if(checkSelectedBudget(selected_data.material, selected_data.kodebudget)){
+                    console.log(selected_items2);
                 }else{
                     console.log(selected_data);
-                    selected_items.push(selected_data);
+                    selected_items2.push(selected_data);
                     fCount = fCount + 1;
                     $('#tbl-pbj-body').append(`
                         <tr>
                             <td>
-                                `+selected_data.material+` - `+ selected_data.matdesc +`
+                                `+selected_data.material+` - `+ selected_data.matdesc +` <br> `+ selected_data.kodebudget +`
                                 <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
                                 <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                             </td>
                             <td>
-                                <input type="text" name="quantity[]" class="form-control" style="text-align:right;" onkeypress="`+validate(event)+`" required>
+                                <input type="text" name="quantity[]" class="form-control" style="text-align:right;" onkeypress="`+validate(event)+`" value="`+ selected_data.availableQty +`" required>
                             </td>
                             <td>
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
@@ -424,7 +425,7 @@
                     $('#btnRemove'+fCount).on('click', function(e){
                         e.preventDefault();
                         var row_index = $(this).closest("tr").index();
-                        removeItem(row_index);
+                        removeItemBudget(row_index);
                         $(this).closest("tr").remove();
                     });
                 }
@@ -523,10 +524,23 @@
             });
         }
 
+        function checkSelectedBudget(pMaterial, pKodebudget) {
+            return selected_items2.some(function(el) {
+                if(el.material === pMaterial && el.kodebudget === pKodebudget){
+                    return true;
+                }else{
+                    return false;
+                }
+            });
+        }
+
         function removeItem(index){
             selected_items.splice(index, 1);
         }
 
+        function removeItemBudget(index){
+            selected_items2.splice(index, 1);
+        }
 
         $('.btn-add-pbj-item').on('click', function(){
             // alert($('#find-whscode').val())

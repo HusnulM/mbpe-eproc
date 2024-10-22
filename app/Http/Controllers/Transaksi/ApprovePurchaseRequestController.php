@@ -26,7 +26,7 @@ class ApprovePurchaseRequestController extends Controller
 
             if($checkAllowApprove){
                 $items       = DB::table('v_pr_approval_v2')
-                                ->select('id','prnum', 'pritem', 'prdate', 'requestby', 'material', 'matdesc', 'quantity', 'unit', 'pbjnumber', 'pbjitem', 'approval_status')
+                                ->select('id','prnum', 'pritem', 'prdate', 'requestby', 'material', 'matdesc', 'quantity', 'unit', 'pbjnumber', 'pbjitem', 'approval_status', 'budget_code')
                                 ->distinct()
                                 ->where('prnum', $prhdr->prnum)
                                 ->where('approver', Auth::user()->id)
