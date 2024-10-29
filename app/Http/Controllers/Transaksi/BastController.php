@@ -88,18 +88,24 @@ class BastController extends Controller
         DB::beginTransaction();
         try{
 
+            $bulan = date('m');
+            $tahun = date('Y');
+            $prefix = 'BAST';
+            $bastNumber = $ptaNumber = generateNextNumber($prefix, 'BAST', $tahun, $bulan, '');
+
             $checkNoBAST = DB::table('t_bast01')
-                           ->where('no_bast',$req['nomorbast'])->first();
+                        //    ->where('no_bast',$req['nomorbast'])->first();
+                           ->where('no_bast',$bastNumber)->first();
             if($checkNoBAST){
                 $result = array(
                     'msgtype' => '400',
-                    'message' => 'Nomor BAST '. $req['nomorbast'] . ' sudah ada'
+                    'message' => 'Nomor BAST '. $bastNumber . ' sudah ada'
                 );
                 return $result;
             }
 
             $bastID = DB::table('t_bast01')->insertGetId([
-                'no_bast'         => $req['nomorbast'],
+                'no_bast'         => $bastNumber,
                 'userid_pemberi'  => Auth::user()->id,
                 'userid_penerima' => $req['penerima'],
                 'tanggal_bast'    => $req['tglbast'],
@@ -244,7 +250,7 @@ class BastController extends Controller
 
                 $data = array(
                     'bast_id'      => $bastID,
-                    'no_bast'      => $req['nomorbast'],
+                    'no_bast'      => $bastNumber,
                     'material'     => $parts[$i],
                     'matdesc'      => $partdsc[$i],
                     'quantity'     => $qty,
@@ -273,7 +279,9 @@ class BastController extends Controller
                     "-",
                     "'. $pbjnum[$i] .'",
                     "'. $pbjitm[$i] .'",
-                    "'. Auth::user()->email .'")');
+                    "'. Auth::user()->email .'",
+                    "'. $bastNumber .'",
+                    "'. $bastID .'")');
 
                     $pbjitem = DB::table('t_pbj02')
                     ->where('pbjnumber', $pbjnum[$i])
@@ -338,12 +346,10 @@ class BastController extends Controller
                     ]);
             }
 
-
-
             DB::commit();
             $result = array(
                 'msgtype' => '200',
-                'message' => 'BAST Berhasil disimpan '. $bastID . ' ' . $req['nomorbast']
+                'message' => 'BAST Berhasil dibuat dengan nomor '. $bastNumber
             );
             return $result;
             // return Redirect::to("/logistic/bast")->withSuccess('BAST Berhasil disimpan');

@@ -270,4 +270,17 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/listgudang',      'Transaksi\InventoryMovementController@getApprovedPO')->middleware('checkAuth:logistic/transfer');
     });
 
+
+    Route::group(['prefix' => '/logistic/returbast'], function () {
+        Route::get('/',                 'Transaksi\ReturBastController@index')->middleware('checkAuth:logistic/returbast');
+        Route::get('/create/{id}',      'Transaksi\ReturBastController@create')->middleware('checkAuth:logistic/returbast');
+        Route::post('/save',            'Transaksi\ReturBastController@save')->middleware('checkAuth:logistic/returbast');
+    });
+
+    Route::group(['prefix' => '/logistic/stockopname'], function () {
+        Route::get('/',                 'Transaksi\StockOpnamController@index')->middleware('checkAuth:logistic/stockopname');
+        // Route::get('/upload',           'Transaksi\StockOpnamController@index')->middleware('checkAuth:logistic/stockopname');
+        Route::post('/save',            'Transaksi\StockOpnamController@saveUploadOpname')->middleware('checkAuth:logistic/stockopname');
+    });
+
 });

@@ -31,7 +31,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/edit/{id}',              'Config\UserController@edit')->middleware('checkAuth:config/users');
         Route::get('/objectauth/{id}',        'Config\UserController@objectauth')->middleware('checkAuth:config/users');
         Route::get('/objectauth/delete/{p1}/{p2}', 'Config\UserController@deleteObjectauth')->middleware('checkAuth:config/users');
-        
+
         Route::post('/saveobjectauth',        'Config\UserController@saveObjectauth')->middleware('checkAuth:config/users');
         Route::post('/save',                  'Config\UserController@save')->middleware('checkAuth:config/users');
         Route::post('/update',                'Config\UserController@update')->middleware('checkAuth:config/users');
@@ -83,6 +83,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::post('/saveprwf',          'Config\WorkflowController@savePRApproval')->middleware('checkAuth:config/workflow');
         Route::post('/savepowf',          'Config\WorkflowController@savePOApproval')->middleware('checkAuth:config/workflow');
+        Route::post('/saveopnamwf',          'Config\WorkflowController@saveopnamwf')->middleware('checkAuth:config/workflow');
 
         Route::post('/savecategories',    'Config\WorkflowController@saveCategories')->middleware('checkAuth:config/workflow');
         Route::post('/updatecategories',  'Config\WorkflowController@updateCategories')->middleware('checkAuth:config/workflow');
@@ -99,10 +100,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/deletewowf/{id}','Config\WorkflowController@deleteSPKwf')->middleware('checkAuth:config/workflow');
         Route::get('/deleteprwf/{id}','Config\WorkflowController@deletePRwf')->middleware('checkAuth:config/workflow');
         Route::get('/deletepowf/{id}','Config\WorkflowController@deletePOwf')->middleware('checkAuth:config/workflow');
+        Route::get('/deleteopnamwf/{id}','Config\WorkflowController@deleteOpnamWf')->middleware('checkAuth:config/workflow');
     });
 
     Route::group(['prefix' => '/config/objectauth'], function () {
-        Route::get('/',             'Config\ObjectAuthController@index')->middleware('checkAuth:config/objectauth');  
+        Route::get('/',             'Config\ObjectAuthController@index')->middleware('checkAuth:config/objectauth');
         Route::post('/save',        'Config\ObjectAuthController@save')->middleware('checkAuth:config/objectauth');
         Route::get('/delete/{p1}',  'Config\ObjectAuthController@delete')->middleware('checkAuth:config/objectauth');
     });
