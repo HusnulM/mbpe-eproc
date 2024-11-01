@@ -90,11 +90,12 @@ class ReturBastController extends Controller
 
             $ptaNumber = generateNextNumber($prefix, 'RETBAST', $tahun, $bulan, '');
             // dd($ptaNumber);
+            // $bastnum = $req['no_bast'];
 
             DB::table('t_retur_bast')->insert([
                 'nota_retur'   => $ptaNumber,
                 'tahun'        => $tahun,
-                'no_bast'      => $bastnum,
+                'no_bast'      => $req['no_bast'],
                 'tgl_retur'    => $req['retdate'],
                 'createdby'    => Auth::user()->username,
                 'receive_from' => $req['diserahkan'],
