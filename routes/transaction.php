@@ -273,14 +273,30 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => '/logistic/returbast'], function () {
         Route::get('/',                 'Transaksi\ReturBastController@index')->middleware('checkAuth:logistic/returbast');
+        Route::get('/list',             'Transaksi\ReturBastController@listRetur')->middleware('checkAuth:logistic/returbast');
         Route::get('/create/{id}',      'Transaksi\ReturBastController@create')->middleware('checkAuth:logistic/returbast');
+        Route::get('/print/{id}',       'Transaksi\ReturBastController@printretur')->middleware('checkAuth:logistic/returbast');
         Route::post('/save',            'Transaksi\ReturBastController@save')->middleware('checkAuth:logistic/returbast');
+        Route::post('/listretur',       'Transaksi\ReturBastController@getListReturBast')->middleware('checkAuth:logistic/returbast');
     });
 
     Route::group(['prefix' => '/logistic/stockopname'], function () {
         Route::get('/',                 'Transaksi\StockOpnamController@index')->middleware('checkAuth:logistic/stockopname');
+        Route::get('/stockopnamelist',   'Transaksi\StockOpnamController@viewlist')->middleware('checkAuth:logistic/stockopname');
         // Route::get('/upload',           'Transaksi\StockOpnamController@index')->middleware('checkAuth:logistic/stockopname');
         Route::post('/save',            'Transaksi\StockOpnamController@saveUploadOpname')->middleware('checkAuth:logistic/stockopname');
+        Route::get('/getlist',          'Transaksi\StockOpnamController@opnamlist')->middleware('checkAuth:approve/opnam');
+        Route::get('/getdetails/{id}',   'Transaksi\StockOpnamController@stockOpnameDetails')->middleware('checkAuth:approve/opnam');
+
+
     });
 
+    Route::group(['prefix' => '/approve/opnam'], function () {
+        Route::get('/',              'Transaksi\ApproveOpnamController@index')->middleware('checkAuth:approve/opnam');
+        Route::get('/details/{id}',  'Transaksi\ApproveOpnamController@approveDetail')->middleware('checkAuth:approve/opnam');
+        Route::post('/postapproval', 'Transaksi\ApproveOpnamController@saveApproveHeader')->middleware('checkAuth:approve/opnam');
+        Route::get('/approvelist',   'Transaksi\ApproveOpnamController@approvalList')->middleware('checkAuth:approve/opnam');
+
+        Route::get('/testpost/{id}',   'Transaksi\ApproveOpnamController@postPIDDocument');
+    });
 });

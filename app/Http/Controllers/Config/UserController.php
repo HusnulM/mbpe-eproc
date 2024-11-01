@@ -28,7 +28,7 @@ class UserController extends Controller
         $datauser = DB::table('users')->where('id', $userid)->first();
         $objauth  = DB::table('object_auth')->get();
         $uobjauth = DB::table('v_user_obj_auth')->where('userid', $userid)->get();
-        return view('config.users.objectauth', ['datauser' => $datauser, 'objauth' => $objauth, 'uobjauth' => $uobjauth]); 
+        return view('config.users.objectauth', ['datauser' => $datauser, 'objauth' => $objauth, 'uobjauth' => $uobjauth]);
     }
 
     public function edit($id){
@@ -38,14 +38,21 @@ class UserController extends Controller
         $ujabatan = DB::table('t_jabatan')->where('id', $data->jabatanid)->first();
         $udepartm = DB::table('t_department')->where('deptid',$data->deptid)->first();
         // dd($udepartm);
-        return view('config.users.edit', 
+        return view('config.users.edit',
             [
-                'datauser'    => $data, 
-                'jabatan'     => $jabatan, 
+                'datauser'    => $data,
+                'jabatan'     => $jabatan,
                 'department'  => $departm,
-                'ujabatan'    => $ujabatan, 
+                'ujabatan'    => $ujabatan,
                 'udepartm'    => $udepartm
             ]);
+    }
+
+    public function findUser(Request $request){
+        $query['data'] = DB::table('users')->where('name', 'like', '%'. $request->search . '%')->get();
+
+        // return \Response::json($query);
+        return $query;
     }
 
     public function save(Request $request){
@@ -69,10 +76,10 @@ class UserController extends Controller
             $esignfile = $request->file('esignfile');
             if($esignfile){
                 $filename  = $esignfile->getClientOriginalName();
-                $esignpath = 'storage/files/e_signature/'. $filename;  
+                $esignpath = 'storage/files/e_signature/'. $filename;
             }
             // public_path().'/files/e_signature/', $filename;
-            
+
 
             DB::table('users')->insert([
                 'name'        => $request['name'],
@@ -87,7 +94,7 @@ class UserController extends Controller
             ]);
 
             if($esignfile){
-                $esignfile->move('storage/files/e_signature/', $filename);  
+                $esignfile->move('storage/files/e_signature/', $filename);
             }
 
             DB::commit();
@@ -106,7 +113,7 @@ class UserController extends Controller
         ]);
 
         $oldUserData = DB::table('users')->where('id',$request['iduser'])->first();
-        
+
         DB::beginTransaction();
         try{
             if($request['password'] != null || $request['password'] != ""){
@@ -114,9 +121,9 @@ class UserController extends Controller
                     'cost' => 12,
                 ];
                 $password = password_hash($request['password'], PASSWORD_BCRYPT, $options);
-        
+
                 $output = array();
-    
+
                 DB::table('users')->where('id',$request['iduser'])->update([
                     'name'        => $request['name'],
                     // 'email'       => $request['email'],
@@ -180,15 +187,15 @@ class UserController extends Controller
             $esignfile = $request->file('esignfile');
             if($esignfile){
                 $filename  = $esignfile->getClientOriginalName();
-                $esignpath = 'storage/files/e_signature/'. $filename;  
+                $esignpath = 'storage/files/e_signature/'. $filename;
 
                 DB::table('users')->where('id',$request['iduser'])->update([
                     's_signfile'     => $esignpath,
                 ]);
 
-                $esignfile->move('storage/files/e_signature/', $filename);  
+                $esignfile->move('storage/files/e_signature/', $filename);
             }
-            
+
             DB::commit();
             return Redirect::to("/config/users")->withSuccess('User updated');
         }catch(\Exception $e){
@@ -213,9 +220,9 @@ class UserController extends Controller
                     'cost' => 12,
                 ];
                 $password = password_hash($request['password'], PASSWORD_BCRYPT, $options);
-        
+
                 $output = array();
-    
+
                 DB::table('users')->where('id',$request['iduser'])->update([
                     'name'        => $request['name'],
                     // 'email'       => $request['email'],
@@ -275,15 +282,15 @@ class UserController extends Controller
             $esignfile = $request->file('esignfile');
             if($esignfile){
                 $filename  = $esignfile->getClientOriginalName();
-                $esignpath = 'storage/files/e_signature/'. $filename;  
+                $esignpath = 'storage/files/e_signature/'. $filename;
 
                 DB::table('users')->where('id',$request['iduser'])->update([
                     's_signfile'     => $esignpath,
                 ]);
 
-                $esignfile->move('storage/files/e_signature/', $filename);  
+                $esignfile->move('storage/files/e_signature/', $filename);
             }
-            
+
             DB::commit();
 
             $user = User::where('username', $request['username'])->first();
@@ -332,7 +339,7 @@ class UserController extends Controller
             if($checkSysAdm->username === "sys-admin"){
                 return Redirect::to("/config/users")->withError('User sys-admin Tidak bisa dihapus!');
             }else{
-                DB::table('users')->where('id', $id)->delete();    
+                DB::table('users')->where('id', $id)->delete();
                 DB::commit();
             }
             return Redirect::to("/config/users")->withSuccess('User deleted');
@@ -359,7 +366,7 @@ class UserController extends Controller
     }
 
     public function userlist(Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
         $query = DB::table('v_users')->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();

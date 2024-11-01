@@ -16,6 +16,62 @@ class StockOpnamController extends Controller
         return view('transaksi.opnam.index');
     }
 
+    public function viewlist()
+    {
+        return view('transaksi.opnam.opnamlist');
+    }
+
+    public function details()
+    {
+
+    }
+
+    public function stockOpnameDetails($id)
+    {
+        $query = DB::table('v_stock_opname_detail')
+                 ->where('id', $id);
+        $query->orderBy('id', 'ASC');
+        return DataTables::queryBuilder($query)
+        ->editColumn('quantity', function ($query){
+            return [
+                'qty1' => number_format($query->quantity,0)
+            ];
+        })
+        ->toJson();
+    }
+
+    public function opnamlist(Request $req)
+    {
+        // t_stock_opnam01
+        $strDate  = $req->strdate;
+        $endDate  = $req->enddate;
+
+
+        $query = DB::table('t_stock_opnam01');
+
+        if(isset($req->strdate) && isset($req->enddate)){
+            $query->whereBetween('piddate', [$strDate, $endDate]);
+        }else{
+            if(isset($req->strdate)){
+                $query->where('piddate', $strDate);
+            }
+
+            if(isset($req->enddate)){
+                $query->where('piddate', '<=', $endDate);
+            }
+        }
+
+        $query->orderBy('id', 'ASC');
+
+        return DataTables::queryBuilder($query)
+        ->editColumn('piddate', function ($query){
+            return [
+                'piddate' => \Carbon\Carbon::parse($query->piddate)->format('d-m-Y')
+             ];
+        })
+        ->toJson();
+    }
+
     public function saveUploadOpname(Request $request){
         $this->validate($request, [
             'file' => 'required|mimes:csv,xls,xlsx'

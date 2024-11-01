@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'List BAST')
+@section('title', 'Laporan Retur BAST')
 
 @section('additional-css')
 @endsection
@@ -11,38 +11,33 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">List BAST</h3>
+                    <h3 class="card-title">Laporan Retur BAST</h3>
                     <div class="card-tools">
-                        <a href="{{ url('/logistic/returbast/list') }}" class="btn btn-success btn-sm">
-                            <i class="fa fa-list"></i> List Retur
-                        </a>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <form action="{{ url('report/exportpr') }}" method="post">
+                            <form action="{{ url('report/exportreturbast') }}" method="post">
                                 @csrf
                                 <div class="row">
                                     <div class="col-lg-2">
-                                        <label for="">Tanggal BAST</label>
+                                        <label for="">Tanggal Retur BAST</label>
                                         <input type="date" class="form-control" name="datefrom" id="datefrom" value="{{ $_GET['datefrom'] ?? '' }}">
                                     </div>
                                     <div class="col-lg-2">
                                         <label for="">-</label>
                                         <input type="date" class="form-control" name="dateto" id="dateto" value="{{ $_GET['dateto'] ?? '' }}">
                                     </div>
-
-                                    <div class="col-lg-2" style="text-align:right;">
+                                    <div class="col-lg-8" style="text-align:right;">
                                         <br>
                                         <button type="button" class="btn btn-default mt-2 btn-search">
                                             <i class="fa fa-search"></i> Filter
                                         </button>
-                                        {{-- <button type="submit" class="btn btn-success mt-2 btn-export">
+                                        <button type="submit" class="btn btn-success mt-2 btn-export">
                                             <i class="fa fa-download"></i> Export Data
-                                        </button> --}}
+                                        </button>
                                     </div>
-
                                 </div>
                             </form>
                         </div>
@@ -50,16 +45,21 @@
                     <hr>
                     <div class="row">
                         <div class="table-responsive">
-                            <table id="tbl-bast-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                            <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                 <thead>
                                     <th>No</th>
-                                    <th>Nomor BAST</th>
-                                    <th>Tanggal BAST</th>
-                                    <th>Pemberi</th>
-                                    <th>Penerima</th>
+                                    <th>Nomor Retur</th>
+                                    <th>Tanggal Retur</th>
+                                    <th>No. BAST</th>
                                     <th>Remark</th>
-                                    <th>Created Date</th>
-                                    <th></th>
+                                    <th>Di Terima Oleh</th>
+                                    <th>Di Serahkan Oleh</th>
+                                    <th>Partnumber</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Warehouse</th>
+                                    <th>Keterangan</th>
                                 </thead>
                                 <tbody>
 
@@ -108,10 +108,10 @@
         loadDocument('');
 
         function loadDocument(_params){
-            $("#tbl-bast-list").DataTable({
+            $("#tbl-budget-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/logistic/bast/listdatabast'+_params,
+                    url: base_url+'/report/listreturbast'+_params,
                     data: function (data) {
                         data.params = {
                             sac: "sac"
@@ -130,29 +130,31 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
-                    {data: "no_bast", className: 'uid'},
-                    {data: "tanggal_bast", className: 'uid'},
-                    {data: "pemberi", className: 'uid'},
-                    {data: "penerima", className: 'uid'},
-                    {data: "remark", className: 'uid'},
-                    {data: "createdon", className: 'uid'},
-                    {"defaultContent":
-                        `<button class='btn btn-primary btn-sm button-print'> <i class='fa fa-search'></i> Retur BAST </button>
-                        `,
-                        "className": "text-center",
-                    }
-                ]
-            });
+                    {data: "nota_retur", className: 'uid'},
 
-            $('#tbl-bast-list tbody').on( 'click', '.button-print', function () {
-                var table = $('#tbl-bast-list').DataTable();
-                selected_data = [];
-                selected_data = table.row($(this).closest('tr')).data();
-                window.location = base_url+"/logistic/returbast/create/"+selected_data.id;
-                    // window.open(
-                    //     base_url+"/proc/pr/print/"+selected_data.id,
-                    //     '_blank' // <- This is what makes it open in a new window.
-                    // );
+                    {data: "tgl_retur", className: 'uid',
+                        render: function (data, type, row){
+                            return ``+ row.tgl_retur.tgl_retur + ``;
+                        }
+                    },
+                    {data: "no_bast"},
+                    {data: "remark", className: 'uid'},
+                    {data: "createdby", className: 'uid'},
+                    {data: "diserahkan_oleh"},
+                    {data: "material", className: 'uid'},
+                    {data: "matdesc", className: 'uid'},
+                    {data: "quantity", "sortable": false,
+                        render: function (data, type, row){
+                            return ``+ row.quantity.qty1 + ``;
+                        },
+                        "className": "text-right",
+                    },
+                    {data: "unit"},
+
+
+                    {data: "whsname"},
+                    {data: "item_remark"},
+                ]
             });
         }
 

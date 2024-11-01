@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'List BAST')
+@section('title', 'List Stock Opnam')
 
 @section('additional-css')
 @endsection
@@ -11,10 +11,10 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">List BAST</h3>
+                    <h3 class="card-title">List Stock Opnam</h3>
                     <div class="card-tools">
-                        <a href="{{ url('/logistic/returbast/list') }}" class="btn btn-success btn-sm">
-                            <i class="fa fa-list"></i> List Retur
+                        <a href="{{ url('/logistic/stockopname') }}" class="btn btn-default btn-sm">
+                            <i class="fa fa-back"></i> Back
                         </a>
                     </div>
                 </div>
@@ -25,7 +25,7 @@
                                 @csrf
                                 <div class="row">
                                     <div class="col-lg-2">
-                                        <label for="">Tanggal BAST</label>
+                                        <label for="">Tanggal Stock Opnam</label>
                                         <input type="date" class="form-control" name="datefrom" id="datefrom" value="{{ $_GET['datefrom'] ?? '' }}">
                                     </div>
                                     <div class="col-lg-2">
@@ -53,12 +53,10 @@
                             <table id="tbl-bast-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                 <thead>
                                     <th>No</th>
-                                    <th>Nomor BAST</th>
-                                    <th>Tanggal BAST</th>
-                                    <th>Pemberi</th>
-                                    <th>Penerima</th>
+                                    <th>Nomor Opnam</th>
+                                    <th>Tanggal Opnam</th>
+                                    <th>Dibuat Oleh</th>
                                     <th>Remark</th>
-                                    <th>Created Date</th>
                                     <th></th>
                                 </thead>
                                 <tbody>
@@ -75,7 +73,47 @@
 @endsection
 
 @section('additional-modal')
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalDetailOpname">
+    <div class="modal-dialog modal-xl">
+        <form class="form-horizontal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalApprovalTitle">Detail Stock Opnam</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="position-relative row form-group">
+                    <div class="col-lg-12">
+                        <div class="table-responsive">
+                            <table id="tbl-pid-details" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                <thead>
+                                    <th>No</th>
+                                    <th>Item Code</th>
+                                    <th>Item Name</th>
+                                    <th>Actual Quantity</th>
+                                    <th>System Quantity</th>
+                                    <th>Diff. Quantity</th>
+                                    <th>Uom</th>
+                                    <th>Unit Price</th>
+                                    <th>Total Price</th>
+                                </thead>
+                                <tbody>
 
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit-approval"> OK</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @section('additional-js')
@@ -111,7 +149,7 @@
             $("#tbl-bast-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/logistic/bast/listdatabast'+_params,
+                    url: base_url+'/logistic/stockopname/getlist'+_params,
                     data: function (data) {
                         data.params = {
                             sac: "sac"
@@ -130,14 +168,16 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
-                    {data: "no_bast", className: 'uid'},
-                    {data: "tanggal_bast", className: 'uid'},
-                    {data: "pemberi", className: 'uid'},
-                    {data: "penerima", className: 'uid'},
-                    {data: "remark", className: 'uid'},
-                    {data: "createdon", className: 'uid'},
+                    {data: "pidnumber", className: 'uid'},
+                    {data: "piddate", className: 'uid',
+                        render: function (data, type, row){
+                            return ``+ row.piddate.piddate + ``;
+                        }
+                    },
+                    {data: "piduser", className: 'uid'},
+                    {data: "pidnote", className: 'uid'},
                     {"defaultContent":
-                        `<button class='btn btn-primary btn-sm button-print'> <i class='fa fa-search'></i> Retur BAST </button>
+                        `<button class='btn btn-primary btn-sm button-print'> <i class='fa fa-search'></i> View Details </button>
                         `,
                         "className": "text-center",
                     }
@@ -148,7 +188,11 @@
                 var table = $('#tbl-bast-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                window.location = base_url+"/logistic/returbast/create/"+selected_data.id;
+
+                loadDetails(selected_data.id);
+
+                $('#modalDetailOpname').modal('show');
+                // window.location = base_url+"/logistic/returbast/create/"+selected_data.id;
                     // window.open(
                     //     base_url+"/proc/pr/print/"+selected_data.id,
                     //     '_blank' // <- This is what makes it open in a new window.
@@ -156,6 +200,45 @@
             });
         }
 
+        function loadDetails(_id){
+            $("#tbl-pid-details").DataTable({
+                serverSide: true,
+                ajax: {
+                    url: base_url+'/logistic/stockopname/getdetails/'+_id,
+                    data: function (data) {
+                        data.params = {
+                            sac: "sac"
+                        }
+                    }
+                },
+                buttons: false,
+                searching: true,
+                scrollY: 500,
+                scrollX: true,
+                scrollCollapse: true,
+                bDestroy: true,
+                columns: [
+                    { "data": null,"sortable": false, "searchable": false,
+                        render: function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {data: "material", className: 'uid'},
+                    {data: "matdesc", className: 'uid'},
+                    {data: "actual_qty", className: 'uid', "className": "text-right"},
+                    {data: "quantity", className: 'uid',
+                        render: function (data, type, row){
+                            return ``+ row.quantity.qty1 + ``;
+                        },
+                        "className": "text-right"
+                    },
+                    {data: "diffqty", className: 'uid', "className": "text-right"},
+                    {data: "matunit", className: 'uid'},
+                    {data: "unit_price", className: 'uid', "className": "text-right"},
+                    {data: "total_price", className: 'uid', "className": "text-right"},
+                ]
+            });
+        }
 
         $('.inputNumber').on('change', function(){
             this.value = formatRupiah(this.value,'');

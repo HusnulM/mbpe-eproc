@@ -91,7 +91,7 @@ class BastController extends Controller
             $bulan = date('m');
             $tahun = date('Y');
             $prefix = 'BAST';
-            $bastNumber = $ptaNumber = generateNextNumber($prefix, 'BAST', $tahun, $bulan, '');
+            $bastNumber = generateNextNumber($prefix, 'BAST', $tahun, $bulan, '');
 
             $checkNoBAST = DB::table('t_bast01')
                         //    ->where('no_bast',$req['nomorbast'])->first();

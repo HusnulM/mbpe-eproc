@@ -30,8 +30,8 @@
                         <i class="fa fa-download"></i> Download Template
                     </a>
 
-                    <a href="/master/player" class="btn btn-primary btn-sm">
-                        <i class="fa fa-arrow-left"></i> Back
+                    <a href="{{ url('/logistic/stockopname/stockopnamelist') }}" class="btn btn-success btn-sm">
+                        <i class="fa fa-list"></i> List Stock Opnam
                     </a>
                 </div>
             </div>

@@ -40,13 +40,20 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
             $count = 0;
             $insertData = array();
             foreach ($rows as $index => $row) {
+                $matName = '';
+                $material = DB::table('t_material')->where('material',$row['part_number'])->first();
+                if($material){
+                    $matName = $material->matdesc;
+                }else{
+                    $matName = $row['part_name'];
+                }
                 $count = $count + 1;
                 $excelData = array(
                     'pidnumber'    => $opnamNumber,
                     'header_id'    => $stockOpnamID,
                     'piditem'      => $count,
                     'material'     => $row['part_number'],
-                    'matdesc'      => $row['part_name'],
+                    'matdesc'      => $matName,
                     'actual_qty'   => $row['actual_stock'],
                     'matunit'      => $row['uom'],
                     'unit_price'   => $row['harga_satuan'],

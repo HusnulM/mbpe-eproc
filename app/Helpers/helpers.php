@@ -472,6 +472,13 @@ function getUserNameByID($id){
     return $userDept->name;
 }
 
+function getUserEsignByID($id){
+    $userData = DB::table('users')->where('id', $id)
+            ->orWhere('email', $id)
+            ->orWhere('username', $id)->first();
+    return $userData->s_signfile;
+}
+
 function generateBudgetDcnNumber($tahun, $bulan, $tgl, $dept, $deptname){
     $dcnNumber = 'PTA-'.$deptname.'/'.$tahun.$bulan.$tgl;
 

@@ -617,7 +617,7 @@ class ReportsController extends Controller
                 'qty' => number_format($query->quantity,0)
             ];
         })
-        ->toJson();;
+        ->toJson();
 
         // return Datatables::of($matMovement)
         //             ->addIndexColumn()
@@ -627,5 +627,49 @@ class ReportsController extends Controller
         //                 ];
         //             })
         //             ->make(true);
+    }
+
+    public function returbast()
+    {
+        return view('laporan.retur_bast');
+    }
+
+    public function getDataReturBast(Request $req)
+    {
+        $strDate  = $req->strdate;
+        $endDate  = $req->enddate;
+
+
+        $query = DB::table('v_retur_bast');
+        if(isset($req->strdate) && isset($req->enddate)){
+            // dd($req->enddate);
+            $query->whereBetween('tgl_retur', [$strDate, $endDate]);
+        }
+
+        $query->orderBy('id', 'ASC');
+
+        return DataTables::queryBuilder($query)
+        ->editColumn('quantity', function ($query){
+            return [
+                'qty1' => number_format($query->quantity,0)
+            ];
+        })
+        ->editColumn('unit_price', function ($query){
+            return [
+                'unit_price' => number_format($query->unit_price,0)
+            ];
+        })
+        ->editColumn('total_price', function ($query){
+            return [
+                'total_price' => number_format($query->total_price,0)
+            ];
+        })
+        ->editColumn('tgl_retur', function ($query){
+            return [
+                'tgl_retur' => \Carbon\Carbon::parse($query->tgl_retur)->format('d-m-Y')
+             ];
+        })
+        ->toJson();
+
     }
 }

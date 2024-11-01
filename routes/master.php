@@ -79,6 +79,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/findwhs',     'Master\WarehouseController@findWhs');
     });
 
+    Route::group(['prefix' => '/master/listuser'], function () {
+        Route::post('/findusers', 'Config\UserController@findUser');
+    });
+
     Route::group(['prefix' => '/master/mekanik'], function () {
         Route::get('/',             'Master\MekanikController@index')->middleware('checkAuth:master/mekanik');
         Route::get('/create',       'Master\MekanikController@create')->middleware('checkAuth:master/mekanik');
