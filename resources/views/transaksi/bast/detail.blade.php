@@ -83,6 +83,7 @@
                                     <th>Part Number</th>
                                     <th>Description</th>
                                     <th style="text-align:center;">Quantity</th>
+                                    <th style="text-align:center;">Qty Retur</th>
                                     <th>Unit</th>
                                     <th>PBJ Number</th>
                                 </thead>
@@ -98,6 +99,9 @@
                                         </td>
                                         <td style="text-align:right;">
                                             {{ number_format($row->quantity,0) }}
+                                        </td>
+                                        <td style="text-align:right;">
+                                            {{ number_format($row->retur_qty,0) }}
                                         </td>
                                         <td>
                                             {{ $row->unit }}
