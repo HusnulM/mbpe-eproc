@@ -685,7 +685,7 @@ class ReportsController extends Controller
         $endDate  = $req->enddate;
 
 
-        $query = DB::table('v_po_open_gr');
+        $query = DB::table('v_po_not_fully_gr');
 
         if(isset($req->department)){
             if($req->department !== 'All'){
