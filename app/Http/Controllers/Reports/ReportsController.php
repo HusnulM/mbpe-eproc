@@ -129,10 +129,14 @@ class ReportsController extends Controller
 
         if(isset($req->datefrom) && isset($req->dateto)){
             $query->whereBetween('podat', [$req->datefrom, $req->dateto]);
-        }elseif(isset($req->datefrom)){
-            $query->where('podat', $req->datefrom);
-        }elseif(isset($req->dateto)){
-            $query->where('podat', $req->dateto);
+        }else{
+            if(isset($req->datefrom)){
+                $query->where('podat', $req->datefrom);
+            }
+
+            if(isset($req->dateto)){
+                $query->where('podat', '<=', $req->dateto);
+            }
         }
 
         $query->orderBy('id');
