@@ -695,11 +695,11 @@ class ReportsController extends Controller
 
         if(isset($req->approvalstat)){
             if($req->approvalstat === "O"){
-                $query->where('approvestat', 'O');
+                $query->where('item_appr_stat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');
+                $query->where('item_appr_stat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');
+                $query->where('item_appr_stat', 'R');
             }
         }
 
