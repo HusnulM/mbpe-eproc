@@ -24,7 +24,11 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/po',                       'Reports\ReportsController@po')->middleware('checkAuth:report/po');
         Route::get('/polist',                   'Reports\ReportsController@poList')->middleware('checkAuth:report/po');
-        Route::post('/exportpo',                'ExportDataController@exportPO')->middleware('checkAuth:report/pr');
+        Route::post('/exportpo',                'ExportDataController@exportPO')->middleware('checkAuth:report/po');
+
+        Route::get('/opengrpo',                 'Reports\ReportsController@opengrpo')->middleware('checkAuth:report/opengrpo');
+        Route::get('/opengrpolist',             'Reports\ReportsController@opengrpolist')->middleware('checkAuth:report/opengrpo');
+        Route::post('/exportopengrpo',          'ExportDataController@exportOpengrpo')->middleware('checkAuth:report/opengrpo');
 
         Route::get('/pr',                       'Reports\ReportsController@pr')->middleware('checkAuth:report/pr');
         Route::get('/prlist',                   'Reports\ReportsController@prList')->middleware('checkAuth:report/pr');

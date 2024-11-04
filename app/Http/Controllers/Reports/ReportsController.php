@@ -672,4 +672,69 @@ class ReportsController extends Controller
         ->toJson();
 
     }
+
+    public function opengrpo()
+    {
+        $department = DB::table('t_department')->get();
+        return view('laporan.opengrpo', ['department' => $department]);
+    }
+
+    public function opengrpolist(Request $req)
+    {
+        $strDate  = $req->strdate;
+        $endDate  = $req->enddate;
+
+
+        $query = DB::table('v_po_open_gr');
+
+        if(isset($req->department)){
+            if($req->department !== 'All'){
+                $query->where('deptid', $req->department);
+            }
+        }
+
+        if(isset($req->approvalstat)){
+            if($req->approvalstat === "O"){
+                $query->where('approvestat', 'O');
+            }elseif($req->approvalstat === "A"){
+                $query->where('approvestat', 'A');
+            }elseif($req->approvalstat === "R"){
+                $query->where('approvestat', 'R');
+            }
+        }
+
+        if(isset($req->datefrom) && isset($req->dateto)){
+            $query->whereBetween('podat', [$req->datefrom, $req->dateto]);
+        }elseif(isset($req->datefrom)){
+            $query->where('podat', $req->datefrom);
+        }elseif(isset($req->dateto)){
+            $query->where('podat', $req->dateto);
+        }
+
+        $query->orderBy('id');
+
+        return DataTables::queryBuilder($query)
+        ->editColumn('quantity', function ($query){
+            return [
+                'qty1' => number_format($query->quantity,0)
+            ];
+        })->editColumn('grqty', function ($query){
+            return [
+                'qty2' => number_format($query->grqty,0)
+            ];
+        })->editColumn('openqty', function ($query){
+            return [
+                'qty3' => number_format($query->openqty,0)
+            ];
+        })->editColumn('price', function ($query){
+            return [
+                'price1' => number_format($query->price,0)
+            ];
+        })->editColumn('podat', function ($query){
+            return [
+                'podat1' => \Carbon\Carbon::parse($query->podat)->format('d-m-Y')
+             ];
+        })
+        ->toJson();
+    }
 }
