@@ -119,6 +119,8 @@ class PurchaseOrderController extends Controller
             // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
             $ptaNumber = generatePONumber($tahun, $bulan, $tgl);
 
+            $vendor = DB::table('t_vendor')->where('id', $req['vendor'])->first();
+
             if($req['poSolarInd'] === 'Y'){
                 $poID = DB::table('t_po01')->insertGetId([
                     'ponum'             => $ptaNumber,
@@ -126,7 +128,7 @@ class PurchaseOrderController extends Controller
                     'deptid'            => $req['department'],
                     'podat'             => $req['tglreq'],
                     'delivery_date'     => $req['deldate'],
-                    'vendor'            => $req['vendor'],
+                    'vendor'            => $vendor->vendor_code,
                     'note'              => $req['remark'],
                     'ppn'               => $req['ppn'] ?? 0,
                     'currency'          => $req['currency'],
@@ -358,12 +360,14 @@ class PurchaseOrderController extends Controller
                 return $result;
             }
 
+            $vendor = DB::table('t_vendor')->where('id', $req['vendor'])->first();
+
             if($req['poSolarInd'] === 'Y'){
                 DB::table('t_po01')->where('id', $poid)->update([
                     'deptid'            => $req['department'],
                     'podat'             => $req['tglreq'],
                     'delivery_date'     => $req['deldate'],
-                    'vendor'            => $req['vendor'],
+                    'vendor'            => $vendor->vendor_code,
                     'note'              => $req['remark'],
                     'ppn'               => $req['ppn'] ?? 0,
                     'currency'          => $req['currency'],
