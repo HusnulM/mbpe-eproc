@@ -87,6 +87,7 @@ class BastController extends Controller
         // return $req;
         DB::beginTransaction();
         try{
+            resetPBJNotRealized();
 
             $bulan = date('m');
             $tahun = date('Y');
