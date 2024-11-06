@@ -132,14 +132,26 @@ class ApproveOpnamController extends Controller
                     'approval_status'   => 'A'
                 ]);
 
-                $postPID = $this->postPIDDocument($ptaNumber);
-                if($postPID['msgtype'] == '200'){
-                    // dd($postPID);
+                $buangStockLama = $this->postOldDocument($ptaNumber);
+
+                if($buangStockLama['msgtype'] == '200'){
+                    $postPID        = $this->postPIDDocument($ptaNumber);
+                    if($postPID['msgtype'] == '200'){
+                        $postPID        = $this->postPIDDocument($ptaNumber);
+                        // dd($postPID);
+                    }else{
+                        DB::rollBack();
+                        $result = array(
+                            'msgtype' => '500',
+                            'message' => $postPID['message']
+                        );
+                        return $result;
+                    }
                 }else{
                     DB::rollBack();
                     $result = array(
                         'msgtype' => '500',
-                        'message' => $postPID['message']
+                        'message' => $buangStockLama['message']
                     );
                     return $result;
                 }
@@ -212,6 +224,7 @@ class ApproveOpnamController extends Controller
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);
 
+
             $count = 0;
             foreach ($pidData as $index => $row) {
                 // Kosongin Existing Stock
@@ -270,6 +283,87 @@ class ApproveOpnamController extends Controller
                     'unit'         => $row->matunit,
                     'last_udpate'  => getLocalDatabaseDateTime()
                 ]);
+            }
+
+            DB::commit();
+
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'Success'
+            );
+            return $result;
+        }catch(\Exception $e){
+            DB::rollBack();
+            // dd($e);
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+        }
+    }
+
+    // Buat Transaksi Negatif untuk existing Stock supaya stock Balance
+    public function postOldDocument($pidNumber){
+        DB::beginTransaction();
+        try{
+            $pidData = DB::table('v_stock_opname_detail')
+                ->where('pidnumber', $pidNumber)
+                ->orWhere('id', $pidNumber)
+                ->get();
+
+            // dd($_POST);
+            $postDate = date('Y-m-d');
+            $bulan    = date('m');
+            $tahun    = date('Y');
+            $prefix   = 'ISSUEPID';
+            $ptaNumber = generateNextNumber($prefix, 'ISSUEPID', $tahun, $bulan, '');
+
+            DB::table('t_inv01')->insert([
+                'docnum'            => $ptaNumber,
+                'docyear'           => $tahun,
+                'docdate'           => $postDate,
+                'postdate'          => $postDate,
+                'received_by'       => Auth::user()->username,
+                'movement_code'     => '201',
+                'remark'            => 'Stock Opnam',
+                'createdon'         => getLocalDatabaseDateTime(),
+                'createdby'         => Auth::user()->email ?? Auth::user()->username
+            ]);
+
+            // Create Inventory Movement Negatif untuk meng 0 kan stock Lama
+            foreach ($pidData as $index => $row) {
+                $oldItems = DB::table('t_inv_batch_stock')
+                            ->where('material', $row->material)
+                            ->where('whscode', $row->whsid)
+                            ->where('quantity', '>', 0)
+                            ->get();
+                $count = 0;
+                foreach($oldItems as $olddata => $old){
+                    $count = $count + 1;
+                    $insertData = array();
+                    $excelData = array(
+                        'docnum'       => $ptaNumber,
+                        'docyear'      => $tahun,
+                        'docitem'      => $count,
+                        'movement_code'=> '201',
+                        'material'     => $row->material,
+                        'matdesc'      => $row->matdesc,
+                        'batch_number' => $old->batchnum,
+                        'quantity'     => $old->quantity,
+                        'unit'         => $row->matunit,
+                        'unit_price'   => $row->unit_price,
+                        'total_price'  => $row->total_price,
+                        'whscode'      => $row->whsid,
+                        'shkzg'        => '-',
+                        'createdon'    => getLocalDatabaseDateTime(),
+                        'createdby'    => Auth::user()->email ?? Auth::user()->username
+
+                    );
+                    array_push($insertData, $excelData);
+                    insertOrUpdate($insertData,'t_inv02');
+                }
+                // DB::commit();
             }
 
             DB::commit();
