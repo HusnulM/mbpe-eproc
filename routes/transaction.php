@@ -285,10 +285,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/stockopnamelist',   'Transaksi\StockOpnamController@viewlist')->middleware('checkAuth:logistic/stockopname');
         // Route::get('/upload',           'Transaksi\StockOpnamController@index')->middleware('checkAuth:logistic/stockopname');
         Route::post('/save',            'Transaksi\StockOpnamController@saveUploadOpname')->middleware('checkAuth:logistic/stockopname');
-        Route::get('/getlist',          'Transaksi\StockOpnamController@opnamlist')->middleware('checkAuth:approve/opnam');
-        Route::get('/getdetails/{id}',   'Transaksi\StockOpnamController@stockOpnameDetails')->middleware('checkAuth:approve/opnam');
+        Route::get('/getlist',          'Transaksi\StockOpnamController@opnamlist')->middleware('checkAuth:logistic/stockopname');
+        Route::get('/getdetails/{id}',   'Transaksi\StockOpnamController@stockOpnameDetails')->middleware('checkAuth:logistic/stockopname');
 
-
+        Route::get('/approvalstatus/{id}',   'Transaksi\StockOpnamController@getApprovalStatus')->middleware('checkAuth:logistic/stockopname');
     });
 
     Route::group(['prefix' => '/approve/opnam'], function () {
@@ -296,6 +296,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/details/{id}',  'Transaksi\ApproveOpnamController@approveDetail')->middleware('checkAuth:approve/opnam');
         Route::post('/postapproval', 'Transaksi\ApproveOpnamController@saveApproveHeader')->middleware('checkAuth:approve/opnam');
         Route::get('/approvelist',   'Transaksi\ApproveOpnamController@approvalList')->middleware('checkAuth:approve/opnam');
+
 
         Route::get('/testpost/{id}',   'Transaksi\ApproveOpnamController@postPIDDocument');
     });

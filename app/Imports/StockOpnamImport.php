@@ -66,7 +66,7 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
 
             $approval = DB::table('v_workflow_budget')->where('object', 'OPNAM')->where('requester', Auth::user()->id)->get();
             if(sizeof($approval) > 0){
-                DB::table('t_opnam_approval')->where('pidnumber', $opnamNumber)->delete();
+                // DB::table('t_opnam_approval')->where('pidnumber', $opnamNumber)->delete();
                 $insertApproval = array();
                 foreach($approval as $row){
                     $is_active = 'N';

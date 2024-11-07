@@ -40,6 +40,17 @@ class StockOpnamController extends Controller
         ->toJson();
     }
 
+    public function getApprovalStatus($id)
+    {
+        $pidDoc = DB::table('t_stock_opnam01')->where('id', $id)->first();
+
+        $query = DB::table('v_opnam_approval')
+                ->where('pidnumber', $pidDoc->pidnumber);
+
+        $query->orderBy('id', 'ASC');
+        return DataTables::queryBuilder($query)->toJson();
+    }
+
     public function opnamlist(Request $req)
     {
         // t_stock_opnam01

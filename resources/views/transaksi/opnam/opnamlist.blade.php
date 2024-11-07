@@ -114,6 +114,45 @@
         </form>
     </div>
 </div>
+
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalOpnameApprovals">
+    <div class="modal-dialog modal-xl">
+        <form class="form-horizontal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalApprovalTitle">Stock Opnam Approval Status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="position-relative row form-group">
+                    <div class="col-lg-12">
+                        <div class="table-responsive">
+                            <table id="tbl-pid-approvals" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                <thead>
+                                    <th>Approver Name</th>
+                                    <th>Approver Level</th>
+                                    <th>Approval Status</th>
+                                    <th>Approve/Reject Date</th>
+                                    <th>Approver Note</th>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit-approval"> OK</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
 @endsection
 
 @section('additional-js')
@@ -178,6 +217,7 @@
                     {data: "pidnote", className: 'uid'},
                     {"defaultContent":
                         `<button class='btn btn-primary btn-sm button-print'> <i class='fa fa-search'></i> View Details </button>
+                        <button class='btn btn-primary btn-sm button-view-approval'> <i class='fa fa-search'></i> View Approval </button>
                         `,
                         "className": "text-center",
                     }
@@ -192,11 +232,16 @@
                 loadDetails(selected_data.id);
 
                 $('#modalDetailOpname').modal('show');
-                // window.location = base_url+"/logistic/returbast/create/"+selected_data.id;
-                    // window.open(
-                    //     base_url+"/proc/pr/print/"+selected_data.id,
-                    //     '_blank' // <- This is what makes it open in a new window.
-                    // );
+            });
+
+            $('#tbl-bast-list tbody').on( 'click', '.button-view-approval', function () {
+                var table = $('#tbl-bast-list').DataTable();
+                selected_data = [];
+                selected_data = table.row($(this).closest('tr')).data();
+
+                loadApprovals(selected_data.id);
+
+                $('#modalOpnameApprovals').modal('show');
             });
         }
 
@@ -236,6 +281,45 @@
                     {data: "matunit", className: 'uid'},
                     {data: "unit_price", className: 'uid', "className": "text-right"},
                     {data: "total_price", className: 'uid', "className": "text-right"},
+                ]
+            });
+        }
+
+        function loadApprovals(_id){
+            $("#tbl-pid-approvals").DataTable({
+                serverSide: true,
+                ajax: {
+                    url: base_url+'/logistic/stockopname/approvalstatus/'+_id,
+                    data: function (data) {
+                        data.params = {
+                            sac: "sac"
+                        }
+                    }
+                },
+                buttons: false,
+                searching: true,
+                scrollY: 500,
+                scrollX: true,
+                scrollCollapse: true,
+                bDestroy: true,
+                columns: [
+                    {data: "approver_name", className: 'uid'},
+                    {data: "approver_level", className: 'uid'},
+                    {data: "apprv_stat", className: 'uid',
+                        render: function (data, type, row){
+                            if(row.apprv_stat == "O"){
+                                return `Open`;
+                            }else if(row.apprv_stat == "A"){
+                                return `Approved`;
+                            }else if(row.apprv_stat == "R"){
+                                return `Rejected`;
+                            }else{
+                                return `Open`;
+                            }
+                        }
+                    },
+                    {data: "approval_date", className: 'uid'},
+                    {data: "approval_remark", className: 'uid'},
                 ]
             });
         }
