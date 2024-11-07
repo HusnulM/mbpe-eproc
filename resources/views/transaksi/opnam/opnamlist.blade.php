@@ -120,7 +120,7 @@
         <form class="form-horizontal">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalApprovalTitle">Stock Opnam Approval Status</h5>
+                <h5 class="modal-title" id="modalOpnameApprovalTitle">Stock Opnam Approval Status</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -230,7 +230,8 @@
                 selected_data = table.row($(this).closest('tr')).data();
 
                 loadDetails(selected_data.id);
-
+                $('#modalApprovalTitle').html('');
+                $('#modalApprovalTitle').append(`Stock Opnam <b> `+ selected_data.pidnumber + ` </b> details`);
                 $('#modalDetailOpname').modal('show');
             });
 
@@ -240,7 +241,8 @@
                 selected_data = table.row($(this).closest('tr')).data();
 
                 loadApprovals(selected_data.id);
-
+                $('#modalOpnameApprovalTitle').html('');
+                $('#modalOpnameApprovalTitle').append(`Stock Opnam <b> `+ selected_data.pidnumber + ` </b> approval details`);
                 $('#modalOpnameApprovals').modal('show');
             });
         }
