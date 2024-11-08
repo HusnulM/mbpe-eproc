@@ -219,7 +219,8 @@ class ApproveOpnamController extends Controller
                 'postdate'          => $postDate,
                 'received_by'       => Auth::user()->username,
                 'movement_code'     => '661',
-                'remark'            => 'Stock Opnam',
+                'remark'            => 'Stock Opnam '. $pidNumber,
+                'refdoc'            => $pidNumber,
                 'createdon'         => getLocalDatabaseDateTime(),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);
@@ -326,7 +327,8 @@ class ApproveOpnamController extends Controller
                 'postdate'          => $postDate,
                 'received_by'       => Auth::user()->username,
                 'movement_code'     => '201',
-                'remark'            => 'Stock Opnam',
+                'remark'            => 'Stock Opnam '. $pidNumber,
+                'refdoc'            => $pidNumber,
                 'createdon'         => getLocalDatabaseDateTime(),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);
