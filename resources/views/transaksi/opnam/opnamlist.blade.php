@@ -222,7 +222,7 @@
                         "className": "text-center",
                     }
                 ]
-            });
+            }).columns.adjust().draw();
 
             $('#tbl-bast-list tbody').on( 'click', '.button-print', function () {
                 var table = $('#tbl-bast-list').DataTable();
@@ -284,7 +284,7 @@
                     {data: "unit_price", className: 'uid', "className": "text-right"},
                     {data: "total_price", className: 'uid', "className": "text-right"},
                 ]
-            });
+            }).columns.adjust().draw();
         }
 
         function loadApprovals(_id){
