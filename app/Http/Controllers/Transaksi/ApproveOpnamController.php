@@ -137,7 +137,7 @@ class ApproveOpnamController extends Controller
                 if($buangStockLama['msgtype'] == '200'){
                     $postPID        = $this->postPIDDocument($ptaNumber);
                     if($postPID['msgtype'] == '200'){
-                        $postPID        = $this->postPIDDocument($ptaNumber);
+                        // $postPID        = $this->postPIDDocument($ptaNumber);
                         // dd($postPID);
                     }else{
                         DB::rollBack();
