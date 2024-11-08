@@ -48,7 +48,7 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
                     $matName = $row['part_name'];
                 }
                 $count = $count + 1;
-                $excelData = array(
+                DB::table('t_stock_opnam02')->insert([
                     'pidnumber'    => $opnamNumber,
                     'header_id'    => $stockOpnamID,
                     'piditem'      => $count,
@@ -58,12 +58,24 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
                     'matunit'      => $row['uom'],
                     'unit_price'   => $row['harga_satuan'],
                     'total_price'  => $row['actual_stock'] * $row['harga_satuan']
+                ]);
 
-                );
-                array_push($insertData, $excelData);
+                // $excelData = array(
+                //     'pidnumber'    => $opnamNumber,
+                //     'header_id'    => $stockOpnamID,
+                //     'piditem'      => $count,
+                //     'material'     => $row['part_number'],
+                //     'matdesc'      => $matName,
+                //     'actual_qty'   => $row['actual_stock'],
+                //     'matunit'      => $row['uom'],
+                //     'unit_price'   => $row['harga_satuan'],
+                //     'total_price'  => $row['actual_stock'] * $row['harga_satuan']
+
+                // );
+                // array_push($insertData, $excelData);
             }
-            insertOrUpdate($insertData,'t_stock_opnam02');
-
+            // insertOrUpdate($insertData,'t_stock_opnam02');
+            // dd($insertData);
             $approval = DB::table('v_workflow_budget')->where('object', 'OPNAM')->where('requester', Auth::user()->id)->get();
             if(sizeof($approval) > 0){
                 // DB::table('t_opnam_approval')->where('pidnumber', $opnamNumber)->delete();
@@ -92,10 +104,11 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
             }
 
             DB::commit();
-
+            // dd('aa');
             return true;
         }catch(\Exception $e){
             DB::rollBack();
+            dd($e);
             return false;
             // return Redirect::to("/transaksi/withdraw")->withError($e->getMessage());
         }
