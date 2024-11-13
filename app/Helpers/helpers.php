@@ -1278,6 +1278,7 @@ function sendPurchaseOrder($poNumber){
             "dept"          => $poheader->deptid,
             "budget"        => $row->budget_code,
             "budget_period" => $row->budget_period ?? "",
+            "kodebudget"    => $row->budget_code_num ?? "NONBUDGET",
             "catatan"       => $pbjData->tujuan_permintaan ?? $poheader->note,
             "item_rek"      => $vendor->vendor_id, //$vendor->no_rek, Pak ada sedikit update untuk array yang dikirim pak
             "item_bank"     => $vendor->vendor_id, //$vendor->bank, Item_bank dan item_rek disamakan dengan item_payee pak
