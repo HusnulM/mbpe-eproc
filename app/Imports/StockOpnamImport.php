@@ -52,7 +52,7 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
                     'pidnumber'    => $opnamNumber,
                     'header_id'    => $stockOpnamID,
                     'piditem'      => $count,
-                    'material'     => $row['part_number'],
+                    'material'     => strval($row['part_number']),
                     'matdesc'      => $matName,
                     'actual_qty'   => $row['actual_stock'],
                     'matunit'      => $row['uom'],
@@ -60,19 +60,19 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
                     'total_price'  => $row['actual_stock'] * $row['harga_satuan']
                 ]);
 
-                // $excelData = array(
-                //     'pidnumber'    => $opnamNumber,
-                //     'header_id'    => $stockOpnamID,
-                //     'piditem'      => $count,
-                //     'material'     => $row['part_number'],
-                //     'matdesc'      => $matName,
-                //     'actual_qty'   => $row['actual_stock'],
-                //     'matunit'      => $row['uom'],
-                //     'unit_price'   => $row['harga_satuan'],
-                //     'total_price'  => $row['actual_stock'] * $row['harga_satuan']
+                $excelData = array(
+                    'pidnumber'    => $opnamNumber,
+                    'header_id'    => $stockOpnamID,
+                    'piditem'      => $count,
+                    'material'     => strval($row['part_number']),
+                    'matdesc'      => $matName,
+                    'actual_qty'   => $row['actual_stock'],
+                    'matunit'      => $row['uom'],
+                    'unit_price'   => $row['harga_satuan'],
+                    'total_price'  => $row['actual_stock'] * $row['harga_satuan']
 
-                // );
-                // array_push($insertData, $excelData);
+                );
+                array_push($insertData, $excelData);
             }
             // insertOrUpdate($insertData,'t_stock_opnam02');
             // dd($insertData);
