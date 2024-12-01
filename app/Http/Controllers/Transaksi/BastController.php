@@ -10,7 +10,7 @@ use Validator,Redirect,Response;
 class BastController extends Controller
 {
     public function index(){
-        resetPBJNotRealized();
+        // resetPBJNotRealized();
         return view('transaksi.bast.index');
     }
 
