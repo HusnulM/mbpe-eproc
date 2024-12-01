@@ -273,8 +273,11 @@ class ApprovePbjController extends Controller
                     ->update([
                         'approvestat'   => 'A'
                     ]);
+                    if(checkIsLocalhost()){
+                    }else{
+                        $this->generateAttachment($pbjID);
+                    }
 
-                    $this->generateAttachment($pbjID);
                 }
             }
 

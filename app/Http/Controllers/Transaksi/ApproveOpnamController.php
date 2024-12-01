@@ -327,7 +327,7 @@ class ApproveOpnamController extends Controller
                 'postdate'          => $postDate,
                 'received_by'       => Auth::user()->username,
                 'movement_code'     => '201',
-                'remark'            => 'Stock Opnam '. $pidNumber,
+                'remark'            => 'Stock Opnam Stok Lama '. $pidNumber,
                 'refdoc'            => $pidNumber,
                 'createdon'         => getLocalDatabaseDateTime(),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
@@ -335,15 +335,15 @@ class ApproveOpnamController extends Controller
 
             // Create Inventory Movement Negatif untuk meng 0 kan stock Lama
             foreach ($pidData as $index => $row) {
-                $oldItems = DB::table('t_inv_batch_stock')
+                $oldItems = DB::table('t_inv_stock')
                             ->where('material', $row->material)
                             ->where('whscode', $row->whsid)
                             ->where('quantity', '>', 0)
                             ->get();
                 $count = 0;
+                $insertData = array();
                 foreach($oldItems as $olddata => $old){
                     $count = $count + 1;
-                    $insertData = array();
                     $excelData = array(
                         'docnum'       => $ptaNumber,
                         'docyear'      => $tahun,
@@ -363,9 +363,9 @@ class ApproveOpnamController extends Controller
 
                     );
                     array_push($insertData, $excelData);
-                    insertOrUpdate($insertData,'t_inv02');
                 }
-                // DB::commit();
+                insertOrUpdate($insertData,'t_inv02');
+                DB::commit();
             }
 
             DB::commit();
