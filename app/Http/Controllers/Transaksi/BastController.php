@@ -10,6 +10,7 @@ use Validator,Redirect,Response;
 class BastController extends Controller
 {
     public function index(){
+        resetPBJNotRealized();
         return view('transaksi.bast.index');
     }
 
@@ -87,7 +88,7 @@ class BastController extends Controller
         // return $req;
         DB::beginTransaction();
         try{
-            resetPBJNotRealized();
+            // resetPBJNotRealized();
 
             $bulan = date('m');
             $tahun = date('Y');

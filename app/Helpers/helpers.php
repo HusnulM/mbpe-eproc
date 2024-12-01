@@ -7,8 +7,25 @@ $totalBaris = 0;
 function resetPBJNotRealized(){
     DB::beginTransaction();
     try{
-        DB::select('call spPBJNotRealized()');
-        DB::commit();
+        $pbjN = DB::table('v_check_pbj')
+                ->where('realized_qty', '>', '0')->get();
+        foreach($pbjN as $row){
+            $check = DB::table('t_inv02')
+                     ->where('wonum', $row->pbjnumber)
+                     ->where('woitem', $row->pbjitem)
+                     ->first();
+            if(!$check){
+                DB::table('t_pbj02')
+                ->where('pbjnumber', $row->pbjnumber)
+                ->where('pbjitem', $row->pbjitem)
+                ->update([
+                    'realized_qty' => 0
+                ]);
+                DB::commit();
+            }
+        }
+        // DB::select('call spPBJNotRealized()');
+        // DB::commit();
 
         $result = array(
             'msgtype' => '200',
