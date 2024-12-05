@@ -246,7 +246,7 @@
                             <i class="fas fa-save"></i> Update PBJ
                         </button>
                         @endif
-                        <a href="{{ url('/transaction/pbj/list') }}" class="btn btn-default btn-sm">
+                        <a href="{{ url('/transaction/list/pbj') }}" class="btn btn-default btn-sm">
                             <i class="fa fa-arrow-left"></i> Back
                         </a>
                     </div>
