@@ -42,7 +42,13 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="requestto">Tujuan Permintaan</label>
-                                            <input type="text" name="requestto" class="form-control" value="{{ $pbjhdr->tujuan_permintaan }}" required>
+                                            <select name="requestto" id="requestto" class="form-control" required>
+                                                <option value="{{ $pbjhdr->tujuan_permintaan }}">{{ $pbjhdr->tujuan_permintaan }}</option>
+                                                <option value="Pengambilan">Pengambilan</option>
+                                                <option value="Pengeluaran">Pengeluaran</option>
+                                            </select>
+
+                                            {{-- <input type="text" name="requestto" class="form-control" value="{{ $pbjhdr->tujuan_permintaan }}" required> --}}
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12">

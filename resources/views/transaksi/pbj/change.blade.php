@@ -42,7 +42,12 @@
                                         <div class="col-lg-6 col-md-12">
                                             <div class="form-group">
                                                 <label for="requestto">Tujuan Permintaan</label>
-                                                <input type="text" name="requestto" class="form-control" value="{{ $pbjhdr->tujuan_permintaan }}" required>
+                                                <select name="requestto" id="requestto" class="form-control" required>
+                                                    <option value="{{ $pbjhdr->tujuan_permintaan }}">{{ $pbjhdr->tujuan_permintaan }}</option>
+                                                    <option value="Pengambilan">Pengambilan</option>
+                                                    <option value="Pengeluaran">Pengeluaran</option>
+                                                </select>
+                                                {{-- <input type="text" name="requestto" class="form-control" value="{{ $pbjhdr->tujuan_permintaan }}" required> --}}
                                                 <input type="hidden" name="whscode" value="{{ $pbjwhs->id }}">
                                             </div>
                                         </div>
@@ -90,7 +95,7 @@
                                                 <label for="requestor">Requestor</label>
                                                 <input type="text" name="requestor" class="form-control" value="{{ Auth::user()->name }}">
                                             </div>
-                                        </div>                                    
+                                        </div>
                                         <div class="col-lg-6 col-md-12">
                                             <div class="form-group">
                                                 <label for="typeModel">Type / Model</label>
@@ -108,7 +113,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                        </div>        
+                                        </div>
                                         <div class="col-lg-6 col-md-12">
                                             <div class="form-group">
                                                 <label for="kodeJasa">Kode Barang / Jasa</label>
@@ -168,7 +173,7 @@
                                                     <option value="Desember <?= date('Y'); ?>">Desember <?= date('Y'); ?></option>
                                                 </select>
                                             </div>
-                                        </div> 
+                                        </div>
                                         <div class="col-lg-6 col-md-12">
                                             <div class="form-group">
                                                 <label for="project">Project</label>
@@ -196,14 +201,14 @@
                             </div>
                         </div>
                     </div>
-                
+
             </div>
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header">
-                        
+
                         <div class="card-tools">
-                            {{-- <a href="{{ url('/printdoc/pbj/print/') }}/{{ $pbjhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
+                            {{-- <a href="{{ url('/printdoc/pbj/print/') }}/{{ $pbjhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'>
                                 <i class='fa fa-print'></i> Print
                             </a> --}}
                             {{-- <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
@@ -237,7 +242,7 @@
                                                 <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
                                             </li>
                                         </ul>
-                                    </div>                                    
+                                    </div>
                                 </div>
 
                                 <div class="card-body">
@@ -290,7 +295,7 @@
                                                                         </tr>
                                                                     @endforeach
                                                                 </tbody>
-                                                            </table>                                
+                                                            </table>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -325,10 +330,10 @@
                                                                             Open
                                                                         </td>
                                                                         @endif
-                                                                        
+
                                                                         <td>
                                                                             @if($row->approval_date != null)
-                                                                                <i class="fa fa-clock"></i> 
+                                                                                <i class="fa fa-clock"></i>
                                                                                 ({{ formatDateTime($row->approval_date) }})
                                                                             @endif
                                                                         </td>
@@ -336,10 +341,10 @@
                                                                     </tr>
                                                                     @endforeach
                                                                 </tbody>
-                                                            </table>                                                    
+                                                            </table>
                                                         </div>
                                                     </div>
-                                                </div>   
+                                                </div>
 
                                                 <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
                                                     <div class="row">
@@ -369,21 +374,21 @@
                                                                     </tr>
                                                                 @endforeach
                                                                 </tbody>
-                                                            </table>                           
+                                                            </table>
                                                         </div>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                
+
                             </div>
                         </div>
                     </div>
                 </div>
-                    
+
             </div>
         </div>
     </form>
@@ -405,7 +410,7 @@
                 <div class="position-relative row form-group">
                     <div class="col-lg-12" id="fileViewer">
                         <!-- <div id="example1"></div> -->
-                        
+
                     </div>
                 </div>
             </div>
@@ -418,7 +423,7 @@
         </div>
         </form>
     </div>
-</div>   
+</div>
 @endsection
 
 @section('additional-js')
@@ -428,27 +433,27 @@
 <!-- <script src="https://cdn.scaleflex.it/plugins/filerobot-image-editor/3/filerobot-image-editor.min.js"></script> -->
 
 <script type="text/javascript">
-    function previewFile(files){         
+    function previewFile(files){
         // alert(base_url)
         var pathfile = base_url+'/'+files;
         if(files !== ""){
             $('#fileViewer').html('');
             $('#fileViewer').append(`
                 <embed src="`+ pathfile +`" frameborder="0" width="100%" height="500px">
-            
+
             `);
 
             var fileUri = pathfile;
             fileUri = fileUri.replace("#toolbar=0", "?force=true");
-            
-            document.getElementById("btnDownloadFile").href=fileUri; 
+
+            document.getElementById("btnDownloadFile").href=fileUri;
             $('#modalPreviewFile').modal('show');
         } else{
             swal("File Not Found", "", "warning");
         }
     }
 
-    $(document).ready(function () { 
+    $(document).ready(function () {
         // $('#tbl-pbj').DataTable();
         let _token   = $('meta[name="csrf-token"]').attr('content');
         $('#btn-approve').on('click', function(){
@@ -481,9 +486,9 @@
                             toastr.success(response.message)
                         }else if(_action === "R"){
                             toastr.success(response.message)
-                        }                        
+                        }
 
-                        setTimeout(function(){ 
+                        setTimeout(function(){
                             window.location.href = base_url+'/approve/pbj';
                         }, 2000);
                     }
@@ -492,14 +497,14 @@
                     console.log(error);
                     toastr.error(error)
 
-                    setTimeout(function(){ 
+                    setTimeout(function(){
                         location.reload();
                     }, 2000);
                 }
             });
         }
 
-        $('#find-project').select2({ 
+        $('#find-project').select2({
             placeholder: 'Nama Project',
             width: '100%',
             minimumInputLength: 0,

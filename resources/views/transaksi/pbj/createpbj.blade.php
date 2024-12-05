@@ -49,7 +49,12 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="requestto">Tujuan Permintaan</label>
-                                            <input type="text" name="requestto" class="form-control" required>
+                                            <select name="requestto" id="requestto" class="form-control" required>
+                                                <option value="">---</option>
+                                                <option value="Pengambilan">Pengambilan</option>
+                                                <option value="Pengeluaran">Pengeluaran</option>
+                                            </select>
+                                            {{-- <input type="text" name="requestto" class="form-control" required> --}}
                                             <input type="hidden" name="pbjTYpe" value="2">
                                         </div>
                                     </div>
