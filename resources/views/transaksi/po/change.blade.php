@@ -17,6 +17,7 @@
 
 @section('content')
 <div class="container-fluid">
+    {{-- action="{{ url('proc/po/update/') }}/{{ $pohdr->id }}" --}}
     <form id="form-submit-data" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">

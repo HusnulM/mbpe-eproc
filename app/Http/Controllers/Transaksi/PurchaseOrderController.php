@@ -360,14 +360,23 @@ class PurchaseOrderController extends Controller
                 return $result;
             }
 
+            $vendorCode = null;
             $vendor = DB::table('t_vendor')->where('id', $req['vendor'])->first();
-
+            // return($req);
+            if($vendor){
+                // dd('A');
+                $vendorCode = $vendor->vendor_code;
+            }else{
+                // dd('B');
+                $vendorCode = $req['vendor'];
+            }
+            // dd($vendorCode);
             if($req['poSolarInd'] === 'Y'){
                 DB::table('t_po01')->where('id', $poid)->update([
                     'deptid'            => $req['department'],
                     'podat'             => $req['tglreq'],
                     'delivery_date'     => $req['deldate'],
-                    'vendor'            => $vendor->vendor_code,
+                    'vendor'            => $vendorCode,
                     'note'              => $req['remark'],
                     'ppn'               => $req['ppn'] ?? 0,
                     'currency'          => $req['currency'],
@@ -382,7 +391,7 @@ class PurchaseOrderController extends Controller
                     'deptid'            => $req['department'],
                     'podat'             => $req['tglreq'],
                     'delivery_date'     => $req['deldate'],
-                    'vendor'            => $vendor->vendor_code,
+                    'vendor'            => $vendorCode,
                     'note'              => $req['remark'],
                     'ppn'               => $req['ppn'] ?? 0,
                     'currency'          => $req['currency'],
