@@ -415,6 +415,17 @@ class PbjController extends Controller
         DB::beginTransaction();
         try{
             if(isset($req['parts'])){
+                $parts    = $req['parts'];
+                $partdsc  = $req['partdesc'];
+                $quantity = $req['quantity'];
+                $uom      = $req['uoms'];
+                $figure   = $req['figures'];
+                $remark   = $req['remarks'];
+                $wonum    = $req['wonum'];
+                $woitem   = $req['woitem'];
+                $whscode  = $req['whscode'];
+                $budgetcode  = $req['kodebudget'];
+
                 $tgl   = substr($req['tglpbj'], 8, 2);
                 $bulan = substr($req['tglpbj'], 5, 2);
                 $tahun = substr($req['tglpbj'], 0, 4);
@@ -446,7 +457,8 @@ class PbjController extends Controller
                     'engine_sn'         => $req['nginesn'],
                     'hm_km'             => $req['hmkm'] ?? 0,
                     'km'                => $req['km'] ?? 0,
-                    'budget_cost_code'  => $req['budgetcode'],
+                    // 'budget_cost_code'  => $req['budgetcode'],
+                    'budget_cost_code'  => $budgetcode[0] ?? '0',
                     'cheklistnumber'    => $req['checklistnum'] ?? null,
                     'idproject'         => $req['project'] ?? null,
                     'remark'            => $req['remark'],
@@ -456,16 +468,7 @@ class PbjController extends Controller
                     'createdby'         => Auth::user()->email ?? Auth::user()->username
                 ]);
 
-                $parts    = $req['parts'];
-                $partdsc  = $req['partdesc'];
-                $quantity = $req['quantity'];
-                $uom      = $req['uoms'];
-                $figure   = $req['figures'];
-                $remark   = $req['remarks'];
-                $wonum    = $req['wonum'];
-                $woitem   = $req['woitem'];
-                $whscode  = $req['whscode'];
-                $budgetcode  = $req['kodebudget'];
+
 
                 $insertData = array();
                 $pbjItems   = array();
@@ -620,6 +623,8 @@ class PbjController extends Controller
 
                 // $amount = $req['nominal'];
                 // $amount = str_replace(',','',$amount);
+                $budgetcode  = $req['kodebudget'];
+
                 DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)->update([
                     'deptid'            => Auth::user()->deptid,
                     'tgl_pbj'           => $req['tglpbj'],
@@ -636,7 +641,8 @@ class PbjController extends Controller
                     'engine_sn'         => $req['nginesn'],
                     'hm_km'             => $req['hmkm'] ?? 0,
                     'km'                => $req['km'] ?? 0,
-                    'budget_cost_code'  => $req['budgetcode'],
+                    // 'budget_cost_code'  => $req['budgetcode'],
+                    'budget_cost_code'  => $budgetcode[0] ?? '0',
                     'remark'            => $req['remark'],
                     'periode'           => $req['periode'],
                     'idproject'         => $req['project'],
@@ -653,7 +659,7 @@ class PbjController extends Controller
                 $woitem   = $req['woitem'];
                 $whscode  = $req['warehouse'];
                 $pbjitem  = $req['pbjitem'];
-                $budgetcode  = $req['kodebudget'];
+
 
                 $insertData = array();
                 $pbjItems   = array();
