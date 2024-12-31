@@ -13,7 +13,7 @@
             <div class="card-header">
                 <h3 class="card-title">Upload Adjust Stock Out</h3>
                 <div class="card-tools">
-                    <a href="/excel/Template Initial Stock.xlsx" target="_blank" class="btn btn-primary btn-sm">
+                    <a href="/excel/Template AdjOut Stock.xlsx" target="_blank" class="btn btn-primary btn-sm">
                         <i class="fa fa-download"></i> Download Template
                     </a>
 
