@@ -300,4 +300,9 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/testpost/{id}',   'Transaksi\ApproveOpnamController@postPIDDocument');
     });
+
+    Route::group(['prefix' => '/adjust'], function () {
+        Route::get('/stockout',  'Transaksi\AdjustStockController@stockout')->middleware('checkAuth:adjust/stockout');
+        Route::post('/stockout', 'Transaksi\AdjustStockController@saveAdjStockOut')->middleware('checkAuth:adjust/stockout');
+    });
 });

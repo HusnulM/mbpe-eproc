@@ -90,6 +90,8 @@ class BastController extends Controller
         try{
             // resetPBJNotRealized();
 
+            $is_error = false;
+
             $bulan = date('m');
             $tahun = date('Y');
             $prefix = 'BAST';
@@ -99,6 +101,7 @@ class BastController extends Controller
                         //    ->where('no_bast',$req['nomorbast'])->first();
                            ->where('no_bast',$bastNumber)->first();
             if($checkNoBAST){
+                $is_error = true;
                 $result = array(
                     'msgtype' => '400',
                     'message' => 'Nomor BAST '. $bastNumber . ' sudah ada'
@@ -174,6 +177,7 @@ class BastController extends Controller
 
                     if($latestStock){
                         if((int)$latestStock->quantity < (int)$inputQty){
+                            $is_error = true;
                             DB::rollBack();
                             $result = array(
                                 'msgtype' => '400',
@@ -183,6 +187,7 @@ class BastController extends Controller
                             //return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
                         }
                     }else{
+                        $is_error = true;
                         DB::rollBack();
                         $result = array(
                             'msgtype' => '400',
@@ -193,6 +198,7 @@ class BastController extends Controller
                     }
 
                     if((int)$pbjdtl->quantity < (int)$qty){
+                        $is_error = true;
                         DB::rollBack();
                         $openQty = (int)$pbjdtl->quantity - (int)$pbjdtl->realized_qty;
                         $result = array(
@@ -216,6 +222,7 @@ class BastController extends Controller
                     //dd((int)($latestStock->quantity));
                     if($latestStock){
                         if((int)$latestStock->quantity < (int)$inputQty){
+                            $is_error = true;
                             DB::rollBack();
                             $result = array(
                                 'msgtype' => '400',
@@ -225,6 +232,7 @@ class BastController extends Controller
                             // return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
                         }
                     }else{
+                        $is_error = true;
                         DB::rollBack();
                         $result = array(
                             'msgtype' => '400',
@@ -235,6 +243,7 @@ class BastController extends Controller
                     }
 
                     if((int)$pbjdtl->quantity < (int)$qty){
+                        $is_error = true;
                         $openQty = (int)$pbjdtl->quantity - (int)$pbjdtl->realized_qty;
                         DB::rollBack();
                         $result = array(
@@ -245,115 +254,114 @@ class BastController extends Controller
                     }
                 }
 
-
-                //dd($result);
-
-                $matdesc = str_replace('"','\"',$partdsc[$i]);
-
-                $data = array(
-                    'bast_id'      => $bastID,
-                    'no_bast'      => $bastNumber,
-                    'material'     => $parts[$i],
-                    'matdesc'      => $partdsc[$i],
-                    'quantity'     => $qty,
-                    'unit'         => $uom[$i],
-                    'refdoc'       => $pbjnum[$i] ?? 0,
-                    'refdocitem'   => $pbjitm[$i] ?? 0,
-                    'createdon'    => getLocalDatabaseDateTime(),
-                    'createdby'    => Auth::user()->email ?? Auth::user()->username
-                );
-                array_push($insertData, $data);
-
-
-
-                $matdesc = str_replace('"','\"',$partdsc[$i]);
-                $matCode = str_replace('"','\"',$parts[$i]);
-
-                DB::select('call spIssueMaterialWithBatchFIFO(
-                    "'. $matCode .'",
-                    "'. $warehouseID .'",
-                    "'. $qty .'",
-                    "'. $ptaNumber .'",
-                    "'. date('Y') .'",
-                    "201",
-                    "'. $matdesc .'",
-                    "'. $uom[$i] .'",
-                    "-",
-                    "'. $pbjnum[$i] .'",
-                    "'. $pbjitm[$i] .'",
-                    "'. Auth::user()->email .'",
-                    "'. $bastNumber .'",
-                    "'. $bastID .'")');
-
-                    $pbjitem = DB::table('t_pbj02')
-                    ->where('pbjnumber', $pbjnum[$i])
-                    ->where('pbjitem', $pbjitm[$i])->first();
-
-                    $relQty = $pbjitem->realized_qty + $qty;
-                    if((int)$relQty >= (int)$pbjitem->quantity){
-                        DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
-                        ->update([
-                            'itemstatus'   => 'C',
-                            'bast_created' => 'Y',
-                            'realized_qty' => $relQty
-                        ]);
-                    }else{
-                        DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
-                        ->update([
-                            'realized_qty' => $relQty
-                        ]);
-                    }
-            }
-            insertOrUpdate($insertData,'t_bast02');
-
-
-            //Insert Attachments | t_attachments
-            if(isset($req['efile'])){
-                $files = $req['efile'];
-                $insertFiles = array();
-
-                foreach ($files as $efile) {
-                    $filename = $efile->getClientOriginalName();
-                    $upfiles = array(
-                        'doc_object' => 'BAST',
-                        'doc_number' => $bastID,
-                        'efile'      => $filename,
-                        'pathfile'   => '/files/BAST/'. $filename,
-                        'createdon'  => getLocalDatabaseDateTime(),
-                        'createdby'  => Auth::user()->username ?? Auth::user()->email
+                if ($is_error = true){
+                    $result = array(
+                        'msgtype' => '400',
+                        'message' => 'Gagal Create BAST'
                     );
-                    array_push($insertFiles, $upfiles);
+                    return $result;
+                }else{
+                        $matdesc = str_replace('"','\"',$partdsc[$i]);
 
-                    // $efile->move(public_path().'/files/PO/', $filename);
-                    $efile->move('files/BAST/', $filename);
+                        $data = array(
+                            'bast_id'      => $bastID,
+                            'no_bast'      => $bastNumber,
+                            'material'     => $parts[$i],
+                            'matdesc'      => $partdsc[$i],
+                            'quantity'     => $qty,
+                            'unit'         => $uom[$i],
+                            'refdoc'       => $pbjnum[$i] ?? 0,
+                            'refdocitem'   => $pbjitm[$i] ?? 0,
+                            'createdon'    => getLocalDatabaseDateTime(),
+                            'createdby'    => Auth::user()->email ?? Auth::user()->username
+                        );
+                        array_push($insertData, $data);
+
+                        $matdesc = str_replace('"','\"',$partdsc[$i]);
+                        $matCode = str_replace('"','\"',$parts[$i]);
+
+                        DB::select('call spIssueMaterialWithBatchFIFO(
+                            "'. $matCode .'",
+                            "'. $warehouseID .'",
+                            "'. $qty .'",
+                            "'. $ptaNumber .'",
+                            "'. date('Y') .'",
+                            "201",
+                            "'. $matdesc .'",
+                            "'. $uom[$i] .'",
+                            "-",
+                            "'. $pbjnum[$i] .'",
+                            "'. $pbjitm[$i] .'",
+                            "'. Auth::user()->email .'",
+                            "'. $bastNumber .'",
+                            "'. $bastID .'")');
+
+                            $pbjitem = DB::table('t_pbj02')
+                            ->where('pbjnumber', $pbjnum[$i])
+                            ->where('pbjitem', $pbjitm[$i])->first();
+
+                            $relQty = $pbjitem->realized_qty + $qty;
+                            if((int)$relQty >= (int)$pbjitem->quantity){
+                                DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
+                                ->update([
+                                    'itemstatus'   => 'C',
+                                    'bast_created' => 'Y',
+                                    'realized_qty' => $relQty
+                                ]);
+                            }else{
+                                DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
+                                ->update([
+                                    'realized_qty' => $relQty
+                                ]);
+                            }
+                    }
+                    insertOrUpdate($insertData,'t_bast02');
+
+                    //Insert Attachments | t_attachments
+                    if(isset($req['efile'])){
+                        $files = $req['efile'];
+                        $insertFiles = array();
+
+                        foreach ($files as $efile) {
+                            $filename = $efile->getClientOriginalName();
+                            $upfiles = array(
+                                'doc_object' => 'BAST',
+                                'doc_number' => $bastID,
+                                'efile'      => $filename,
+                                'pathfile'   => '/files/BAST/'. $filename,
+                                'createdon'  => getLocalDatabaseDateTime(),
+                                'createdby'  => Auth::user()->username ?? Auth::user()->email
+                            );
+                            array_push($insertFiles, $upfiles);
+
+                            $efile->move('files/BAST/', $filename);
+                        }
+                        if(sizeof($insertFiles) > 0){
+                            insertOrUpdate($insertFiles,'t_attachments');
+                        }
+                    }
+                    DB::commit();
+
+                    sleep(2);
+
+                    $checkBastAll = DB::table('t_pbj02')
+                                    ->where('pbjnumber', $pbjheader->pbjnumber)
+                                    ->where('bast_created', 'N')->first();
+                    if(!$checkBastAll){
+                        DB::table('t_pbj01')->where('pbjnumber', $pbjheader->pbjnumber)
+                            ->update([
+                                'bast_created' => 'Y'
+                            ]);
+                    }
+
+                    DB::commit();
+                    $result = array(
+                        'msgtype' => '200',
+                        'message' => 'BAST Berhasil dibuat dengan nomor '. $bastNumber
+                    );
+                    return $result;
                 }
-                if(sizeof($insertFiles) > 0){
-                    insertOrUpdate($insertFiles,'t_attachments');
-                }
-            }
-            DB::commit();
 
-            // $pbjnum   = $req['pbjnumber'];
-            // $pbjitm   = $req['pbjitem'];
-
-            sleep(2);
-
-            $checkBastAll = DB::table('t_pbj02')
-                            ->where('pbjnumber', $pbjheader->pbjnumber)
-                            ->where('bast_created', 'N')->first();
-            if(!$checkBastAll){
-                DB::table('t_pbj01')->where('pbjnumber', $pbjheader->pbjnumber)
-                    ->update([
-                        'bast_created' => 'Y'
-                    ]);
-            }
-
-            DB::commit();
-            $result = array(
-                'msgtype' => '200',
-                'message' => 'BAST Berhasil dibuat dengan nomor '. $bastNumber
-            );
-            return $result;
             // return Redirect::to("/logistic/bast")->withSuccess('BAST Berhasil disimpan');
         } catch(\Exception $e){
             DB::rollBack();
