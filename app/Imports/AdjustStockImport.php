@@ -57,7 +57,7 @@ class AdjustStockImport implements ToCollection, WithHeadingRow
                     'docyear'      => $tahun,
                     'docitem'      => $count,
                     'movement_code'=> '201',
-                    'material'     => $row['material'],
+                    'material'     => strval($row['material']),
                     'matdesc'      => $matName,
                     'batch_number' => $batchNumber,
                     'quantity'     => $row['quantity'],
