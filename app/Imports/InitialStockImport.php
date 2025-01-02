@@ -33,8 +33,9 @@ class InitialStockImport implements ToCollection, WithHeadingRow
             $tgl   = substr($_POST['tglupload'], 8, 2);
             $bulan = substr($_POST['tglupload'], 5, 2);
             $tahun = substr($_POST['tglupload'], 0, 4);
-            $ptaNumber = generateGRPONumber($tahun, $bulan);
-            
+            // $ptaNumber = generateGRPONumber($tahun, $bulan);
+            $ptaNumber = generateNextNumber('INBAL', 'INBAL', $tahun, $bulan, '');
+
             DB::table('t_inv01')->insert([
                 'docnum'            => $ptaNumber,
                 'docyear'           => $tahun,
@@ -69,11 +70,11 @@ class InitialStockImport implements ToCollection, WithHeadingRow
                     'shkzg'        => '+',
                     'createdon'    => getLocalDatabaseDateTime(),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
-                    
+
                 );
                 array_push($insertData, $excelData);
                 insertOrUpdate($insertData,'t_inv02');
-    
+
                 DB::table('t_inv_batch_stock')->insert([
                     'material'     => $row['material'],
                     'whscode'      => $row['warehouse'],
@@ -82,7 +83,7 @@ class InitialStockImport implements ToCollection, WithHeadingRow
                     'unit'         => $row['unit'],
                     'last_udpate'  => getLocalDatabaseDateTime()
                 ]);
-    
+
                 DB::table('t_inv_stock')->insert([
                     'material'     => $row['material'],
                     'whscode'      => $row['warehouse'],
@@ -93,12 +94,12 @@ class InitialStockImport implements ToCollection, WithHeadingRow
                 ]);
             }
 
-            DB::commit();  
+            DB::commit();
         }catch(\Exception $e){
             DB::rollBack();
             // return Redirect::to("/transaksi/withdraw")->withError($e->getMessage());
         }
 
-        
+
     }
 }

@@ -133,95 +133,56 @@ class BastController extends Controller
             $pbjheader = DB::table('t_pbj01')->where('pbjnumber', $pbjnum[0])->first();
 
             $ptaNumber = generateIssueNumber(date('Y'), date('m'));
+            DB::table('t_inv01')->insert([
+                'docnum' => $ptaNumber,
+                'docyear' => date('Y'),
+                'docdate' => date('Y-m-d'),
+                'postdate' => date('Y-m-d'),
+                'movement_code' => '201',
+                'remark' => 'Issued BAST',
+                'createdon'         => date('Y-m-d H:m:s'),
+                'createdby'         => Auth::user()->email ?? Auth::user()->username
+            ]);
 
-                DB::table('t_inv01')->insert([
-                    'docnum' => $ptaNumber,
-                    'docyear' => date('Y'),
-                    'docdate' => date('Y-m-d'),
-                    'postdate' => date('Y-m-d'),
-                    'movement_code' => '201',
-                    'remark' => 'Issued BAST',
-                    'createdon'         => date('Y-m-d H:m:s'),
-                    'createdby'         => Auth::user()->email ?? Auth::user()->username
-                ]);
+            for($i = 0; $i < sizeof($parts); $i++)
+            {
+                if($quantity[$i] > 0)
+                {
+                    $qty    = 0;
+                    $qty    = $quantity[$i];
+                    $qty    = str_replace(',','',$qty);
+                    $inputQty = $qty;
+                    $qty = (int)$qty;
+                    $warehouseID = 0;
 
-            for($i = 0; $i < sizeof($parts); $i++){
-                if(!isset($quantity[$i]) || $quantity[$i] == 0){
-                    continue;
-                }
-
-                $qty    = 0;
-                $qty    = $quantity[$i];
-                $qty    = str_replace(',','',$qty);
-                $inputQty = $qty;
-                $qty = (int)$qty;
-
-                $warehouseID = 0;
-
-                if($pbjheader->pbjtype == 1){
-                    // dd('1');
-                    if($wonum[$i]){
-                        $wodata = DB::table('t_wo01')->where('wonum', $wonum[$i])->first();
-                        $warehouseID = $wodata->whscode;
-                    }else{
-                        $pbjdtl = DB::table('t_pbj02')
-                        ->where('pbjnumber', $pbjnum[$i])
-                        ->where('pbjitem', $pbjitm[$i])->first();
-                        $warehouseID = $pbjdtl->whscode;
-
-                        $qty = (int)$qty + (int)$pbjdtl->realized_qty;
-                    }
-                    $latestStock = DB::table('v_inv_summary_stock')
-                                   ->where('material', $parts[$i])
-                                   ->where('whsid',    $warehouseID)->first();
-
-                    if($latestStock){
-                        if((int)$latestStock->quantity < (int)$inputQty){
-                            $is_error = "1";
-                            DB::rollBack();
-                            $result = array(
-                                'msgtype' => '400',
-                                'message' => 'Stock Tidak Mencukupi untuk part : '. $parts[$i]
-                            );
-                            return $result;
-                            //return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
-                        }
-                    }else{
-                        $is_error = "1";
-                        DB::rollBack();
-                        $result = array(
-                            'msgtype' => '400',
-                            'message' => 'Stock Tidak Mencukupi untuk part : '. $parts[$i]
-                        );
-                        return $result;
-                        // return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
-                    }
-
-                    if((int)$pbjdtl->quantity < (int)$qty){
-                        $is_error = "1";
-                        DB::rollBack();
-                        $openQty = (int)$pbjdtl->quantity - (int)$pbjdtl->realized_qty;
-                        $result = array(
-                            'msgtype' => '400',
-                            'message' => 'Quantity BAST lebih besar dari Open Quantity PBJ Partnumber '. $parts[$i] . '. Open Quantity ( '. $openQty . ' )'
-                        );
-                        return $result;
-                    }
-                }else{
-                    // dd('2');
-                    $pbjdtl = DB::table('t_pbj02')
+                    if($pbjheader->pbjtype == 1){
+                        if($wonum[$i]){
+                            $wodata = DB::table('t_wo01')->where('wonum', $wonum[$i])->first();
+                            $warehouseID = $wodata->whscode;
+                        }else{
+                            $pbjdtl = DB::table('t_pbj02')
                             ->where('pbjnumber', $pbjnum[$i])
                             ->where('pbjitem', $pbjitm[$i])->first();
-                    // $qty = $qty*1 + $pbjdtl->realized_qty;
-                    $qty = (int)$qty + (int)$pbjdtl->realized_qty;
-                    //dd($qty);
-                    $warehouseID = $pbjdtl->whscode;
-                    $latestStock = DB::table('v_inv_summary_stock')
-                                   ->where('material', $parts[$i])
-                                   ->where('whsid',    $pbjdtl->whscode)->first();
-                    //dd((int)($latestStock->quantity));
-                    if($latestStock){
-                        if((int)$latestStock->quantity < (int)$inputQty){
+                            $warehouseID = $pbjdtl->whscode;
+
+                            $qty = (int)$qty + (int)$pbjdtl->realized_qty;
+                        }
+                        $latestStock = DB::table('v_inv_summary_stock')
+                                       ->where('material', $parts[$i])
+                                       ->where('whsid',    $warehouseID)->first();
+
+                        if($latestStock){
+                            if((int)$latestStock->quantity < (int)$inputQty)
+                            {
+                                $is_error = "1";
+                                DB::rollBack();
+                                $result = array(
+                                    'msgtype' => '400',
+                                    'message' => 'Stock Tidak Mencukupi untuk part : '. $parts[$i]
+                                );
+                                return $result;
+                            }
+                        }else{
                             $is_error = "1";
                             DB::rollBack();
                             $result = array(
@@ -229,38 +190,70 @@ class BastController extends Controller
                                 'message' => 'Stock Tidak Mencukupi untuk part : '. $parts[$i]
                             );
                             return $result;
-                            // return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                        }
+
+                        if((int)$pbjdtl->quantity < (int)$qty)
+                        {
+                            $is_error = "1";
+                            DB::rollBack();
+                            $openQty = (int)$pbjdtl->quantity - (int)$pbjdtl->realized_qty;
+                            $result = array(
+                                'msgtype' => '400',
+                                'message' => 'Quantity BAST lebih besar dari Open Quantity PBJ Partnumber '. $parts[$i] . '. Open Quantity ( '. $openQty . ' )'
+                            );
+                            return $result;
                         }
                     }else{
-                        $is_error = "1";
-                        DB::rollBack();
-                        $result = array(
-                            'msgtype' => '400',
-                            'message' => 'Stock Tidak Mencukupi untuk part : '. $parts[$i]
-                        );
-                        return $result;
-                        // return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                        $pbjdtl = DB::table('t_pbj02')
+                                ->where('pbjnumber', $pbjnum[$i])
+                                ->where('pbjitem', $pbjitm[$i])->first();
+
+                        $qty = (int)$qty + (int)$pbjdtl->realized_qty;
+
+                        $warehouseID = $pbjdtl->whscode;
+                        $latestStock = DB::table('v_inv_summary_stock')
+                                       ->where('material', $parts[$i])
+                                       ->where('whsid',    $pbjdtl->whscode)->first();
+                        if($latestStock){
+                            if((int)$latestStock->quantity < (int)$inputQty){
+                                $is_error = "1";
+                                DB::rollBack();
+                                $result = array(
+                                    'msgtype' => '400',
+                                    'message' => 'Stock Tidak Mencukupi untuk part : '. $parts[$i]
+                                );
+                                return $result;
+                            }
+                        }else{
+                            $is_error = "1";
+                            DB::rollBack();
+                            $result = array(
+                                'msgtype' => '400',
+                                'message' => 'Stock Tidak Mencukupi untuk part : '. $parts[$i]
+                            );
+                            return $result;
+                        }
+
+                        if((int)$pbjdtl->quantity < (int)$qty){
+                            $is_error = "1";
+                            $openQty = (int)$pbjdtl->quantity - (int)$pbjdtl->realized_qty;
+                            DB::rollBack();
+                            $result = array(
+                                'msgtype' => '400',
+                                'message' => 'Quantity BAST lebih besar dari Open Quantity PBJ Partnumber '. $parts[$i] . '. Open Quantity ( '. $openQty . ' )'
+                            );
+                            return $result;
+                        }
                     }
 
-                    if((int)$pbjdtl->quantity < (int)$qty){
-                        $is_error = "1";
-                        $openQty = (int)$pbjdtl->quantity - (int)$pbjdtl->realized_qty;
-                        DB::rollBack();
+                    if ($is_error == "1")
+                    {
                         $result = array(
                             'msgtype' => '400',
-                            'message' => 'Quantity BAST lebih besar dari Open Quantity PBJ Partnumber '. $parts[$i] . '. Open Quantity ( '. $openQty . ' )'
+                            'message' => 'Gagal Create BAST'
                         );
                         return $result;
-                    }
-                }
-
-                if ($is_error == "1"){
-                    $result = array(
-                        'msgtype' => '400',
-                        'message' => 'Gagal Create BAST'
-                    );
-                    return $result;
-                }else{
+                    }else{
                         $matdesc = str_replace('"','\"',$partdsc[$i]);
 
                         $data = array(
@@ -276,6 +269,7 @@ class BastController extends Controller
                             'createdby'    => Auth::user()->email ?? Auth::user()->username
                         );
                         array_push($insertData, $data);
+
 
                         $matdesc = str_replace('"','\"',$partdsc[$i]);
                         $matCode = str_replace('"','\"',$parts[$i]);
@@ -296,73 +290,74 @@ class BastController extends Controller
                             "'. $bastNumber .'",
                             "'. $bastID .'")');
 
-                            $pbjitem = DB::table('t_pbj02')
+                        $pbjitem = DB::table('t_pbj02')
                             ->where('pbjnumber', $pbjnum[$i])
                             ->where('pbjitem', $pbjitm[$i])->first();
 
-                            $relQty = $pbjitem->realized_qty + $qty;
-                            if((int)$relQty >= (int)$pbjitem->quantity){
-                                DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
-                                ->update([
-                                    'itemstatus'   => 'C',
-                                    'bast_created' => 'Y',
-                                    'realized_qty' => $relQty
-                                ]);
-                            }else{
-                                DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
-                                ->update([
-                                    'realized_qty' => $relQty
-                                ]);
-                            }
-                    }
-                    insertOrUpdate($insertData,'t_bast02');
-
-                    //Insert Attachments | t_attachments
-                    if(isset($req['efile'])){
-                        $files = $req['efile'];
-                        $insertFiles = array();
-
-                        foreach ($files as $efile) {
-                            $filename = $efile->getClientOriginalName();
-                            $upfiles = array(
-                                'doc_object' => 'BAST',
-                                'doc_number' => $bastID,
-                                'efile'      => $filename,
-                                'pathfile'   => '/files/BAST/'. $filename,
-                                'createdon'  => getLocalDatabaseDateTime(),
-                                'createdby'  => Auth::user()->username ?? Auth::user()->email
-                            );
-                            array_push($insertFiles, $upfiles);
-
-                            $efile->move('files/BAST/', $filename);
-                        }
-                        if(sizeof($insertFiles) > 0){
-                            insertOrUpdate($insertFiles,'t_attachments');
-                        }
-                    }
-                    DB::commit();
-
-                    sleep(2);
-
-                    $checkBastAll = DB::table('t_pbj02')
-                                    ->where('pbjnumber', $pbjheader->pbjnumber)
-                                    ->where('bast_created', 'N')->first();
-                    if(!$checkBastAll){
-                        DB::table('t_pbj01')->where('pbjnumber', $pbjheader->pbjnumber)
+                        $relQty = $pbjitem->realized_qty + $qty;
+                        if((int)$relQty >= (int)$pbjitem->quantity){
+                            DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
                             ->update([
-                                'bast_created' => 'Y'
+                                'itemstatus'   => 'C',
+                                'bast_created' => 'Y',
+                                'realized_qty' => $relQty
                             ]);
+                        }else{
+                            DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
+                            ->update([
+                                'realized_qty' => $relQty
+                            ]);
+                        }
                     }
-
-                    DB::commit();
-                    $result = array(
-                        'msgtype' => '200',
-                        'message' => 'BAST Berhasil dibuat dengan nomor '. $bastNumber
-                    );
-                    return $result;
                 }
+            }
+            insertOrUpdate($insertData,'t_bast02');
 
-            // return Redirect::to("/logistic/bast")->withSuccess('BAST Berhasil disimpan');
+            //Insert Attachments | t_attachments
+            if(isset($req['efile'])){
+                $files = $req['efile'];
+                $insertFiles = array();
+
+                foreach ($files as $efile) {
+                    $filename = $efile->getClientOriginalName();
+                    $upfiles = array(
+                        'doc_object' => 'BAST',
+                        'doc_number' => $bastID,
+                        'efile'      => $filename,
+                        'pathfile'   => '/files/BAST/'. $filename,
+                        'createdon'  => getLocalDatabaseDateTime(),
+                        'createdby'  => Auth::user()->username ?? Auth::user()->email
+                    );
+                    array_push($insertFiles, $upfiles);
+
+                    $efile->move('files/BAST/', $filename);
+                }
+                if(sizeof($insertFiles) > 0){
+                    insertOrUpdate($insertFiles,'t_attachments');
+                }
+            }
+            DB::commit();
+
+            sleep(2);
+
+            $checkBastAll = DB::table('t_pbj02')
+                            ->where('pbjnumber', $pbjheader->pbjnumber)
+                            ->where('bast_created', 'N')->first();
+            if(!$checkBastAll)
+            {
+                DB::table('t_pbj01')->where('pbjnumber', $pbjheader->pbjnumber)
+                    ->update([
+                        'bast_created' => 'Y'
+                    ]);
+            }
+
+            DB::commit();
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'BAST Berhasil dibuat dengan nomor '. $bastNumber
+            );
+            return $result;
+
         } catch(\Exception $e){
             DB::rollBack();
             $result = array(
