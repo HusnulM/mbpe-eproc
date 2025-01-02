@@ -90,7 +90,7 @@ class BastController extends Controller
         try{
             // resetPBJNotRealized();
 
-            $is_error = false;
+            $is_error = "0";
 
             $bulan = date('m');
             $tahun = date('Y');
@@ -101,7 +101,7 @@ class BastController extends Controller
                         //    ->where('no_bast',$req['nomorbast'])->first();
                            ->where('no_bast',$bastNumber)->first();
             if($checkNoBAST){
-                $is_error = true;
+                $is_error = "1";
                 $result = array(
                     'msgtype' => '400',
                     'message' => 'Nomor BAST '. $bastNumber . ' sudah ada'
@@ -177,7 +177,7 @@ class BastController extends Controller
 
                     if($latestStock){
                         if((int)$latestStock->quantity < (int)$inputQty){
-                            $is_error = true;
+                            $is_error = "1";
                             DB::rollBack();
                             $result = array(
                                 'msgtype' => '400',
@@ -187,7 +187,7 @@ class BastController extends Controller
                             //return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
                         }
                     }else{
-                        $is_error = true;
+                        $is_error = "1";
                         DB::rollBack();
                         $result = array(
                             'msgtype' => '400',
@@ -198,7 +198,7 @@ class BastController extends Controller
                     }
 
                     if((int)$pbjdtl->quantity < (int)$qty){
-                        $is_error = true;
+                        $is_error = "1";
                         DB::rollBack();
                         $openQty = (int)$pbjdtl->quantity - (int)$pbjdtl->realized_qty;
                         $result = array(
@@ -222,7 +222,7 @@ class BastController extends Controller
                     //dd((int)($latestStock->quantity));
                     if($latestStock){
                         if((int)$latestStock->quantity < (int)$inputQty){
-                            $is_error = true;
+                            $is_error = "1";
                             DB::rollBack();
                             $result = array(
                                 'msgtype' => '400',
@@ -232,7 +232,7 @@ class BastController extends Controller
                             // return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
                         }
                     }else{
-                        $is_error = true;
+                        $is_error = "1";
                         DB::rollBack();
                         $result = array(
                             'msgtype' => '400',
@@ -243,7 +243,7 @@ class BastController extends Controller
                     }
 
                     if((int)$pbjdtl->quantity < (int)$qty){
-                        $is_error = true;
+                        $is_error = "1";
                         $openQty = (int)$pbjdtl->quantity - (int)$pbjdtl->realized_qty;
                         DB::rollBack();
                         $result = array(
@@ -254,7 +254,7 @@ class BastController extends Controller
                     }
                 }
 
-                if ($is_error = true){
+                if ($is_error == "1"){
                     $result = array(
                         'msgtype' => '400',
                         'message' => 'Gagal Create BAST'
