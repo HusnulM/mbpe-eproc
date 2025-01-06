@@ -32,12 +32,7 @@
                     </div>
                     <!-- <h3 class="card-title">List Approved Purchase Order</h3> -->
                     <div class="card-tools">
-                        <!-- <a href="{{ url('transaction/budgeting') }}" class="btn btn-success btn-sm btn-add-dept">
-                            <i class="fas fa-plus"></i> Buat Pengajuan Budget
-                        </a> -->
-                        <!-- <a href="{{ url('/master/department/create') }}" class="btn btn-success btn-sm">
-                            <i class="fas fa-plus"></i> Create Department
-                        </a> -->
+
                     </div>
                 </div>
                 <div class="card-body">
@@ -535,6 +530,7 @@
                                 <th>Line Item</th>
                                 <th>Kode Barang</th>
                                 <th>Nama Barang</th>
+                                <th>Budget Code</th>
                                 <th>Quantity</th>
                                 <th>Unit Price</th>
                                 <th>Total Price</th>
@@ -546,6 +542,7 @@
                                 <td> `+ results[i].poitem +` </td>
                                 <td> `+ results[i].material +` </td>
                                 <td> `+ results[i].matdesc +` </td>
+                                <td> `+ results[i].budget_code_num +` </td>
                                 <td style="text-align:right;"> `+ (results[i].quantity*1) +` `+ results[i].unit +` </td>
                                 <td style="text-align:right;"> `+ (results[i].price*1) +` </td>
                                 <td style="text-align:right;"> `+ (results[i].price*1)*(results[i].quantity*1) +` </td>
