@@ -174,7 +174,7 @@ class PbjController extends Controller
                     ]);
             }
         }else{
-            return Redirect::to("/transaction/pbj")->withError('Dokumen PBJ tidak ditemukan');
+            return Redirect::to("/transaction/list/pbj")->withError('Dokumen PBJ tidak ditemukan');
         }
     }
 
@@ -345,7 +345,7 @@ class PbjController extends Controller
                     'project'       => $pbjProject
                 ]);
         }else{
-            return Redirect::to("/transaction/pbj")->withError('Dokumen PBJ tidak ditemukan');
+            return Redirect::to("/transaction/list/pbj")->withError('Dokumen PBJ tidak ditemukan');
         }
     }
 
@@ -758,7 +758,7 @@ class PbjController extends Controller
                 //     'pbjnumber'   => $ptaNumber
                 // ]);
                 DB::commit();
-                return Redirect::to("/transaction/pbj/list")->withSuccess('PBJ '. $ptaNumber .' Berhasil diupdate');
+                return Redirect::to("/transaction/list/pbj")->withSuccess('PBJ '. $ptaNumber .' Berhasil diupdate');
                 // if($req['pbjTYpe'] === "1"){
                 //     return Redirect::to("/transaction/pbj")->withSuccess('PBJ '. $ptaNumber .' Berhasil diupdate');
                 // }else{
@@ -775,7 +775,7 @@ class PbjController extends Controller
         } catch(\Exception $e){
             DB::rollBack();
             dd($e);
-            return Redirect::to("/transaction/pbj/list")->withError($e->getMessage());
+            return Redirect::to("/transaction/list/pbj")->withError($e->getMessage());
         }
     }
 
