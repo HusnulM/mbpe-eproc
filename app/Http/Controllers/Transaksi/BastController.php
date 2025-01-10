@@ -86,17 +86,19 @@ class BastController extends Controller
 
     public function save(Request $req){
         // return $req;
-        $parts    = $req['material'];
-        $partdsc  = $req['matdesc'];
-        $quantity = $req['bastquantity'];
-        $uom      = $req['unit'];
-        $pbjnum   = $req['pbjnumber'];
-        $pbjitm   = $req['pbjitem'];
-        $wonum    = $req['wonum'];
+        $this->resetQtyPBJ($req);
+
 
         DB::beginTransaction();
         try{
             // resetPBJNotRealized();
+            $parts    = $req['material'];
+            $partdsc  = $req['matdesc'];
+            $quantity = $req['bastquantity'];
+            $uom      = $req['unit'];
+            $pbjnum   = $req['pbjnumber'];
+            $pbjitm   = $req['pbjitem'];
+            $wonum    = $req['wonum'];
 
             $is_error = "0";
 
@@ -360,7 +362,7 @@ class BastController extends Controller
                 'message' => 'BAST Berhasil dibuat dengan nomor '. $bastNumber
             );
 
-            $this->resetQtyPBJ($req);
+            // $this->resetQtyPBJ($req);
             return $result;
 
         } catch(\Exception $e){
@@ -369,7 +371,7 @@ class BastController extends Controller
                 'msgtype' => '400',
                 'message' => $e->getMessage()
             );
-            $this->resetQtyPBJ($req);
+            // $this->resetQtyPBJ($req);
             return $result;
             // dd($e);
             // return Redirect::to("/logistic/bast")->withError($e->getMessage());
