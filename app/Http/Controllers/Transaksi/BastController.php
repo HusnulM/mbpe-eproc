@@ -86,6 +86,14 @@ class BastController extends Controller
 
     public function save(Request $req){
         // return $req;
+        $parts    = $req['material'];
+        $partdsc  = $req['matdesc'];
+        $quantity = $req['bastquantity'];
+        $uom      = $req['unit'];
+        $pbjnum   = $req['pbjnumber'];
+        $pbjitm   = $req['pbjitem'];
+        $wonum    = $req['wonum'];
+
         DB::beginTransaction();
         try{
             // resetPBJNotRealized();
@@ -119,13 +127,7 @@ class BastController extends Controller
                 'createdby'       => Auth::user()->email ?? Auth::user()->username
             ]);
 
-            $parts    = $req['material'];
-            $partdsc  = $req['matdesc'];
-            $quantity = $req['bastquantity'];
-            $uom      = $req['unit'];
-            $pbjnum   = $req['pbjnumber'];
-            $pbjitm   = $req['pbjitem'];
-            $wonum    = $req['wonum'];
+
             // return $wonum;
             $insertData = array();
             $count = 0;
@@ -148,6 +150,7 @@ class BastController extends Controller
             {
                 if($quantity[$i] > 0)
                 {
+
                     $qty    = 0;
                     $qty    = $quantity[$i];
                     $qty    = str_replace(',','',$qty);
@@ -261,7 +264,7 @@ class BastController extends Controller
                             'no_bast'      => $bastNumber,
                             'material'     => $parts[$i],
                             'matdesc'      => $partdsc[$i],
-                            'quantity'     => $qty,
+                            'quantity'     => $inputQty,
                             'unit'         => $uom[$i],
                             'refdoc'       => $pbjnum[$i] ?? 0,
                             'refdocitem'   => $pbjitm[$i] ?? 0,
@@ -277,7 +280,7 @@ class BastController extends Controller
                         DB::select('call spIssueMaterialWithBatchFIFO(
                             "'. $matCode .'",
                             "'. $warehouseID .'",
-                            "'. $qty .'",
+                            "'. $inputQty .'",
                             "'. $ptaNumber .'",
                             "'. date('Y') .'",
                             "201",
@@ -294,7 +297,7 @@ class BastController extends Controller
                             ->where('pbjnumber', $pbjnum[$i])
                             ->where('pbjitem', $pbjitm[$i])->first();
 
-                        $relQty = $pbjitem->realized_qty + $qty;
+                        $relQty = $pbjitem->realized_qty + $inputQty;
                         if((int)$relQty >= (int)$pbjitem->quantity){
                             DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
                             ->update([
@@ -356,6 +359,8 @@ class BastController extends Controller
                 'msgtype' => '200',
                 'message' => 'BAST Berhasil dibuat dengan nomor '. $bastNumber
             );
+
+            $this->resetQtyPBJ($req);
             return $result;
 
         } catch(\Exception $e){
@@ -364,10 +369,40 @@ class BastController extends Controller
                 'msgtype' => '400',
                 'message' => $e->getMessage()
             );
+            $this->resetQtyPBJ($req);
             return $result;
             // dd($e);
             // return Redirect::to("/logistic/bast")->withError($e->getMessage());
             // return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError($e->getMessage());
+        }
+    }
+
+    function resetQtyPBJ($req)
+    {
+        $pbjnum   = $req['pbjnumber'];
+        $pbjitm   = $req['pbjitem'];
+
+        for($i = 0; $i < sizeof($pbjnum); $i++){
+            $pbjN = DB::table('v_check_pbj')
+                    ->where('realized_qty', '>', '0')
+                    ->where('pbjnumber', $pbjnum[$i])
+                    ->where('pbjitem', $pbjitm[$i])
+                    ->get();
+            foreach($pbjN as $row){
+                $check = DB::table('t_inv02')
+                        ->where('wonum', $row->pbjnumber)
+                        ->where('woitem', $row->pbjitem)
+                        ->first();
+                if(!$check){
+                    DB::table('t_pbj02')
+                    ->where('pbjnumber', $row->pbjnumber)
+                    ->where('pbjitem', $row->pbjitem)
+                    ->update([
+                        'realized_qty' => 0
+                    ]);
+                    DB::commit();
+                }
+            }
         }
     }
 
