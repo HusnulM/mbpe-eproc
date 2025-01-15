@@ -16,6 +16,17 @@ class ReportsController extends Controller
         return view('laporan.requestbudget', ['department' => $department]);
     }
 
+    public function paymentPO(){
+        return view('laporan.rpayment');
+    }
+
+    public function paymentList(){
+        $url     = 'https://mahakaryabangunpersada.com/api/po/B807C072-05ADCCE0-C1C82376-3EC92EF1';
+        $callApi = mbpAPI($url, '', '');
+
+        return $callApi;
+    }
+
     public function budgetRequestlist(Request $req){
         $query = DB::table('v_rbudget');
 

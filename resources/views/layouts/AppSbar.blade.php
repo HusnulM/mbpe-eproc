@@ -24,7 +24,10 @@
   <link rel="stylesheet" href="{{ asset('/assets/plugins/toastr/toastr.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('/assets/dist/css/adminlte.min.css') }}">
+  {{-- <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script> --}}
 
+  {{-- <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+  <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script> --}}
   @yield('additional-css')
 
   <!-- <style>

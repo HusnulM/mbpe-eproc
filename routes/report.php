@@ -88,5 +88,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/returbast',                  'Reports\ReportsController@returbast')->middleware('checkAuth:report/returbast');
         Route::get('/listreturbast',              'Reports\ReportsController@getDataReturBast')->middleware('checkAuth:report/returbast');
         Route::post('/exportreturbast',           'ExportDataController@exportReturBast')->middleware('checkAuth:report/returbast');
+
+        Route::get('/payment',                    'Reports\ReportsController@paymentPO')->middleware('checkAuth:report/payment');
+        Route::get('/paymentlist',                'Reports\ReportsController@paymentList')->middleware('checkAuth:report/payment');
     });
 });
