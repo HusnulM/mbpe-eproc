@@ -235,7 +235,8 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
 
 <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalApprovalNote">
     <div class="modal-dialog modal-md">
-        <form class="form-horizontal" action="{{ url('approve/opnam/postapproval') }}" method="POST">
+        {{-- action="{{ url('approve/opnam/postapproval') }}" method="POST" --}}
+        <form class="form-horizontal">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -246,9 +247,9 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                 </div>
                 <div class="modal-body">
                     <div class="position-relative row form-group">
-                        <input type="text" name="action" class="form-control" placeholder="Action">
+                        {{-- <input type="text" name="action" class="form-control" placeholder="Action">
                         <input type="text" name="docid" class="form-control" placeholder="Doc ID">
-                        <input type="text" name="pidnumber" class="form-control" placeholder="PID Number">
+                        <input type="text" name="pidnumber" class="form-control" placeholder="PID Number"> --}}
                         <div class="col-lg-12">
                             <textarea name="approver_note" id="approver_note" cols="30" rows="3" class="form-control" placeholder="Approval Note..."></textarea>
                         </div>
@@ -256,7 +257,7 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit-approval"> OK</button>
-                    <button type="submit" class="btn btn-primary"> Check</button>
+                    {{-- <button type="submit" class="btn btn-primary"> Check</button> --}}
                 </div>
             </div>
         </form>
@@ -405,14 +406,14 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                             toastr.success(response.message)
                         }
 
-                        // setTimeout(function(){
-                        //     window.location.href = base_url+'/approve/opnam';
-                        // }, 2000);
+                        setTimeout(function(){
+                            window.location.href = base_url+'/approve/opnam';
+                        }, 2000);
                     }else{
                         toastr.error(response.message)
-                        // setTimeout(function(){
-                        //     location.reload();
-                        // }, 2000);
+                        setTimeout(function(){
+                            location.reload();
+                        }, 2000);
                     }
                 });
 

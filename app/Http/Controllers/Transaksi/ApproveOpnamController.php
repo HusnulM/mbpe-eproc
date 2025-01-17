@@ -167,12 +167,12 @@ class ApproveOpnamController extends Controller
         }
         catch(\Exception $e){
             DB::rollBack();
-            dd($e);
-            // $result = array(
-            //     'msgtype' => '500',
-            //     'message' => $e->getMessage()
-            // );
-            // return $result;
+            // dd($e);
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
         }
     }
 
@@ -297,7 +297,7 @@ class ApproveOpnamController extends Controller
             return $result;
         }catch(\Exception $e){
             DB::rollBack();
-            dd($e);
+            // dd($e);
             $result = array(
                 'msgtype' => '500',
                 'message' => $e->getMessage()
@@ -321,19 +321,6 @@ class ApproveOpnamController extends Controller
             $tahun    = date('Y');
             $prefix   = 'ISSUEPID';
             $ptaNumber = generateNextNumber($prefix, 'ISSUEPID', $tahun, $bulan, '');
-
-            DB::table('t_inv01')->insert([
-                'docnum'            => $ptaNumber,
-                'docyear'           => $tahun,
-                'docdate'           => $postDate,
-                'postdate'          => $postDate,
-                'received_by'       => Auth::user()->username,
-                'movement_code'     => '201',
-                'remark'            => 'Stock Opnam Stok Lama '. $pidNumber,
-                'refdoc'            => $pidNumber,
-                'createdon'         => getLocalDatabaseDateTime(),
-                'createdby'         => Auth::user()->email ?? Auth::user()->username
-            ]);
 
             // Create Inventory Movement Negatif untuk meng 0 kan stock Lama
             foreach ($pidData as $index => $row) {
@@ -366,10 +353,24 @@ class ApproveOpnamController extends Controller
                     );
                     array_push($insertData, $excelData);
                 }
-                insertOrUpdate($insertData,'t_inv02');
-                DB::commit();
+                if(sizeof($insertData) > 0){
+                    insertOrUpdate($insertData,'t_inv02');
+                    DB::commit();
+                }
             }
 
+            DB::table('t_inv01')->insert([
+                'docnum'            => $ptaNumber,
+                'docyear'           => $tahun,
+                'docdate'           => $postDate,
+                'postdate'          => $postDate,
+                'received_by'       => Auth::user()->username,
+                'movement_code'     => '201',
+                'remark'            => 'Stock Opnam Stok Lama '. $pidNumber,
+                'refdoc'            => $pidNumber,
+                'createdon'         => getLocalDatabaseDateTime(),
+                'createdby'         => Auth::user()->email ?? Auth::user()->username
+            ]);
             DB::commit();
 
             $result = array(
@@ -379,7 +380,7 @@ class ApproveOpnamController extends Controller
             return $result;
         }catch(\Exception $e){
             DB::rollBack();
-            dd($e);
+            // dd($e);
             $result = array(
                 'msgtype' => '500',
                 'message' => $e->getMessage()
