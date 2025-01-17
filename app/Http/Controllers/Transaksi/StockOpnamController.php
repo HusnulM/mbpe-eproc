@@ -111,7 +111,7 @@ class StockOpnamController extends Controller
         $import = Excel::import(new StockOpnamImport(), 'excel/'.$file->getClientOriginalName());
 
         //remove from server
-		unlink('excel/'.$file->getClientOriginalName());
+		// unlink('excel/'.$file->getClientOriginalName());
 
         if($import) {
             return Redirect::to("/logistic/stockopname")->withSuccess('Data Stock Opnam Berhasil di Upload');

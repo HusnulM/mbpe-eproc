@@ -1258,21 +1258,6 @@ function sendPurchaseOrder($poNumber){
                     ->orWhereIn('doc_number', $pbjNumber)
                     ->pluck('fileurl');
 
-    // $prAttachments = DB::table('v_attachments')
-    //                 ->select('fileurl')
-    //                 ->where('doc_object','PR')
-    //                 ->whereIn('doc_number', $prNumber)->pluck('fileurl');
-
-    // $pbjAttachments = DB::table('v_attachments')
-    //                 ->select('fileurl')
-    //                 ->where('doc_object','PBJ')
-    //                 ->whereIn('doc_number', $pbjNumber)->pluck('fileurl');
-
-    // $attachments = $prAttachments;
-    // array_push($attachments, $pbjAttachments);
-
-    // return $attachments;
-
     $sendData   = array();
     $insertData = array();
     foreach($poitem as $row){

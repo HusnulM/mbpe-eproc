@@ -178,7 +178,7 @@
     $(document).ready(function(){
 
         $('.btn-search').on('click', function(){
-            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val();
+            var param = '?strdate='+ $('#datefrom').val() +'&enddate='+ $('#dateto').val();
             loadDocument(param);
         });
 
