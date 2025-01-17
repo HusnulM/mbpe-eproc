@@ -88,7 +88,7 @@ class ApproveOpnamController extends Controller
     }
 
     public function saveApproveHeader(Request $req){
-        return $req;
+        // return $req;
         DB::beginTransaction();
         try{
 
@@ -99,7 +99,7 @@ class ApproveOpnamController extends Controller
                             ->where('pidnumber', $ptaNumber)
                             ->where('approver', Auth::user()->id)
                             ->first();
-
+            return $userAppLevel;
 
             DB::table('t_opnam_approval')
                     ->where('pidnumber', $ptaNumber)
