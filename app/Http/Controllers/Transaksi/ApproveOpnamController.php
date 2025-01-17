@@ -166,6 +166,7 @@ class ApproveOpnamController extends Controller
         }
         catch(\Exception $e){
             DB::rollBack();
+            dd($e);
             $result = array(
                 'msgtype' => '500',
                 'message' => $e->getMessage()
