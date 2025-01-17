@@ -64,3 +64,5 @@ Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'i
 Route::get('/sendpotoapi',               'Transaksi\PurchaseOrderController@sendPO')->middleware('checkAuth:proc/po');
 
 Route::get('/getrablist/{id}',                'Transaksi\PbjController@rabList');
+
+Route::post('/testapproveopnam',                'Transaksi\ApproveOpnamController@saveApproveHeader');
