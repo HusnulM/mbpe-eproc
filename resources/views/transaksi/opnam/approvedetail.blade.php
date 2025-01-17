@@ -3,6 +3,14 @@
 @section('title', 'Document Opnam Approval')
 
 @section('additional-css')
+{{-- https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css
+https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
+{{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script> --}}
+
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('/assets/css/customstyle.css') }}">
     <style type="text/css">
@@ -14,6 +22,8 @@
             height: 36px;
         }
     </style>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 @endsection
 
 @section('content')
@@ -82,14 +92,21 @@
                                 <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
                                     <div class="row">
                                         <div class="col-lg-12">
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <td colspan="9" style="text-align: right;">
+                                                <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
+                                                    <i class="fa fa-check"></i> APPROVE
+                                                </button>
+
+                                                <button type="button" class="btn btn-danger pull-right btn-sm" id="btn-reject-items">
+                                                    <i class="fa fa-xmark"></i> REJECT
+                                                </button>
+                                            </td>
                                             <table id="tbl-pr-data" class="table table-bordered table-hover table-striped table-sm">
                                                 <thead>
                                                     <th>No</th>
-                                                    {{-- <th style="text-align:center;">
-                                                        <input type="checkbox" id="checkAll" class="filled-in" />
-                                                        <label for="checkAll"></label>
-                                                    </th> --}}
-                                                    {{-- <th>Opnam Line Item</th> --}}
                                                     <th>Item Code</th>
                                                     <th>Item Name</th>
                                                     <th style="text-align:center;">Actual Quantity</th>
@@ -101,15 +118,6 @@
                                                 @foreach($items as $key => $row)
                                                     <tr>
                                                         <td>{{ $key+1 }}</td>
-                                                        {{-- <td style="text-align:center;">
-                                                            @if($row->apprv_stat !== "A" && $row->apprv_stat !== "R")
-                                                            <input class="filled-in checkbox" type="checkbox" id="{{ $row->piditem }}" name="ID[]">
-                                                            <label for="{{ $row->piditem }}"></label>
-                                                            @endif
-                                                        </td> --}}
-                                                        {{-- <td>
-                                                            {{ $row->piditem }}
-                                                        </td> --}}
                                                         <td>
                                                             {{ $row->material }}
                                                         </td>
@@ -132,15 +140,7 @@
                                                 @endforeach
                                                 </tbody>
                                                 <tfoot>
-                                                    <td colspan="9" style="text-align: right;">
-                                                        <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
-                                                            <i class="fa fa-check"></i> APPROVE
-                                                        </button>
 
-                                                        <button type="button" class="btn btn-danger pull-right btn-sm" id="btn-reject-items">
-                                                            <i class="fa fa-xmark"></i> REJECT
-                                                        </button>
-                                                    </td>
                                                 </tfoot>
                                             </table>
                                         </div>
@@ -290,6 +290,10 @@
         let _token   = $('meta[name="csrf-token"]').attr('content');
         let _action  = null;
 
+        // $('#tbl-pr-data').DataTable();
+        // $("#tbl-pr-data").DataTable();
+        new DataTable('#tbl-pr-data');
+
         $('#checkAll').click(function(){
             if(this.checked){
                 $('.checkbox').each(function(){
@@ -395,14 +399,14 @@
                             toastr.success(response.message)
                         }
 
-                        setTimeout(function(){
-                            window.location.href = base_url+'/approve/opnam';
-                        }, 2000);
+                        // setTimeout(function(){
+                        //     window.location.href = base_url+'/approve/opnam';
+                        // }, 2000);
                     }else{
                         toastr.error(response.message)
-                        setTimeout(function(){
-                            location.reload();
-                        }, 2000);
+                        // setTimeout(function(){
+                        //     location.reload();
+                        // }, 2000);
                     }
                 });
 
