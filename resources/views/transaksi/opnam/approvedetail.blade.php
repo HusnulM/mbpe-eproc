@@ -349,24 +349,25 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
         });
 
         $('#submit-approval').on('click', function(){
-            approvePR();
+            approveOpnam();
         });
 
-        function approvePR(){
-            var tableControl= document.getElementById('tbl-pr-data');
-            var _splchecked = [];
-            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
-                _splchecked.push($(this).parent().next().text())
-            }).get();
+        function approveOpnam(){
+            // var tableControl= document.getElementById('tbl-pr-data');
+            // var _splchecked = [];
+            // $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+            //     _splchecked.push($(this).parent().next().text())
+            // }).get();
 
             var prtemchecked = {
                     "docid" : {{ $header->id }},
                     "pidnumber" : "{{ $header->pidnumber }}",
-                    "piditem" : _splchecked,
+                    // "piditem" : _splchecked,
                     "action" : _action,
                     "_token": _token,
                     "approvernote":$('#approver_note').val(),
                 }
+                console.log(prtemchecked)
                 $.ajax({
                     url:base_url+'/approve/opnam/postapproval',
                     method:'post',
