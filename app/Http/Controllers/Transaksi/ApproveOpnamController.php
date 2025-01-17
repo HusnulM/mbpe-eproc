@@ -168,11 +168,11 @@ class ApproveOpnamController extends Controller
         catch(\Exception $e){
             DB::rollBack();
             dd($e);
-            $result = array(
-                'msgtype' => '500',
-                'message' => $e->getMessage()
-            );
-            return $result;
+            // $result = array(
+            //     'msgtype' => '500',
+            //     'message' => $e->getMessage()
+            // );
+            // return $result;
         }
     }
 
@@ -297,7 +297,7 @@ class ApproveOpnamController extends Controller
             return $result;
         }catch(\Exception $e){
             DB::rollBack();
-            // dd($e);
+            dd($e);
             $result = array(
                 'msgtype' => '500',
                 'message' => $e->getMessage()
@@ -379,7 +379,7 @@ class ApproveOpnamController extends Controller
             return $result;
         }catch(\Exception $e){
             DB::rollBack();
-            // dd($e);
+            dd($e);
             $result = array(
                 'msgtype' => '500',
                 'message' => $e->getMessage()
