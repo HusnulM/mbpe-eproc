@@ -99,7 +99,7 @@ class ApproveOpnamController extends Controller
                             ->where('pidnumber', $ptaNumber)
                             ->where('approver', Auth::user()->id)
                             ->first();
-            return $userAppLevel;
+            // return $userAppLevel;
 
             DB::table('t_opnam_approval')
                     ->where('pidnumber', $ptaNumber)

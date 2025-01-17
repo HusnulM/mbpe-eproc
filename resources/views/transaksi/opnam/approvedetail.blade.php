@@ -235,25 +235,30 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
 
 <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalApprovalNote">
     <div class="modal-dialog modal-md">
-        <form class="form-horizontal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalApprovalTitle">Approval Note</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="position-relative row form-group">
-                    <div class="col-lg-12">
-                        <textarea name="approver_note" id="approver_note" cols="30" rows="3" class="form-control" placeholder="Approval Note..."></textarea>
+        <form class="form-horizontal" action="{{ url('approve/opnam/postapproval') }}" method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalApprovalTitle">Approval Note</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="position-relative row form-group">
+                        <input type="text" name="action" class="form-control" placeholder="Action">
+                        <input type="text" name="docid" class="form-control" placeholder="Doc ID">
+                        <input type="text" name="pidnumber" class="form-control" placeholder="PID Number">
+                        <div class="col-lg-12">
+                            <textarea name="approver_note" id="approver_note" cols="30" rows="3" class="form-control" placeholder="Approval Note..."></textarea>
+                        </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit-approval"> OK</button>
+                    <button type="submit" class="btn btn-primary"> Check</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit-approval"> OK</button>
-            </div>
-        </div>
         </form>
     </div>
 </div>
