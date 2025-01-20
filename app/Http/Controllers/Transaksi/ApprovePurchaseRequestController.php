@@ -372,7 +372,11 @@ class ApprovePurchaseRequestController extends Controller
                         }
                     }
 
-                    $this->generateAttachment($pbjHeader->id);
+                    if(checkIsLocalhost()){
+                    }else{
+                        $this->generateAttachment($pbjHeader->id);
+                    }
+
 
                 }
             }

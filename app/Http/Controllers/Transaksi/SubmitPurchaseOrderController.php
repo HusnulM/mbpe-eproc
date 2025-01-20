@@ -96,8 +96,8 @@ class SubmitPurchaseOrderController extends Controller
 
     public function submitDatatoApi(Request $req){
         $poNumber = $req['ponum'];
-        $result   = sendPurchaseOrder($poNumber);
-
+        // $result   = sendPurchaseOrder($poNumber);
+        $result   = sendPurchaseOrderV2($poNumber);
         return $result;
     }
 }

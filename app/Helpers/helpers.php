@@ -1329,6 +1329,132 @@ function sendPurchaseOrder($poNumber){
     return $response;
 }
 
+function sendPurchaseOrderV2($poNumber){
+
+    $poheader = DB::table('t_po01')->where('ponum', $poNumber)->first();
+    $vendor   = DB::table('t_vendor')->where('vendor_code', $poheader->vendor)->first();
+    $poitem   = DB::table('t_po02')->where('ponum', $poNumber)->where('approvestat', 'A')->get();
+
+    $prNumber      = DB::table('t_po02')->where('ponum', $poheader->ponum)->pluck('prnum');
+    $pbjNumber     = DB::table('t_pr02')->whereIn('prnum', $prNumber)->pluck('pbjnumber');
+
+    $pbjData       = DB::table('t_pbj01')->whereIn('pbjnumber', $pbjNumber)->first();
+
+    $attachments = DB::table('v_attachments')
+                    ->select('fileurl')
+                    // ->whereIn('doc_object', ['PO','PR', 'PBJ'])
+                    ->where('doc_number', $poheader->ponum)
+                    ->orWhereIn('doc_number', $prNumber)
+                    ->orWhereIn('doc_number', $pbjNumber)
+                    ->pluck('fileurl');
+
+    $sendData   = array();
+    $insertData = array();
+    $idProject = 0;
+    $poNumber = null;
+    $budCode  = null;
+    $material = null;
+    $matdesc  = null;
+    $pretax_rp = 0;
+    $item_rp   = 0;
+    $budget_period = '';
+    $budget_code   = '';
+
+    foreach($poitem as $row){
+        $item_rp = $item_rp + ($row->price*$row->quantity)+(($row->price*$row->quantity)*($poheader->ppn/100));
+        // if($poNumber == null){
+        //     $poNumber = $row->ponum;
+        // }else{
+        //     $poNumber = $poNumber. ', '. $row->ponum;
+        // }
+
+        if($budCode == null){
+            $budCode = $row->budget_code_num;
+        }else{
+            $budCode = $budCode. ', '. $row->budget_code_num;
+        }
+
+        if($material == null){
+            $material = $row->material;
+        }else{
+            $material = $material. ', '. $row->material;
+        }
+
+        if($matdesc == null){
+            $matdesc = $row->matdesc;
+        }else{
+            $matdesc = $matdesc. ', '. $row->matdesc;
+        }
+
+        $pretax_rp = $pretax_rp + $row->price*$row->quantity;
+
+        $project = DB::table('t_projects')->where('idproject', $row->idproject)->first();
+        if(!$project){
+            $idProject = 0;
+        }else{
+            $idProject = $project->kode_project;
+        }
+
+        $submitData = array(
+            'ponum'    => $row->ponum,
+            'poitem'   => $row->poitem,
+            'material' => $row->material,
+            'matdesc'  => $row->matdesc,
+            'quantity' => $row->quantity,
+            'unit'     => $row->unit,
+            'submitdate' => getLocalDatabaseDateTime(),
+            'submitby'   => Auth::user()->username
+        );
+        array_push($insertData, $submitData);
+
+        $budget_code   = $row->budget_code;
+        $budget_period = $row->budget_period;
+    }
+
+    $insert = array(
+        "proyek_id"     => $idProject,
+        "item_desk"     => $matdesc,
+        "item_payee"    => $vendor->vendor_id,
+        "item_curr"     => "IDR",
+        "pretax_rp"     => $pretax_rp,
+        "PPN"           => $poheader->ppn,
+        "item_rp"       => $item_rp,
+        "oleh"          => $poheader->createdby,
+        "dept"          => $poheader->deptid,
+        "budget"        => $budget_code,
+        "budget_period" => $budget_period ?? "",
+        "kodebudget"    => $budCode,
+        "partnumber"    => $material,
+        "catatan"       => $pbjData->tujuan_permintaan ?? $poheader->note,
+        "item_rek"      => $vendor->vendor_id, //$vendor->no_rek, Pak ada sedikit update untuk array yang dikirim pak
+        "item_bank"     => $vendor->vendor_id, //$vendor->bank, Item_bank dan item_rek disamakan dengan item_payee pak
+        "periode"       => date('Y'),
+        "no_po"         => $poheader->ponum,
+        "attachment"    => $attachments
+    );
+    array_push($sendData, $insert);
+
+
+    return $sendData;
+
+    $apikey  = 'B807C072-05ADCCE0-C1C82376-3EC92EF1';
+    $url     = 'https://mahakaryabangunpersada.com/api/v1/submit/po';
+    $get_api = mbpAPI($url, $apikey, $sendData);
+
+    $response = json_decode(str_replace($apikey,"",$get_api));
+
+    $status   = $response->status;
+    $pesan    = $response->status_message;
+    $datajson = $response->data;
+    if(str_contains($datajson,'Succeed')){
+        insertOrUpdate($insertData,'t_log_submit_api');
+        DB::table('t_po01')->where('ponum', $poNumber)->update([
+            'submitted' => 'Y'
+        ]);
+    }
+    return $response;
+}
+
 function mbpAPI($url, $apikey, $data=array()){
     $debugfileh = tmpfile();
     $curl       = curl_init();

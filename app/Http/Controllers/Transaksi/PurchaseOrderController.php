@@ -102,6 +102,7 @@ class PurchaseOrderController extends Controller
         $query = DB::table('v_approved_prv2')
                 //  ->where('pocreated', 'N')
                  ->where('openqty', '>', 0)
+                //  ->orWhere('openqty', '=', NULL)
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }
@@ -705,9 +706,10 @@ class PurchaseOrderController extends Controller
     }
 
     public function sendPO(){
-        $poNumber = 'PO/20230706000001';
-        $result   = sendPurchaseOrder($poNumber);
-
+        $poNumber = 'PO/20250120000002';
+        // PO/20230706000001
+        // $result   = sendPurchaseOrder($poNumber);
+        $result   = sendPurchaseOrderV2($poNumber);
         return $result;
     }
 }
