@@ -1371,6 +1371,9 @@ function sendPurchaseOrderV2($poNumber){
         if($budCode == null){
             $budCode = $row->budget_code_num;
         }else{
+            if($row->budget_code_num == "" || $row->budget_code_num == null){
+                $row->budget_code_num = 'NONBUDGET';
+            }
             $budCode = $budCode. ', '. $row->budget_code_num;
         }
 
@@ -1421,7 +1424,7 @@ function sendPurchaseOrderV2($poNumber){
         "item_rp"       => $item_rp,
         "oleh"          => $poheader->createdby,
         "dept"          => $poheader->deptid,
-        "budget"        => $budget_code,
+        "budget"        => "0",
         "budget_period" => $budget_period ?? "",
         "kodebudget"    => $budCode,
         "partnumber"    => $material,
@@ -1435,7 +1438,7 @@ function sendPurchaseOrderV2($poNumber){
     array_push($sendData, $insert);
 
 
-    return $sendData;
+    // return $sendData;
 
     $apikey  = 'B807C072-05ADCCE0-C1C82376-3EC92EF1';
     $url     = 'https://mahakaryabangunpersada.com/api/v1/submit/po';
