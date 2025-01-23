@@ -452,6 +452,7 @@ class ReportsController extends Controller
                         ->get();
         }
 
+        // return $materials;
         $strDate = date('Y-m-d');
         if(isset($req->datefrom)){
             $strDate = $req->datefrom;
@@ -479,12 +480,14 @@ class ReportsController extends Controller
         foreach ($query as $sg) {
             $mtMat[] = $sg->material;
         }
+        $mtMat = array_unique($mtMat);
 
         $ftWhs = array();
         foreach ($query as $sg) {
             $ftWhs[] = $sg->whscode;
         }
-        // return $mtMat;
+        $ftWhs = array_unique($ftWhs);
+        // return $materials;
         $stocks = array();
         foreach($materials as $key => $row){
             // return $row;
@@ -492,14 +495,18 @@ class ReportsController extends Controller
             $bQty = 0;
             $bVal = 0;
             if(in_array($row->material, $mtMat)){
-                // dd($row);
-
                 if(in_array($row->whscode, $ftWhs)){
+                    // return $query;
                     foreach($query as $mat => $mrow){
-                        if($row->material == $mrow->material && $row->whscode == $mrow->whscode){
 
+                        $bQty = 0;
+                        $bVal = 0;
+                        if($row->material === $mrow->material && $row->whscode === $mrow->whscode){
+                            // dd($mrow);
+                            // echo $row->material. ' - ' . $mrow->material;
+                            // dd($beginQty);
                             foreach($beginQty as $bqty => $mtqy){
-                                if($mtqy->material == $mrow->material && $mtqy->whscode == $mrow->whscode){
+                                if($mtqy->material === $mrow->material && $mtqy->whscode === $mrow->whscode){
                                     $bQty = $bQty + $mtqy->begin_qty;
                                     $bVal = $bVal + $mtqy->begin_val;
                                 }
@@ -519,11 +526,13 @@ class ReportsController extends Controller
                                 'unit'      => $mrow->unit,
                                 'avg_price' => $row->avg_price,
                             );
+                            // dd($data);
                             array_push($stocks, $data);
                         }
                     }
                 }
             }else{
+
                 $bQty = 0;
                 $bVal = 0;
                 // dd($beginQty);
@@ -535,7 +544,7 @@ class ReportsController extends Controller
                         $bVal = $bVal + $mtqy->begin_val;
                     }
                 }
-                // dd($bQty);
+                // dd($data);
                 $data = array(
                     'id'        => $row->id,
                     'material'  => $row->material,
@@ -551,6 +560,7 @@ class ReportsController extends Controller
                     'unit'      => $row->unit,
                     'avg_price' => $row->avg_price,
                 );
+                // dd($data);
                 array_push($stocks, $data);
             }
         }
