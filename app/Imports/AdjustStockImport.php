@@ -19,12 +19,26 @@ class AdjustStockImport implements ToCollection, WithHeadingRow
     {
         DB::beginTransaction();
         try{
+            $movementCode = null;
+            $shkzg        = null;
+            $batchAdj     = null;
+
             $tgl   = substr($_POST['tglupload'], 8, 2);
             $bulan = substr($_POST['tglupload'], 5, 2);
             $tahun = substr($_POST['tglupload'], 0, 4);
             // $ptaNumber = generateGRPONumber($tahun, $bulan);
+            if($_POST['adjtype'] === 'IN'){
+                $ptaNumber = generateNextNumber('ADJIN', 'ADJIN', $tahun, $bulan, '');
+                $movementCode = '561';
+                $shkzg        = '+';
+                $batchAdj     = 'BATCH_ADJ_IN';
+            }else{
+                $ptaNumber = generateNextNumber('ADJOUT', 'ADJOUT', $tahun, $bulan, '');
+                $movementCode = '201';
+                $shkzg        = '-';
+                $batchAdj     = 'BATCH_ADJ_OUT';
+            }
 
-            $ptaNumber = generateNextNumber('ADJOUT', 'ADJOUT', $tahun, $bulan, '');
 
             DB::table('t_inv01')->insert([
                 'docnum'            => $ptaNumber,
@@ -32,7 +46,7 @@ class AdjustStockImport implements ToCollection, WithHeadingRow
                 'docdate'           => $_POST['tglupload'],
                 'postdate'          => $_POST['tglupload'],
                 'received_by'       => Auth::user()->username,
-                'movement_code'     => '201',
+                'movement_code'     => $movementCode,
                 'remark'            => $_POST['remark'],
                 'createdon'         => getLocalDatabaseDateTime(),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
@@ -50,13 +64,13 @@ class AdjustStockImport implements ToCollection, WithHeadingRow
                     $matName = $row['material_desc'];
                 }
 
-                $batchNumber = 'ADJQTYOUT';
+                $batchNumber = $batchAdj;
                 $count = $count + 1;
                 $excelData = array(
                     'docnum'       => $ptaNumber,
                     'docyear'      => $tahun,
                     'docitem'      => $count,
-                    'movement_code'=> '201',
+                    'movement_code'=> $movementCode,
                     'material'     => strval($row['material']),
                     'matdesc'      => $matName,
                     'batch_number' => $batchNumber,
@@ -65,7 +79,7 @@ class AdjustStockImport implements ToCollection, WithHeadingRow
                     'unit_price'   => $row['unit_price'],
                     'total_price'  => $row['quantity']*$row['unit_price'],
                     'whscode'      => $row['warehouse'],
-                    'shkzg'        => '-',
+                    'shkzg'        => $shkzg,
                     'createdon'    => getLocalDatabaseDateTime(),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
 

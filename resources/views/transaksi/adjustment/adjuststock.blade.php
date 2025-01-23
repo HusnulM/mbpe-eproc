@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Upload Adjust Stock Out')
+@section('title', 'Upload Adjust Stock')
 
 @section('additional-css')
 @endsection
@@ -11,7 +11,7 @@
     <div class="col-lg-12 mt-2">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Upload Adjust Stock Out</h3>
+                <h3 class="card-title">Upload Adjust Stock</h3>
                 <div class="card-tools">
                     <a href="/excel/Template AdjOut Stock.xlsx" target="_blank" class="btn btn-primary btn-sm">
                         <i class="fa fa-download"></i> Download Template
@@ -35,6 +35,14 @@
                                         <div class="col-lg-12">
                                             <label for="">Tanggal Upload</label>
                                             <input type="date" name="tglupload" class="form-control" required>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <label for="">Ajustment Type</label>
+                                            <select name="adjtype" class="form-control" required>
+                                                <option value="">-----</option>
+                                                <option value="IN">Adjustment In</option>
+                                                <option value="OUT">Adjustment Out</option>
+                                            </select>
                                         </div>
                                         <div class="col-lg-12">
                                             <label for="">Keterangan</label>
