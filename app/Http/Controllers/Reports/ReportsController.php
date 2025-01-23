@@ -643,7 +643,7 @@ class ReportsController extends Controller
         $query->where('whscode', $whsCode);
         $query->whereBetween('postdate', [$strDate, $endDate]);
 
-        $query->orderBy('id', 'ASC');
+        $query->orderBy('createdon', 'ASC');
 
         return DataTables::queryBuilder($query)
         ->editColumn('quantity', function ($query){
