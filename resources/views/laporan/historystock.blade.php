@@ -182,7 +182,7 @@
 
         function loadDocument(_params){
             $("#tbl-budget-list").DataTable({
-                serverSide: true,
+                // serverSide: true,
                 ajax: {
                     url: base_url+'/report/stockhistorylist'+_params,
                     data: function (data) {
