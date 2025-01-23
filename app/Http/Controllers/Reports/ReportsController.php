@@ -440,11 +440,13 @@ class ReportsController extends Controller
             $whsCode = $req->whsid;
             $materials = DB::table('v_material_movements_2')
                         ->where('whscode', $req->whsid)
+                        // ->where('material', '8E-2819')
                         ->orderBy('whscode', 'ASC')
                         ->orderBy('material', 'ASC')
                         ->get();
         }else{
             $materials = DB::table('v_material_movements_2')
+                        // ->where('material', '8E-2819')
                         ->orderBy('whscode', 'ASC')
                         ->orderBy('material', 'ASC')
                         ->get();
@@ -464,15 +466,15 @@ class ReportsController extends Controller
                     ->select(DB::raw('material'), DB::raw('whscode'), DB::raw('sum(quantity) as begin_qty'),
                              DB::raw('sum(amount_val) as begin_val'))
                     ->where('postdate', '<', $strDate)
-
+                    // ->where('material', '8E-2819')
                     ->groupBy(DB::raw('material'), DB::raw('whscode'))
                     ->get();
-
+        // return $beginQty;
         $query = DB::select('call spGetStockHistory(
             "'. $strDate .'",
             "'. $endDate .'",
             "'. $whsCode .'")');
-
+        // return $query;
         $mtMat = array();
         foreach ($query as $sg) {
             $mtMat[] = $sg->material;
@@ -482,15 +484,20 @@ class ReportsController extends Controller
         foreach ($query as $sg) {
             $ftWhs[] = $sg->whscode;
         }
-
+        // return $mtMat;
         $stocks = array();
         foreach($materials as $key => $row){
+            // return $row;
+            // dd($row);
+            $bQty = 0;
+            $bVal = 0;
             if(in_array($row->material, $mtMat)){
+                // dd($row);
+
                 if(in_array($row->whscode, $ftWhs)){
                     foreach($query as $mat => $mrow){
                         if($row->material == $mrow->material && $row->whscode == $mrow->whscode){
-                            $bQty = 0;
-                            $bVal = 0;
+
                             foreach($beginQty as $bqty => $mtqy){
                                 if($mtqy->material == $mrow->material && $mtqy->whscode == $mrow->whscode){
                                     $bQty = $bQty + $mtqy->begin_qty;
@@ -519,12 +526,16 @@ class ReportsController extends Controller
             }else{
                 $bQty = 0;
                 $bVal = 0;
+                // dd($beginQty);
                 foreach($beginQty as $bqty => $mtqy){
-                    if($mtqy->material == $row->material && $mtqy->whscode == $row->whscode){
+                    // dd('a');
+                    if($mtqy->material === $row->material && $mtqy->whscode === $row->whscode){
+                        // dd($mtqy);
                         $bQty = $bQty + $mtqy->begin_qty;
                         $bVal = $bVal + $mtqy->begin_val;
                     }
                 }
+                // dd($bQty);
                 $data = array(
                     'id'        => $row->id,
                     'material'  => $row->material,
@@ -543,13 +554,11 @@ class ReportsController extends Controller
                 array_push($stocks, $data);
             }
         }
-
+        // dd($stocks);
         $stocks = collect($stocks)->sortBy('whscode')->values();
         // return $stocks;
         $totalValue = 0;
         foreach($stocks as $data => $val){
-            // return $val['begin_qty'];
-            // $totalValue = $totalValue + (($val['begin_qty']+$val['qty_in']+$val['qty_out'])*$val['avg_price']);
             $totalValue = $totalValue + (($val['begin_val']+$val['val_in']+$val['val_out']));
         }
 

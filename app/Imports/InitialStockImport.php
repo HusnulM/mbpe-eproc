@@ -30,6 +30,7 @@ class InitialStockImport implements ToCollection, WithHeadingRow
         DB::beginTransaction();
         try{
             // dd($_POST);
+            // dd($rows);
             $tgl   = substr($_POST['tglupload'], 8, 2);
             $bulan = substr($_POST['tglupload'], 5, 2);
             $tahun = substr($_POST['tglupload'], 0, 4);
@@ -59,7 +60,7 @@ class InitialStockImport implements ToCollection, WithHeadingRow
                     'docyear'      => $tahun,
                     'docitem'      => $count,
                     'movement_code'=> '561',
-                    'material'     => $row['material'],
+                    'material'     => strval($row['material']),
                     'matdesc'      => $row['material_desc'],
                     'batch_number' => $batchNumber,
                     'quantity'     => $row['quantity'],
@@ -72,11 +73,13 @@ class InitialStockImport implements ToCollection, WithHeadingRow
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
 
                 );
+                // dd($excelData);
                 array_push($insertData, $excelData);
+
                 insertOrUpdate($insertData,'t_inv02');
 
                 DB::table('t_inv_batch_stock')->insert([
-                    'material'     => $row['material'],
+                    'material'     => strval($row['material']),
                     'whscode'      => $row['warehouse'],
                     'batchnum'     => $batchNumber,
                     'quantity'     => $row['quantity'],
@@ -85,7 +88,7 @@ class InitialStockImport implements ToCollection, WithHeadingRow
                 ]);
 
                 DB::table('t_inv_stock')->insert([
-                    'material'     => $row['material'],
+                    'material'     => strval($row['material']),
                     'whscode'      => $row['warehouse'],
                     'batchnum'     => $batchNumber,
                     'quantity'     => $row['quantity'],
@@ -97,6 +100,7 @@ class InitialStockImport implements ToCollection, WithHeadingRow
             DB::commit();
         }catch(\Exception $e){
             DB::rollBack();
+            dd($e);
             // return Redirect::to("/transaksi/withdraw")->withError($e->getMessage());
         }
 
