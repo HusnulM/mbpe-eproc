@@ -94,6 +94,9 @@ class AdjustStockImport implements ToCollection, WithHeadingRow
             if(sizeof($insertData) > 0){
                 insertOrUpdate($insertData,'t_inv02');
                 DB::commit();
+
+                DB::select('call spSycnMatunitInv02()');
+                DB::commit();
             }else{
                 DB::rollBack();
             }
