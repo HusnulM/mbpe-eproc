@@ -479,9 +479,10 @@ class ReportsController extends Controller
         $mtMat = array();
         foreach ($query as $sg) {
             $mtMat[] = $sg->material;
+            // array_push($mtMat, $sg);
         }
-        $mtMat = array_unique($mtMat);
-
+        // $mtMat = array_unique($mtMat);
+        // return $mtMat;
         $ftWhs = array();
         foreach ($query as $sg) {
             $ftWhs[] = $sg->whscode;
@@ -490,12 +491,17 @@ class ReportsController extends Controller
         // return $materials;
         $stocks = array();
         foreach($materials as $key => $row){
+
             // return $row;
             // dd($row);
             $bQty = 0;
             $bVal = 0;
-            if(in_array($row->material, $mtMat)){
-                if(in_array($row->whscode, $ftWhs)){
+            if(in_array($row->material, $mtMat, TRUE)){
+                // dd($mtMat);
+                // if($row->material === "8E-2819"){
+                //     dd($mtMat);
+                // }
+                if(in_array($row->whscode, $ftWhs, TRUE)){
                     // return $query;
                     foreach($query as $mat => $mrow){
 

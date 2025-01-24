@@ -91,8 +91,8 @@ class StockHistoryExport implements FromCollection, WithHeadings, WithMapping, S
                 // dd($row);
                 $bQty = 0;
                 $bVal = 0;
-                if(in_array($row->material, $mtMat)){
-                    if(in_array($row->whscode, $ftWhs)){
+                if(in_array($row->material, $mtMat, TRUE)){
+                    if(in_array($row->whscode, $ftWhs, TRUE)){
                         // return $query;
                         foreach($query as $mat => $mrow){
 
