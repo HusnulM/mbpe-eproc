@@ -57,11 +57,14 @@ class AdjustStockImport implements ToCollection, WithHeadingRow
             foreach ($rows as $index => $row) {
                 // dd($row);
                 $matName = '';
+                $matUnit = null;
                 $material = DB::table('t_material')->where('material',strval($row['material']))->first();
                 if($material){
                     $matName = $material->matdesc;
+                    $matUnit = $material->matunit;
                 }else{
                     $matName = $row['material_desc'];
+                    $matUnit = $row['unit'];
                 }
 
                 $batchNumber = $batchAdj;
@@ -75,7 +78,7 @@ class AdjustStockImport implements ToCollection, WithHeadingRow
                     'matdesc'      => $matName,
                     'batch_number' => $batchNumber,
                     'quantity'     => $row['quantity'],
-                    'unit'         => $row['unit'],
+                    'unit'         => $matUnit,
                     'unit_price'   => $row['unit_price'],
                     'total_price'  => $row['quantity']*$row['unit_price'],
                     'whscode'      => $row['warehouse'],
