@@ -91,6 +91,7 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
                 DB::commit();
                 return true;
             }else{
+                DB::rollBack();
                 return false;
             }
         }catch(\Exception $e){

@@ -56,45 +56,52 @@ class AdjustStockImport implements ToCollection, WithHeadingRow
             $insertData = array();
             foreach ($rows as $index => $row) {
                 // dd($row);
-                $matName = '';
-                $matUnit = null;
-                $material = DB::table('t_material')->where('material',strval($row['material']))->first();
-                if($material){
-                    $matName = $material->matdesc;
-                    $matUnit = $material->matunit;
-                }else{
-                    $matName = $row['material_desc'];
-                    $matUnit = $row['unit'];
+                if($row){
+                    $matName = '';
+                    $matUnit = null;
+                    $material = DB::table('t_material')->where('material',strval($row['material']))->first();
+                    if($material){
+                        $matName = $material->matdesc;
+                        $matUnit = $material->matunit;
+                    }else{
+                        $matName = $row['material_desc'];
+                        $matUnit = $row['unit'];
+                    }
+
+                    $batchNumber = $batchAdj;
+                    $count = $count + 1;
+                    $excelData = array(
+                        'docnum'       => $ptaNumber,
+                        'docyear'      => $tahun,
+                        'docitem'      => $count,
+                        'movement_code'=> $movementCode,
+                        'material'     => strval($row['material']),
+                        'matdesc'      => $matName,
+                        'batch_number' => $batchNumber,
+                        'quantity'     => $row['quantity'],
+                        'unit'         => $matUnit,
+                        'unit_price'   => $row['unit_price'],
+                        'total_price'  => $row['quantity']*$row['unit_price'],
+                        'whscode'      => $row['warehouse'],
+                        'shkzg'        => $shkzg,
+                        'createdon'    => getLocalDatabaseDateTime(),
+                        'createdby'    => Auth::user()->email ?? Auth::user()->username
+
+                    );
+                    array_push($insertData, $excelData);
                 }
-
-                $batchNumber = $batchAdj;
-                $count = $count + 1;
-                $excelData = array(
-                    'docnum'       => $ptaNumber,
-                    'docyear'      => $tahun,
-                    'docitem'      => $count,
-                    'movement_code'=> $movementCode,
-                    'material'     => strval($row['material']),
-                    'matdesc'      => $matName,
-                    'batch_number' => $batchNumber,
-                    'quantity'     => $row['quantity'],
-                    'unit'         => $matUnit,
-                    'unit_price'   => $row['unit_price'],
-                    'total_price'  => $row['quantity']*$row['unit_price'],
-                    'whscode'      => $row['warehouse'],
-                    'shkzg'        => $shkzg,
-                    'createdon'    => getLocalDatabaseDateTime(),
-                    'createdby'    => Auth::user()->email ?? Auth::user()->username
-
-                );
-                array_push($insertData, $excelData);
             }
-            insertOrUpdate($insertData,'t_inv02');
-            DB::commit();
+            if(sizeof($insertData) > 0){
+                insertOrUpdate($insertData,'t_inv02');
+                DB::commit();
+            }else{
+                DB::rollBack();
+            }
 
             return true;
         }catch(\Exception $e){
             DB::rollBack();
+            dd($e);
             return false;
         }
     }
