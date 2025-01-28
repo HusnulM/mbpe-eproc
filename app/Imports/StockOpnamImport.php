@@ -48,7 +48,18 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
                             $matName = $row['part_name'];
                         }
                         $count = $count + 1;
-                        DB::table('t_stock_opnam02')->insert([
+                        // DB::table('t_stock_opnam02')->insert([
+                        //     'pidnumber'    => $opnamNumber,
+                        //     'header_id'    => $stockOpnamID,
+                        //     'piditem'      => $count,
+                        //     'material'     => strval($row['part_number']),
+                        //     'matdesc'      => $matName,
+                        //     'actual_qty'   => $row['actual_stock'],
+                        //     'matunit'      => $row['uom'],
+                        //     'unit_price'   => $row['harga_satuan'],
+                        //     'total_price'  => $row['actual_stock'] * $row['harga_satuan']
+                        // ]);
+                        $excelData = array(
                             'pidnumber'    => $opnamNumber,
                             'header_id'    => $stockOpnamID,
                             'piditem'      => $count,
@@ -58,38 +69,46 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
                             'matunit'      => $row['uom'],
                             'unit_price'   => $row['harga_satuan'],
                             'total_price'  => $row['actual_stock'] * $row['harga_satuan']
+                        );
+                        array_push($insertData, $excelData);
+                    }
+                }
+
+                if(sizeof($insertData) > 0){
+                    insertOrUpdate($insertData,'t_stock_opnam02');
+
+                    $approval = DB::table('v_workflow_budget')->where('object', 'OPNAM')->where('requester', Auth::user()->id)->get();
+                    if(sizeof($approval) > 0){
+                        $insertApproval = array();
+                        foreach($approval as $row){
+                            $is_active = 'N';
+                            if($row->approver_level == 1){
+                                $is_active = 'Y';
+                            }
+                            $approvals = array(
+                                'pidnumber'         => $opnamNumber,
+                                'approver_level'    => $row->approver_level,
+                                'approver'          => $row->approver,
+                                'requester'         => Auth::user()->id,
+                                'is_active'         => $is_active,
+                                'createdon'         => getLocalDatabaseDateTime()
+                            );
+                            array_push($insertApproval, $approvals);
+                        }
+                        insertOrUpdate($insertApproval,'t_opnam_approval');
+
+                    }else{
+                        DB::table('t_stock_opnam01')->where('id', $stockOpnamID)
+                        ->update([
+                            'approval_status' => 'A'
                         ]);
                     }
-                }
-
-                $approval = DB::table('v_workflow_budget')->where('object', 'OPNAM')->where('requester', Auth::user()->id)->get();
-                if(sizeof($approval) > 0){
-                    $insertApproval = array();
-                    foreach($approval as $row){
-                        $is_active = 'N';
-                        if($row->approver_level == 1){
-                            $is_active = 'Y';
-                        }
-                        $approvals = array(
-                            'pidnumber'         => $opnamNumber,
-                            'approver_level'    => $row->approver_level,
-                            'approver'          => $row->approver,
-                            'requester'         => Auth::user()->id,
-                            'is_active'         => $is_active,
-                            'createdon'         => getLocalDatabaseDateTime()
-                        );
-                        array_push($insertApproval, $approvals);
-                    }
-                    insertOrUpdate($insertApproval,'t_opnam_approval');
-
+                    DB::commit();
+                    return true;
                 }else{
-                    DB::table('t_stock_opnam01')->where('id', $stockOpnamID)
-                    ->update([
-                        'approval_status' => 'A'
-                    ]);
+                    DB::rollBack();
+                    return false;
                 }
-                DB::commit();
-                return true;
             }else{
                 DB::rollBack();
                 return false;
