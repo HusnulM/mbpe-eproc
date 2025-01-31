@@ -93,42 +93,23 @@ class ReceiptPoController extends Controller
                 );
                 array_push($insertData, $data);
 
-                DB::table('t_inv_batch_stock')->insert([
-                    'material'     => $parts[$i],
-                    'whscode'      => $whscode[$i],
-                    'batchnum'     => $batchNumber,
-                    'quantity'     => $qty,
-                    'unit'         => $uom[$i],
-                    'last_udpate'  => getLocalDatabaseDateTime()
-                ]);
+                // DB::table('t_inv_batch_stock')->insert([
+                //     'material'     => $parts[$i],
+                //     'whscode'      => $whscode[$i],
+                //     'batchnum'     => $batchNumber,
+                //     'quantity'     => $qty,
+                //     'unit'         => $uom[$i],
+                //     'last_udpate'  => getLocalDatabaseDateTime()
+                // ]);
 
-                DB::table('t_inv_stock')->insert([
-                    'material'     => $parts[$i],
-                    'whscode'      => $whscode[$i],
-                    'batchnum'     => $batchNumber,
-                    'quantity'     => $qty,
-                    'unit'         => $uom[$i],
-                    'last_udpate'  => getLocalDatabaseDateTime()
-                ]);
-
-                // $latestStock = DB::table('t_inv_stock')
-                //                ->where('material', $parts[$i])
-                //                ->where('whscode', $whscode[$i])->first();
-                // if($latestStock){
-                //     DB::table('t_inv_stock')
-                //     ->where('material', $parts[$i])
-                //     ->where('whscode', $whscode[$i])
-                //     ->update([
-                //         'quantity'     => $qty + $latestStock->quantity
-                //     ]);
-                // }else{
-                //     DB::table('t_inv_stock')->insert([
-                //         'material'     => $parts[$i],
-                //         'whscode'      => $whscode[$i],
-                //         'quantity'     => $qty,
-                //         'unit'         => $uom[$i],
-                //     ]);
-                // }
+                // DB::table('t_inv_stock')->insert([
+                //     'material'     => $parts[$i],
+                //     'whscode'      => $whscode[$i],
+                //     'batchnum'     => $batchNumber,
+                //     'quantity'     => $qty,
+                //     'unit'         => $uom[$i],
+                //     'last_udpate'  => getLocalDatabaseDateTime()
+                // ]);
 
                 $POItemQty = DB::table('t_po02')
                 ->where('ponum', $ponum[$i])
@@ -152,7 +133,53 @@ class ReceiptPoController extends Controller
                     }
                 }
             }
-            insertOrUpdate($insertData,'t_inv02');
+
+            // GR PO Approval
+            $approval = DB::table('v_workflow_budget')->where('object', 'GRPO')->where('requester', Auth::user()->id)->get();
+            if(sizeof($approval) > 0){
+                insertOrUpdate($insertData,'t_inv02_app');
+                foreach($insertData as $gr){
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        $is_active = 'N';
+                        if($row->approver_level == 1){
+                            $is_active = 'Y';
+                        }
+                        $approvals = array(
+                            'docnum'            => $ptaNumber,
+                            'docyear'           => $tahun,
+                            'docitem'           => $gr['docitem'],
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $row->approver,
+                            'requester'         => Auth::user()->id,
+                            'is_active'         => $is_active,
+                            'createdon'         => getLocalDatabaseDateTime()
+                        );
+                        array_push($insertApproval, $approvals);
+                    }
+                    insertOrUpdate($insertApproval,'t_movement_approval');
+                }
+            }else{
+                insertOrUpdate($insertData,'t_inv02');
+
+                DB::table('t_inv_batch_stock')->insert([
+                    'material'     => $parts[$i],
+                    'whscode'      => $whscode[$i],
+                    'batchnum'     => $batchNumber,
+                    'quantity'     => $qty,
+                    'unit'         => $uom[$i],
+                    'last_udpate'  => getLocalDatabaseDateTime()
+                ]);
+
+                DB::table('t_inv_stock')->insert([
+                    'material'     => $parts[$i],
+                    'whscode'      => $whscode[$i],
+                    'batchnum'     => $batchNumber,
+                    'quantity'     => $qty,
+                    'unit'         => $uom[$i],
+                    'last_udpate'  => getLocalDatabaseDateTime()
+                ]);
+            }
 
             DB::commit();
             return Redirect::to("/logistic/terimapo")->withSuccess('Penerimaan PO Berhasil dengan Nomor : '. $ptaNumber);

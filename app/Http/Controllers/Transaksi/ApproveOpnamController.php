@@ -91,7 +91,6 @@ class ApproveOpnamController extends Controller
         // return $req;
         DB::beginTransaction();
         try{
-
             $ptaNumber = $req->pidnumber;
 
             $userAppLevel = DB::table('t_opnam_approval')
@@ -101,69 +100,100 @@ class ApproveOpnamController extends Controller
                             ->first();
             // return $userAppLevel;
 
-            DB::table('t_opnam_approval')
+
+
+            if($req->action === "R"){
+                DB::table('t_opnam_approval')
                     ->where('pidnumber', $ptaNumber)
-                    ->where('approver_level',$userAppLevel->approver_level)
+                    // ->where('approver_level',$userAppLevel->approver_level)
                     ->update([
-                        'approval_status' => 'A',
+                        'approval_status' => 'R',
                         'approval_remark' => $req->approvernote,
                         'approved_by'     => Auth::user()->username,
                         'approval_date'   => getLocalDatabaseDateTime()
                 ]);
 
-            $nextApprover = $this->getNextApproval($ptaNumber);
-            if($nextApprover  != null){
                 DB::table('t_opnam_approval')
-                ->where('pidnumber', $ptaNumber)
-                ->where('approver_level', $nextApprover)
-                ->update([
-                    'is_active' => 'Y'
-                ]);
-            }
+                    ->where('pidnumber', $ptaNumber)
+                    ->update([
+                        'is_active' => 'N'
+                    ]);
 
-            $checkIsFullApprove = DB::table('t_opnam_approval')
-                                      ->where('pidnumber', $ptaNumber)
-                                      ->where('approval_status', '!=', 'A')
-                                      ->get();
-            if(sizeof($checkIsFullApprove) > 0){
-                // go to next approver
-            }else{
-                //Full Approve
                 DB::table('t_stock_opnam01')->where('pidnumber', $ptaNumber)->update([
-                    'approval_status'   => 'A'
+                    'approval_status'   => 'R'
                 ]);
 
-                $buangStockLama = $this->postOldDocument($ptaNumber);
+                DB::commit();
+                $result = array(
+                    'msgtype' => '200',
+                    'message' => 'Stock Opnam : '. $ptaNumber . ' berhasil di reject'
+                );
+                return $result;
+            }else{
+                DB::table('t_opnam_approval')
+                    ->where('pidnumber', $ptaNumber)
+                    ->where('approver_level',$userAppLevel->approver_level)
+                    ->update([
+                        'approval_status' => $req->action,
+                        'approval_remark' => $req->approvernote,
+                        'approved_by'     => Auth::user()->username,
+                        'approval_date'   => getLocalDatabaseDateTime()
+                ]);
 
-                if($buangStockLama['msgtype'] == '200'){
-                    $postPID        = $this->postPIDDocument($ptaNumber);
-                    if($postPID['msgtype'] == '200'){
-                        // $postPID        = $this->postPIDDocument($ptaNumber);
-                        // dd($postPID);
+                $nextApprover = $this->getNextApproval($ptaNumber);
+                if($nextApprover  != null){
+                    DB::table('t_opnam_approval')
+                    ->where('pidnumber', $ptaNumber)
+                    ->where('approver_level', $nextApprover)
+                    ->update([
+                        'is_active' => 'Y'
+                    ]);
+                }
+
+                $checkIsFullApprove = DB::table('t_opnam_approval')
+                                          ->where('pidnumber', $ptaNumber)
+                                          ->where('approval_status', '!=', 'A')
+                                          ->get();
+                if(sizeof($checkIsFullApprove) > 0){
+                    // go to next approver
+                }else{
+                    //Full Approve
+                    DB::table('t_stock_opnam01')->where('pidnumber', $ptaNumber)->update([
+                        'approval_status'   => 'A'
+                    ]);
+
+                    $buangStockLama = $this->postOldDocument($ptaNumber);
+
+                    if($buangStockLama['msgtype'] == '200'){
+                        $postPID        = $this->postPIDDocument($ptaNumber);
+                        if($postPID['msgtype'] == '200'){
+                            // $postPID        = $this->postPIDDocument($ptaNumber);
+                            // dd($postPID);
+                        }else{
+                            DB::rollBack();
+                            $result = array(
+                                'msgtype' => '500',
+                                'message' => $postPID['message']
+                            );
+                            return $result;
+                        }
                     }else{
                         DB::rollBack();
                         $result = array(
                             'msgtype' => '500',
-                            'message' => $postPID['message']
+                            'message' => $buangStockLama['message']
                         );
                         return $result;
                     }
-                }else{
-                    DB::rollBack();
-                    $result = array(
-                        'msgtype' => '500',
-                        'message' => $buangStockLama['message']
-                    );
-                    return $result;
                 }
-            }
 
-            DB::commit();
-            $result = array(
-                'msgtype' => '200',
-                'message' => 'Stock Opnam : '. $ptaNumber . ' berhasil di approve'
-            );
-            return $result;
+                DB::commit();
+                $result = array(
+                    'msgtype' => '200',
+                    'message' => 'Stock Opnam : '. $ptaNumber . ' berhasil di approve'
+                );
+                return $result;
+            }
         }
         catch(\Exception $e){
             DB::rollBack();

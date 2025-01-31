@@ -93,6 +93,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/updategroup',       'Config\WorkflowController@updateGroup')->middleware('checkAuth:config/workflow');
         Route::get('/deletegroup/{id}',   'Config\WorkflowController@deleteGroup')->middleware('checkAuth:config/workflow');
 
+        Route::post('/savewf',         'Config\WorkflowController@saveWF')->middleware('checkAuth:config/workflow');
+
         Route::post('/saveassignment',    'Config\WorkflowController@saveAssignment')->middleware('checkAuth:config/workflow');
 
         Route::get('/deleteassignment/{p1}/{p2}/{p3}/{p4}/{p5}',   'Config\WorkflowController@deleteAssignment')->middleware('checkAuth:config/workflow');
@@ -101,6 +103,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/deleteprwf/{id}','Config\WorkflowController@deletePRwf')->middleware('checkAuth:config/workflow');
         Route::get('/deletepowf/{id}','Config\WorkflowController@deletePOwf')->middleware('checkAuth:config/workflow');
         Route::get('/deleteopnamwf/{id}','Config\WorkflowController@deleteOpnamWf')->middleware('checkAuth:config/workflow');
+        Route::get('/deletegrpowf/{id}','Config\WorkflowController@deleteGrpoWF')->middleware('checkAuth:config/workflow');
+        Route::get('/deletebastwf/{id}','Config\WorkflowController@deleteBASTWF')->middleware('checkAuth:config/workflow');
     });
 
     Route::group(['prefix' => '/config/objectauth'], function () {

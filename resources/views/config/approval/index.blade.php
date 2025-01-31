@@ -39,6 +39,12 @@
                 <li class="nav-item">
                     <a class="nav-link" id="custom-content-above-opnam-tab" data-toggle="pill" href="#custom-content-above-opnam" role="tab" aria-controls="custom-content-above-opnam" aria-selected="false">Stock Opnam</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-above-grpo-tab" data-toggle="pill" href="#custom-content-above-grpo" role="tab" aria-controls="custom-content-above-grpo" aria-selected="false">Receipt PO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-above-bast-tab" data-toggle="pill" href="#custom-content-above-bast" role="tab" aria-controls="custom-content-above-bast" aria-selected="false">BAST</a>
+                </li>
             </ul>
             <!-- <div class="tab-custom-content">
                 <p class="lead mb-0">Custom Content goes here</p>
@@ -270,6 +276,88 @@
                                             <td>{{ $row->approver_level }}</td>
                                             <td style="text-align:center;">
                                                 <a href="{{ url('config/workflow/deleteopnamwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'>
+                                                    <i class='fa fa-trash'></i> DELETE
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- GR PO --}}
+                <div class="tab-pane fade" id="custom-content-above-grpo" role="tabpanel" aria-labelledby="custom-content-above-grpo-tab">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-primary btn-sm btn-add-grpo-approval">
+                                        <i class="fas fa-plus"></i> Tambah Approval Receipt PO
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table id="tbl-worflow-grpo" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                    <thead>
+                                        <th>No</th>
+                                        <th>Creator</th>
+                                        <th>Approver</th>
+                                        <th>Approval Level</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($grpowf as $key => $row)
+                                        <tr>
+                                            <td>{{ $key+1 }}</td>
+                                            <td>{{ $row->requester_name }}</td>
+                                            <td>{{ $row->approver_name }}</td>
+                                            <td>{{ $row->approver_level }}</td>
+                                            <td style="text-align:center;">
+                                                <a href="{{ url('config/workflow/deletegrpowf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'>
+                                                    <i class='fa fa-trash'></i> DELETE
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- BAST --}}
+                <div class="tab-pane fade" id="custom-content-above-bast" role="tabpanel" aria-labelledby="custom-content-above-bast-tab">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-primary btn-sm btn-add-bast-approval">
+                                        <i class="fas fa-plus"></i> Tambah Approval BAST
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table id="tbl-worflow-bast" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                    <thead>
+                                        <th>No</th>
+                                        <th>Creator</th>
+                                        <th>Approver</th>
+                                        <th>Approval Level</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($bastwf as $key => $row)
+                                        <tr>
+                                            <td>{{ $key+1 }}</td>
+                                            <td>{{ $row->requester_name }}</td>
+                                            <td>{{ $row->approver_name }}</td>
+                                            <td>{{ $row->approver_level }}</td>
+                                            <td style="text-align:center;">
+                                                <a href="{{ url('config/workflow/deletebastwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'>
                                                     <i class='fa fa-trash'></i> DELETE
                                                 </a>
                                             </td>
@@ -582,6 +670,58 @@
         </div>
     </form>
 </div>
+
+<div class="modal fade" id="modal-add-approval">
+    <form action="{{ url('config/workflow/savewf') }}" method="post">
+        @csrf
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="title-add-approval">Tambah Approval</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12" style="display: none;">
+                        <input type="text" name="wfobject" id="wfobject" class="form-control" readonly>
+                    </div>
+                    <div class="col-lg-12">
+                        <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                            <thead>
+                                <th>Creator</th>
+                                <th>Approver</th>
+                                <th>Approval Level</th>
+                                <th style="width:50px; text-align:center;">
+                                    <button type="button" class="btn btn-success btn-sm btn-add-new-wf">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </th>
+                            </thead>
+                            <tbody id="tbl-add-approval-body">
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="1"></td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </div>
+        </div>
+    </form>
+</div>
 @endsection
 
 @section('additional-js')
@@ -618,6 +758,56 @@
 
         $('.btn-add-opnam-approval').on('click', function(){
             $('#modal-approval-opnam').modal('show');
+        });
+
+        $('.btn-add-grpo-approval').on('click', function(){
+            $('#wfobject').val('GRPO');
+            $('#title-add-approval').html('');
+            $('#title-add-approval').html('Tambah Approval Receipt PO');
+            $('#modal-add-approval').modal('show');
+        });
+
+        $('.btn-add-bast-approval').on('click', function(){
+            $('#wfobject').val('BAST');
+            $('#title-add-approval').html('');
+            $('#title-add-approval').html('Tambah Approval BAST');
+            $('#modal-add-approval').modal('show');
+        });
+
+        $('.btn-add-new-wf').on('click', function(){
+            $('#tbl-add-approval-body').append(`
+                <tr>
+                    <td>
+                        <select name="requester[]" class="form-control requester">
+                            @foreach($users as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="approver[]" class="form-control approver">
+                            @foreach($users as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="applevel[]" class="form-control"/>
+                    </td>
+                    <td style="text-align:center;">
+                        <button type="button" class="btn btn-danger btn-sm btnRemove">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+            $(".requester, .approver").select2();
+
+            $('.btnRemove').on('click', function(e){
+                e.preventDefault();
+                $(this).closest("tr").remove();
+            });
         });
 
         $('.btn-add-new-assignment').on('click', function(){

@@ -21,13 +21,16 @@ class WorkflowController extends Controller
         $prwf     = DB::table('v_workflow_budget')->where('object', 'PR')->get();
         $powf     = DB::table('v_workflow_budget')->where('object', 'PO')->get();
         $opnamwf  = DB::table('v_workflow_budget')->where('object', 'OPNAM')->get();
+        $grpowf   = DB::table('v_workflow_budget')->where('object', 'GRPO')->get();
+        $bastwf   = DB::table('v_workflow_budget')->where('object', 'BAST')->get();
 
         return view('config.approval.index',
             [ 'ctgrs' => $ctgrs, 'groups'   => $groups,
               'users' => $users, 'budgetwf' => $budgetwf,
               'pbjwf' => $pbjwf, 'spkwf'    => $spkwf,
               'prwf'  => $prwf,  'powf'     => $powf,
-              'opnamwf' => $opnamwf
+              'opnamwf' => $opnamwf, 'grpowf' => $grpowf,
+              'bastwf' => $bastwf
             ]);
     }
 
@@ -200,6 +203,36 @@ class WorkflowController extends Controller
         }
     }
 
+    public function saveWF(Request $req)
+    {
+        DB::beginTransaction();
+        try{
+            $requester = $req['requester'];
+            $approver  = $req['approver'];
+            $applevel  = $req['applevel'];
+            $wfobject  = $req['wfobject'];
+
+            $insertData = array();
+            for($i = 0; $i < sizeof($requester); $i++){
+                $data = array(
+                    'object'          => $wfobject,
+                    'requester'       => $requester[$i],
+                    'approver'        => $approver[$i],
+                    'approver_level'  => $applevel[$i],
+                    'createdon'       => date('Y-m-d H:m:s'),
+                    'createdby'       => Auth::user()->email ?? Auth::user()->username
+                );
+                array_push($insertData, $data);
+            }
+            insertOrUpdate($insertData,'workflow_budget');
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval '. $wfobject .' Berhasil dibuat');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
+
     public function deleteBudgetwf($id){
         DB::beginTransaction();
         try{
@@ -266,6 +299,30 @@ class WorkflowController extends Controller
             DB::table('workflow_budget')->where('id', $id)->delete();
             DB::commit();
             return Redirect::to("/config/workflow")->withSuccess('Approval PO Berhasil dihapus');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
+
+    public function deleteGrpoWF($id){
+        DB::beginTransaction();
+        try{
+            DB::table('workflow_budget')->where('id', $id)->delete();
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval Receipt PO Berhasil dihapus');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
+
+    public function deleteBASTWF($id){
+        DB::beginTransaction();
+        try{
+            DB::table('workflow_budget')->where('id', $id)->delete();
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval BAST PO Berhasil dihapus');
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/config/workflow")->withError($e->getMessage());
