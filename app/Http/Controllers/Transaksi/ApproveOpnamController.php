@@ -92,14 +92,37 @@ class ApproveOpnamController extends Controller
         DB::beginTransaction();
         try{
             $ptaNumber = $req->pidnumber;
-
+            $check = DB::table('t_stock_opnam01')
+                     ->where('pidnumber', $ptaNumber)
+                     ->first();
+            if($check){
+                if($check->approval_status === "A"){
+                    $result = array(
+                        'msgtype' => '400',
+                        'message' => 'Stock Opnam : '. $ptaNumber . ' tidak bisa di proses karena sudah di approve'
+                    );
+                    return $result;
+                }
+            }else{
+                $result = array(
+                    'msgtype' => '400',
+                    'message' => 'Stock Opnam : '. $ptaNumber . ' tidak ditemukan'
+                );
+                return $result;
+            }
             $userAppLevel = DB::table('t_opnam_approval')
                             ->select('approver_level')
                             ->where('pidnumber', $ptaNumber)
                             ->where('approver', Auth::user()->id)
                             ->first();
             // return $userAppLevel;
-
+            if($userAppLevel->approval_status === "A"){
+                $result = array(
+                    'msgtype' => '400',
+                    'message' => 'Stock Opnam : '. $ptaNumber . ' tidak bisa di proses karena sudah di approve'
+                );
+                return $result;
+            }
 
 
             if($req->action === "R"){
