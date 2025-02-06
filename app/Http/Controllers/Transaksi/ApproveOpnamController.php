@@ -95,6 +95,7 @@ class ApproveOpnamController extends Controller
             $check = DB::table('t_stock_opnam01')
                      ->where('pidnumber', $ptaNumber)
                      ->first();
+            // return $check->approval_status;
             if($check){
                 if($check->approval_status === "A"){
                     $result = array(
@@ -111,7 +112,7 @@ class ApproveOpnamController extends Controller
                 return $result;
             }
             $userAppLevel = DB::table('t_opnam_approval')
-                            ->select('approver_level')
+                            ->select('approver_level','approval_status')
                             ->where('pidnumber', $ptaNumber)
                             ->where('approver', Auth::user()->id)
                             ->first();
