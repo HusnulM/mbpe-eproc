@@ -161,29 +161,35 @@ class ReceiptPoController extends Controller
                 }
             }else{
                 insertOrUpdate($insertData,'t_inv02');
+                $qty = 0;
+                for($i = 0; $i < sizeof($parts); $i++){
+                    $qty    = $quantity[$i];
+                    $qty    = str_replace(',','',$qty);
 
-                DB::table('t_inv_batch_stock')->insert([
-                    'material'     => $parts[$i],
-                    'whscode'      => $whscode[$i],
-                    'batchnum'     => $batchNumber,
-                    'quantity'     => $qty,
-                    'unit'         => $uom[$i],
-                    'last_udpate'  => getLocalDatabaseDateTime()
-                ]);
+                    DB::table('t_inv_batch_stock')->insert([
+                        'material'     => $parts[$i],
+                        'whscode'      => $whscode[$i],
+                        'batchnum'     => $batchNumber,
+                        'quantity'     => $qty,
+                        'unit'         => $uom[$i],
+                        'last_udpate'  => getLocalDatabaseDateTime()
+                    ]);
 
-                DB::table('t_inv_stock')->insert([
-                    'material'     => $parts[$i],
-                    'whscode'      => $whscode[$i],
-                    'batchnum'     => $batchNumber,
-                    'quantity'     => $qty,
-                    'unit'         => $uom[$i],
-                    'last_udpate'  => getLocalDatabaseDateTime()
-                ]);
+                    DB::table('t_inv_stock')->insert([
+                        'material'     => $parts[$i],
+                        'whscode'      => $whscode[$i],
+                        'batchnum'     => $batchNumber,
+                        'quantity'     => $qty,
+                        'unit'         => $uom[$i],
+                        'last_udpate'  => getLocalDatabaseDateTime()
+                    ]);
+                }
             }
 
             DB::commit();
             return Redirect::to("/logistic/terimapo")->withSuccess('Penerimaan PO Berhasil dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
+            // dd($e);
             DB::rollBack();
             return Redirect::to("/logistic/terimapo")->withError($e->getMessage());
             // dd($e->getMessage());
