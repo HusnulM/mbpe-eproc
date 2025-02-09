@@ -289,6 +289,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/getdetails/{id}',   'Transaksi\StockOpnamController@stockOpnameDetails')->middleware('checkAuth:logistic/stockopname');
 
         Route::get('/approvalstatus/{id}',   'Transaksi\StockOpnamController@getApprovalStatus')->middleware('checkAuth:logistic/stockopname');
+
+        Route::post('/export',               'ExportDataController@exportOpname');
     });
 
     Route::group(['prefix' => '/approve/opnam'], function () {

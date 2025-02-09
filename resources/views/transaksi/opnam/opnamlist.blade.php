@@ -21,7 +21,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <form action="{{ url('report/exportpr') }}" method="post">
+                            <form action="{{ url('logistic/stockopname/export') }}" method="post">
                                 @csrf
                                 <div class="row">
                                     <div class="col-lg-2">
@@ -38,9 +38,9 @@
                                         <button type="button" class="btn btn-default mt-2 btn-search">
                                             <i class="fa fa-search"></i> Filter
                                         </button>
-                                        {{-- <button type="submit" class="btn btn-success mt-2 btn-export">
+                                        <button type="submit" class="btn btn-success mt-2 btn-export">
                                             <i class="fa fa-download"></i> Export Data
-                                        </button> --}}
+                                        </button>
                                     </div>
 
                                 </div>

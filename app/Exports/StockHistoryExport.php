@@ -161,82 +161,7 @@ class StockHistoryExport implements FromCollection, WithHeadings, WithMapping, S
                     array_push($stocks, $data);
                 }
             }
-        // $mtMat = array();
-        // foreach ($query as $sg) {
-        //     $mtMat[] = $sg->material;
-        // }
 
-        // $ftWhs = array();
-        // foreach ($query as $sg) {
-        //     $ftWhs[] = $sg->whscode;
-        // }
-
-        // $stocks = array();
-        // foreach($materials as $key => $row){
-        //     // $bQty = 0;
-        //     if(in_array($row->material, $mtMat)){
-        //         if(in_array($row->whscode, $ftWhs)){
-        //             foreach($query as $mat => $mrow){
-        //                 if($row->material == $mrow->material && $row->whscode == $mrow->whscode){
-        //                     $bQty = 0;
-        //                     $bVal = 0;
-        //                     foreach($beginQty as $bqty => $mtqy){
-        //                         if($mtqy->material == $mrow->material && $mtqy->whscode == $mrow->whscode){
-        //                             $bQty = $bQty + $mtqy->begin_qty;
-        //                             $bVal = $bVal + $mtqy->begin_val;
-        //                         }
-        //                     }
-        //                     $data = array(
-        //                         'id'        => $row->id,
-        //                         'material'  => $row->material,
-        //                         'matdesc'   => $row->matdesc,
-        //                         'begin_qty' => $bQty,
-        //                         'qty_in'    => $mrow->qty_in,
-        //                         'qty_out'   => $mrow->qty_out,
-        //                         'begin_val' => $bVal,
-        //                         'val_in'    => (float)$mrow->val_in,
-        //                         'val_out'   => (float)$mrow->val_out,
-        //                         'whscode'   => $mrow->whscode,
-        //                         'whsname'   => $mrow->whsname,
-        //                         'unit'      => $mrow->unit,
-        //                         'avg_price' => $row->avg_price,
-        //                     );
-        //                     array_push($stocks, $data);
-        //                 }
-        //             }
-        //         }
-        //     }else{
-        //         $bQty = 0;
-        //         $bVal = 0;
-        //         foreach($beginQty as $bqty => $mtqy){
-        //             if($mtqy->material == $row->material && $mtqy->whscode == $row->whscode){
-        //                 $bQty = $bQty + $mtqy->begin_qty;
-        //                 $bVal = $bVal + $mtqy->begin_val;
-        //             }
-        //         }
-        //         $data = array(
-        //             'id'        => $row->id,
-        //             'material'  => $row->material,
-        //             'matdesc'   => $row->matdesc,
-        //             'begin_qty' => $bQty,
-        //             'qty_in'    => 0,
-        //             'qty_out'   => 0,
-        //             'begin_val' => $bVal,
-        //             'val_in'    => (float)0,
-        //             'val_out'   => (float)0,
-        //             'whscode'   => $row->whscode,
-        //             'whsname'   => $row->whsname,
-        //             'unit'      => $row->unit,
-        //             'avg_price' => $row->avg_price,
-        //         );
-        //         array_push($stocks, $data);
-        //     }
-        // }
-
-        // $totalValue = 0;
-        // foreach($stocks as $data => $val){
-        //     $totalValue = $totalValue + (($val['begin_val']+$val['val_in']+$val['val_out']));
-        // }
         $this->totalRows = sizeof($stocks);
 
         $stocks = collect($stocks)->sortBy('whscode')->values();
@@ -288,17 +213,6 @@ class StockHistoryExport implements FromCollection, WithHeadings, WithMapping, S
                 "End Value"
         ];
     }
-
-    // public function registerEvents(): array
-    // {
-    //     return [
-    //         AfterSheet::class    => function(AfterSheet $event) {
-    //             $cellRange = 'A1:L1'; // All headers
-    //             $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
-    //         },
-    //     ];
-    // }
-
 
     public static function afterSheet(AfterSheet $event)
     {
