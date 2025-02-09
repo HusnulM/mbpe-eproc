@@ -87,8 +87,6 @@ class BastController extends Controller
     public function save(Request $req){
         // return $req;
         $this->resetQtyPBJ($req);
-
-
         DB::beginTransaction();
         try{
             // resetPBJNotRealized();
@@ -119,15 +117,7 @@ class BastController extends Controller
                 return $result;
             }
 
-            $bastID = DB::table('t_bast01')->insertGetId([
-                'no_bast'         => $bastNumber,
-                'userid_pemberi'  => Auth::user()->id,
-                'userid_penerima' => $req['penerima'],
-                'tanggal_bast'    => $req['tglbast'],
-                'remark'          => $req['remark'],
-                'createdon'       => getLocalDatabaseDateTime(),
-                'createdby'       => Auth::user()->email ?? Auth::user()->username
-            ]);
+
 
 
             // return $wonum;
@@ -136,23 +126,67 @@ class BastController extends Controller
 
             $pbjheader = DB::table('t_pbj01')->where('pbjnumber', $pbjnum[0])->first();
 
-            $ptaNumber = generateIssueNumber(date('Y'), date('m'));
-            DB::table('t_inv01')->insert([
-                'docnum' => $ptaNumber,
-                'docyear' => date('Y'),
-                'docdate' => date('Y-m-d'),
-                'postdate' => date('Y-m-d'),
-                'movement_code' => '201',
-                'remark' => 'Issued BAST',
-                'createdon'         => date('Y-m-d H:m:s'),
-                'createdby'         => Auth::user()->email ?? Auth::user()->username
-            ]);
+            $approval = DB::table('v_workflow_budget')->where('object', 'BAST')->where('requester', Auth::user()->id)->get();
+            if(sizeof($approval) > 0){
+
+                $bastID = DB::table('t_bast01')->insertGetId([
+                    'no_bast'         => $bastNumber,
+                    'userid_pemberi'  => Auth::user()->id,
+                    'userid_penerima' => $req['penerima'],
+                    'tanggal_bast'    => $req['tglbast'],
+                    'remark'          => $req['remark'],
+                    'approval_status' => 'N',
+                    'createdon'       => getLocalDatabaseDateTime(),
+                    'createdby'       => Auth::user()->email ?? Auth::user()->username
+                ]);
+
+                $insertApproval = array();
+                foreach($approval as $row){
+                    $is_active = 'N';
+                    if($row->approver_level == 1){
+                        $is_active = 'Y';
+                    }
+                    $approvals = array(
+                        'no_bast'           => $bastNumber,
+                        'approver_level'    => $row->approver_level,
+                        'approver'          => $row->approver,
+                        'requester'         => Auth::user()->id,
+                        'is_active'         => $is_active,
+                        'createdon'         => getLocalDatabaseDateTime()
+                    );
+                    array_push($insertApproval, $approvals);
+                }
+                if(sizeof($insertApproval) > 0){
+                    insertOrUpdate($insertApproval,'t_bast_approval');
+                }
+            }else{
+                $bastID = DB::table('t_bast01')->insertGetId([
+                    'no_bast'         => $bastNumber,
+                    'userid_pemberi'  => Auth::user()->id,
+                    'userid_penerima' => $req['penerima'],
+                    'tanggal_bast'    => $req['tglbast'],
+                    'remark'          => $req['remark'],
+                    'createdon'       => getLocalDatabaseDateTime(),
+                    'createdby'       => Auth::user()->email ?? Auth::user()->username
+                ]);
+
+                $ptaNumber = generateIssueNumber(date('Y'), date('m'));
+                DB::table('t_inv01')->insert([
+                    'docnum' => $ptaNumber,
+                    'docyear' => date('Y'),
+                    'docdate' => date('Y-m-d'),
+                    'postdate' => date('Y-m-d'),
+                    'movement_code' => '201',
+                    'remark' => 'Issued BAST',
+                    'createdon'         => date('Y-m-d H:m:s'),
+                    'createdby'         => Auth::user()->email ?? Auth::user()->username
+                ]);
+            }
 
             for($i = 0; $i < sizeof($parts); $i++)
             {
                 if($quantity[$i] > 0)
                 {
-
                     $qty    = 0;
                     $qty    = $quantity[$i];
                     $qty    = str_replace(',','',$qty);
@@ -278,22 +312,23 @@ class BastController extends Controller
 
                         $matdesc = str_replace('"','\"',$partdsc[$i]);
                         $matCode = str_replace('"','\"',$parts[$i]);
-
-                        DB::select('call spIssueMaterialWithBatchFIFO(
-                            "'. $matCode .'",
-                            "'. $warehouseID .'",
-                            "'. $inputQty .'",
-                            "'. $ptaNumber .'",
-                            "'. date('Y') .'",
-                            "201",
-                            "'. $matdesc .'",
-                            "'. $uom[$i] .'",
-                            "-",
-                            "'. $pbjnum[$i] .'",
-                            "'. $pbjitm[$i] .'",
-                            "'. Auth::user()->email .'",
-                            "'. $bastNumber .'",
-                            "'. $bastID .'")');
+                        if(sizeof($approval) == 0){
+                            DB::select('call spIssueMaterialWithBatchFIFO(
+                                "'. $matCode .'",
+                                "'. $warehouseID .'",
+                                "'. $inputQty .'",
+                                "'. $ptaNumber .'",
+                                "'. date('Y') .'",
+                                "201",
+                                "'. $matdesc .'",
+                                "'. $uom[$i] .'",
+                                "-",
+                                "'. $pbjnum[$i] .'",
+                                "'. $pbjitm[$i] .'",
+                                "'. Auth::user()->email .'",
+                                "'. $bastNumber .'",
+                                "'. $bastID .'")');
+                        }
 
                         $pbjitem = DB::table('t_pbj02')
                             ->where('pbjnumber', $pbjnum[$i])
@@ -316,7 +351,9 @@ class BastController extends Controller
                     }
                 }
             }
-            insertOrUpdate($insertData,'t_bast02');
+            if(sizeof($insertData) > 0){
+                insertOrUpdate($insertData,'t_bast02');
+            }
 
             //Insert Attachments | t_attachments
             if(isset($req['efile'])){

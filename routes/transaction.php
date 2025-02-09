@@ -305,4 +305,18 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/stockout',  'Transaksi\AdjustStockController@stockout')->middleware('checkAuth:adjust/stockout');
         Route::post('/stockout', 'Transaksi\AdjustStockController@saveAdjStockOut')->middleware('checkAuth:adjust/stockout');
     });
+
+    Route::group(['prefix' => '/approve/grpo'], function () {
+        Route::get('/',                         'Transaksi\ApproveGrpoController@index')->middleware('checkAuth:approve/grpo');
+        Route::get('/details/{p1}',             'Transaksi\ApproveGrpoController@detailGrPO')->middleware('checkAuth:approve/grpo');
+        Route::get('/listopengrpo',             'Transaksi\ApproveGrpoController@listOpenGRPO')->middleware('checkAuth:approve/grpo');
+        Route::post('/save',                    'Transaksi\ApproveGrpoController@save')->middleware('checkAuth:approve/grpo');
+    });
+
+    Route::group(['prefix' => '/approve/bast'], function () {
+        Route::get('/',                         'Transaksi\ApproveBastController@index')->middleware('checkAuth:approve/bast');
+        Route::get('/details/{p1}',             'Transaksi\ApproveBastController@detailBAST')->middleware('checkAuth:approve/bast');
+        Route::get('/listopenbast',             'Transaksi\ApproveBastController@openBastList')->middleware('checkAuth:approve/bast');
+        Route::post('/save',                    'Transaksi\ApproveBastController@save')->middleware('checkAuth:approve/bast');
+    });
 });

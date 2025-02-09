@@ -138,28 +138,39 @@ class ReceiptPoController extends Controller
             $approval = DB::table('v_workflow_budget')->where('object', 'GRPO')->where('requester', Auth::user()->id)->get();
             if(sizeof($approval) > 0){
                 insertOrUpdate($insertData,'t_inv02_app');
-                foreach($insertData as $gr){
-                    $insertApproval = array();
-                    foreach($approval as $row){
-                        $is_active = 'N';
-                        if($row->approver_level == 1){
-                            $is_active = 'Y';
-                        }
-                        $approvals = array(
-                            'docnum'            => $ptaNumber,
-                            'docyear'           => $tahun,
-                            'docitem'           => $gr['docitem'],
-                            'approver_level'    => $row->approver_level,
-                            'approver'          => $row->approver,
-                            'requester'         => Auth::user()->id,
-                            'is_active'         => $is_active,
-                            'createdon'         => getLocalDatabaseDateTime()
-                        );
-                        array_push($insertApproval, $approvals);
+                $insertApproval = array();
+                foreach($approval as $row){
+                    $is_active = 'N';
+                    if($row->approver_level == 1){
+                        $is_active = 'Y';
                     }
-                    insertOrUpdate($insertApproval,'t_movement_approval');
+                    $approvals = array(
+                        'docnum'            => $ptaNumber,
+                        'docyear'           => $tahun,
+                        'docitem'           => 0,
+                        // 'docitem'           => $gr['docitem'],
+                        'approver_level'    => $row->approver_level,
+                        'approver'          => $row->approver,
+                        'requester'         => Auth::user()->id,
+                        'is_active'         => $is_active,
+                        'createdon'         => getLocalDatabaseDateTime()
+                    );
+                    array_push($insertApproval, $approvals);
                 }
+                insertOrUpdate($insertApproval,'t_movement_approval');
+
+                DB::commit();
+
+                DB::table('t_inv01')
+                ->where('docnum', $ptaNumber)
+                ->where('docyear', $tahun)
+                ->update([
+                    'approval_status' => 'N'
+                ]);
+
+                DB::commit();
             }else{
+
                 insertOrUpdate($insertData,'t_inv02');
                 $qty = 0;
                 for($i = 0; $i < sizeof($parts); $i++){
@@ -184,9 +195,9 @@ class ReceiptPoController extends Controller
                         'last_udpate'  => getLocalDatabaseDateTime()
                     ]);
                 }
+                DB::commit();
             }
 
-            DB::commit();
             return Redirect::to("/logistic/terimapo")->withSuccess('Penerimaan PO Berhasil dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
             // dd($e);
