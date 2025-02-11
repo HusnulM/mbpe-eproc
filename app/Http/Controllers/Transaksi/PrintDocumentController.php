@@ -465,8 +465,9 @@ class PrintDocumentController extends Controller
         return view('transaksi.movement.grpolist');
     }
 
-    public function grpolist(){
-        $query = DB::table('v_rgrpo')->select('id','docnum','postdate','received_by','vendor_name','remark')->distinct();
+    public function grpolist(Request $req){
+        $query = DB::table('v_report_grpo02');
+        // ->select('id','docnum','postdate','received_by','vendor_name','remark')->distinct();
 
         if(isset($req->datefrom) && isset($req->dateto)){
             $query->whereBetween('postdate', [$req->datefrom, $req->dateto]);
@@ -490,8 +491,9 @@ class PrintDocumentController extends Controller
     }
 
     public function printgrpo($id){
-        $pohdr = DB::table('v_rgrpo')->select('id','docnum','postdate','received_by','vendor_name','remark')->where('id', $id)->first();
-        $podtl = DB::table('v_rgrpo')->where('docnum', $pohdr->docnum)->get();
+        $pohdr = DB::table('v_report_grpo02')
+                 ->where('id', $id)->first();
+        $podtl = DB::table('t_inv02')->where('docnum', $pohdr->docnum)->get();
 
         $pdf = PDF::loadview('transaksi.movement.printgrpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
         return $pdf->stream();
@@ -509,5 +511,22 @@ class PrintDocumentController extends Controller
 
     public function printissued(){
 
+    }
+
+    public function bast(){
+        return view('transaksi.bast.list');
+    }
+
+    public function printbast($id){
+        $pohdr = DB::table('v_bast_01')
+                 ->where('id', $id)->first();
+        if($pohdr){
+            $podtl = DB::table('t_bast02')->where('bast_id', $pohdr->id)->get();
+
+            $pdf = PDF::loadview('transaksi.printout.bast', ['pohdr' => $pohdr, 'poitem' => $podtl]);
+            return $pdf->stream();
+        }else{
+            return "Data not found";
+        }
     }
 }

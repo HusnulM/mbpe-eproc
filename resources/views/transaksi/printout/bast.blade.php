@@ -56,23 +56,23 @@
     </style>
 </head>
 <body>
-    <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">RECEIPT PURCHASE ORDER</h2>
+    <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">FORM BAST</h2>
     <table border="0" cellspacing="0" cellpadding="0" class="customers" style="margin-bottom: 20px !important;">
         <tr>
-            <td style="width:120px;">Receipt Number</td>
+            <td style="width:120px;">BAST Number</td>
             <td style="width:20px;">:</td>
-            <td>{{ $pohdr->docnum }}</td>
-            <td style="width:90px;">Receipt Date</td>
+            <td>{{ $pohdr->no_bast }}</td>
+            <td style="width:90px;">BAST Date</td>
             <td style="width:10px;">:</td>
-            <td style="width:150px;">{{ \Carbon\Carbon::parse($pohdr->postdate)->format('d-m-Y') }}</td>
+            <td style="width:150px;">{{ \Carbon\Carbon::parse($pohdr->tanggal_bast)->format('d-m-Y') }}</td>
         </tr>
         <tr>
+            <td>Received From</td>
+            <td>:</td>
+            <td>{{ $pohdr->pemberi }}</td>
             <td>Received By</td>
             <td>:</td>
-            <td>{{ $pohdr->received_by }}</td>
-            <td>Vendor</td>
-            <td>:</td>
-            <td>{{ $pohdr->vendor_name }}</td>
+            <td>{{ $pohdr->penerima }}</td>
         </tr>
         <tr>
             <td>Remark</td>
@@ -87,13 +87,11 @@
     <table id="items">
         <thead>
             <th>No</th>
-            <th style="width:100px;">Part Number</th>
-            <th style="width:200px;">Description</th>
-            <th style="width:150px;">PO Number</th>
+            <th style="width:120px;">Item Code</th>
+            <th style="width:300px;">Item Name</th>
             <th style="text-align:right;">Quantity</th>
             <th style="text-align:center;">Unit</th>
-            <th style="text-align:right;">Unit Price</th>
-            <th style="text-align:right;">Total Price</th>
+            <th style="text-align:left;">PBJ Number</th>
         </thead>
         <tbody>
             @foreach($poitem as $key => $row)
@@ -101,7 +99,6 @@
                 <td>{{ $key+1 }}</td>
                 <td>{{ $row->material }}</td>
                 <td>{{ $row->matdesc }}</td>
-                <td>{{ $row->ponum }}</td>
                 <td style="text-align:right;">
                 @if(strpos($row->quantity, '.000') !== false)
                 {{ number_format($row->quantity, 0, ',', '.') }}
@@ -110,21 +107,7 @@
                 @endif
                 </td>
                 <td style="text-align:center;">{{ $row->unit }}</td>
-                <td style="text-align:right;">
-                @if(strpos($row->unit_price, '.000') !== false)
-                {{ number_format($row->unit_price, 0, ',', '.') }}
-                @else
-                {{ number_format($row->unit_price, 3, ',', '.') }}
-                @endif
-                </td>
-                <td style="text-align:right;">
-                @if(strpos($row->total_price, '.000') !== false)
-                {{ number_format($row->total_price, 0, ',', '.') }}
-                @else
-                {{ number_format($row->total_price, 3, ',', '.') }}
-                @endif
-                </td>
-
+                <td style="text-align:left;">{{ $row->refdoc }}</td>
             </tr>
             @endforeach
         </tbody>

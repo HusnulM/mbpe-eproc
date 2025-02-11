@@ -5,7 +5,7 @@
 @section('additional-css')
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -40,7 +40,7 @@
                                     </div>
                                     <div class="col-lg-4" style="text-align:right;">
                                         <br>
-                                        <button type="button" class="btn btn-default mt-2 btn-search"> 
+                                        <button type="button" class="btn btn-default mt-2 btn-search">
                                             <i class="fa fa-search"></i> Filter
                                         </button>
                                     </div>
@@ -63,7 +63,7 @@
                                         <th></th>
                                     </thead>
                                     <tbody>
-            
+
                                     </tbody>
                                 </table>
                             </div>
@@ -101,18 +101,33 @@
     }
 
     $(document).ready(function(){
+        let _token   = $('meta[name="csrf-token"]').attr('content');
+        
+        $('.btn-search').on('click', function(){
+            // var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val();
+            loadDocument();
+        });
+
         loadDocument();
 
         function loadDocument(){
+            var params = {
+                    "datefrom" : $('#datefrom').val(),
+                    "dateto"   : $('#dateto').val(),
+                    "_token"   : _token
+                }
+
             $("#tbl-wo-list").DataTable({
                 serverSide: true,
                 ajax: {
                     url: base_url+'/printdoc/grpo/printlist',
-                    data: function (data) {
-                        data.params = {
-                            sac: "sac"
-                        }
-                    }
+                    // data: function (data) {
+                    //     data.params = {
+                    //         sac: "sac"
+                    //     }
+                    // }
+                    data: params,
+                    type: 'POST'
                 },
                 buttons: false,
                 searching: true,
@@ -124,7 +139,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "docnum", className: 'uid'},
                     {data: "postdate", className: 'uid',
@@ -135,17 +150,17 @@
                     {data: "received_by", className: 'uid'},
                     {data: "vendor_name", className: 'uid'},
                     {data: "remark", className: 'uid'},
-                    {"defaultContent": 
+                    {"defaultContent":
                         `
                         <button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
                         <button class='btn btn-primary btn-sm button-detail'> <i class='fa fa-search'></i> View Detail</button>
                         `,
                         "className": "text-center",
                     }
-                ]  
+                ]
             });
 
-            $('#tbl-wo-list tbody').on( 'click', '.button-print', function () {                
+            $('#tbl-wo-list tbody').on( 'click', '.button-print', function () {
                 var table = $('#tbl-wo-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
@@ -158,7 +173,7 @@
                 // }
             });
 
-            $('#tbl-wo-list tbody').on( 'click', '.button-detail', function () {                
+            $('#tbl-wo-list tbody').on( 'click', '.button-detail', function () {
                 var table = $('#tbl-wo-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
@@ -171,7 +186,7 @@
                 // }
             });
         }
-                        
+
 
         $('.inputNumber').on('change', function(){
             this.value = formatRupiah(this.value,'');
@@ -183,14 +198,14 @@
             sisa     		  = split[0].length % 3,
             rupiah     		  = split[0].substr(0, sisa),
             ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-        
+
             if(ribuan){
                 separator = sisa ? ',' : '';
                 rupiah += separator + ribuan.join(',');
             }
-        
+
             rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
         }
     });
 </script>
