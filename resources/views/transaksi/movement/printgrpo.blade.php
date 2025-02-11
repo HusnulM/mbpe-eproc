@@ -129,5 +129,46 @@
             @endforeach
         </tbody>
     </table>
+
+    <br>
+    <table class="table">
+        <tr>
+            <td style="width:15%;">Created By,</td>
+            <td style="width:450px;"></td>
+            <td style="width:15%;">Approved By,</td>
+        </tr>
+        <tr>
+            <td>
+                @if(checkIsLocalhost())
+                    <img src="{{ public_path($creatorSign->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                @else
+                    <img src="{{ asset($creatorSign->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                @endif
+                {{-- <br><br> --}}
+            </td>
+            <td></td>
+            <td>
+                @if($approveSign)
+                    @if(checkIsLocalhost())
+                        <img src="{{ public_path($approveSign->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    @else
+                        <img src="{{ asset($approveSign->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    @endif
+                @else
+                <br>
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td> <u> {{ getUserNameByID($pohdr->createdby) }} </u></td>
+            <td></td>
+            <td>
+                @if($approval)
+                <u> {{ getUserNameByID($approval->approved_by) }} </u><br>
+                Date: {{ formatDate($approval->approval_date ?? null) }}
+                @endif
+            </td>
+        </tr>
+    </table>
 </body>
 </html>

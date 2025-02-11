@@ -495,14 +495,40 @@ class PrintDocumentController extends Controller
                  ->where('id', $id)->first();
         $podtl = DB::table('t_inv02')->where('docnum', $pohdr->docnum)->get();
 
-        $pdf = PDF::loadview('transaksi.movement.printgrpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
+        $approval = DB::table('t_movement_approval')
+                    ->where('docnum', $pohdr->docnum)
+                    ->where('docyear', $pohdr->docyear)
+                    ->where('approval_status', 'A')
+                    ->orderBy('approver_level', 'DESC')
+                    ->first();
+
+        if($approval){
+            $approveSign = DB::table('users')->where('id', $approval->approver)->first();
+        }else{
+            $approveSign = null;
+        }
+
+        $creatorSign = DB::table('users')->where('email', $pohdr->createdby)->first();
+
+        $pdf = PDF::loadview('transaksi.movement.printgrpo', 
+        [
+            'pohdr' => $pohdr, 
+            'poitem' => $podtl,
+            'approval'    => $approval,
+            'approveSign' => $approveSign,
+            'creatorSign' => $creatorSign
+        ]);
         return $pdf->stream();
     }
 
     public function grpodetail($id){
         $pohdr = DB::table('v_rgrpo')->select('id','docnum','postdate','received_by','vendor_name','remark')->where('id', $id)->first();
         $podtl = DB::table('v_rgrpo')->where('docnum', $pohdr->docnum)->get();
-        return view('transaksi.movement.grpodetail', ['pohdr' => $pohdr, 'poitem' => $podtl]);
+        return view('transaksi.movement.grpodetail',
+        [
+            'pohdr'       => $pohdr,
+            'poitem'      => $podtl            
+        ]);
     }
 
     public function issuedlist(){
@@ -523,7 +549,27 @@ class PrintDocumentController extends Controller
         if($pohdr){
             $podtl = DB::table('t_bast02')->where('bast_id', $pohdr->id)->get();
 
-            $pdf = PDF::loadview('transaksi.printout.bast', ['pohdr' => $pohdr, 'poitem' => $podtl]);
+            $approval = DB::table('t_bast_approval')
+                    ->where('no_bast', $pohdr->no_bast)
+                    ->where('approval_status', 'A')
+                    ->orderBy('approver_level', 'DESC')
+                    ->first();
+            if($approval){
+                $approveSign = DB::table('users')->where('id', $approval->approver)->first();
+            }else{
+                $approveSign = null;
+            }
+
+            $creatorSign = DB::table('users')->where('email', $pohdr->createdby)->first();
+
+            $pdf = PDF::loadview('transaksi.printout.bast',
+                [
+                    'pohdr'  => $pohdr,
+                    'poitem' => $podtl,
+                    'approval' => $approval,
+                    'approveSign' => $approveSign,
+                    'creatorSign' => $creatorSign
+                ]);
             return $pdf->stream();
         }else{
             return "Data not found";
