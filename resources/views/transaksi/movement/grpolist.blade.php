@@ -102,7 +102,7 @@
 
     $(document).ready(function(){
         let _token   = $('meta[name="csrf-token"]').attr('content');
-        
+
         $('.btn-search').on('click', function(){
             // var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val();
             loadDocument();

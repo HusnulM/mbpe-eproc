@@ -135,7 +135,7 @@
             <th style="text-align:center;">Unit</th>
             <th>PBJ Number</th>
             <th>PBJ Remark</th>
-            <th>Periode Budget</th>
+            <th>Budget Code</th>
         </thead>
         <tbody>
             @foreach($pritem as $key => $row)
@@ -149,12 +149,11 @@
                 @else
                 {{ number_format($row->quantity, 3, ',', '.') }}
                 @endif
-
                 </td>
                 <td style="text-align:center;">{{ $row->unit }}</td>
                 <td>{{ $row->pbjnumber }}</td>
                 <td>{{ $row->remarkpbj }}</td>
-                <td>{{ $row->periode }}</td>
+                <td>{{ $row->budget_cost_code }}</td>
             </tr>
             @endforeach
         </tbody>

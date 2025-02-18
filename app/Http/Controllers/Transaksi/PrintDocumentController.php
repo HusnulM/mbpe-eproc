@@ -510,9 +510,9 @@ class PrintDocumentController extends Controller
 
         $creatorSign = DB::table('users')->where('email', $pohdr->createdby)->first();
 
-        $pdf = PDF::loadview('transaksi.movement.printgrpo', 
+        $pdf = PDF::loadview('transaksi.movement.printgrpo',
         [
-            'pohdr' => $pohdr, 
+            'pohdr' => $pohdr,
             'poitem' => $podtl,
             'approval'    => $approval,
             'approveSign' => $approveSign,
@@ -527,7 +527,7 @@ class PrintDocumentController extends Controller
         return view('transaksi.movement.grpodetail',
         [
             'pohdr'       => $pohdr,
-            'poitem'      => $podtl            
+            'poitem'      => $podtl
         ]);
     }
 
