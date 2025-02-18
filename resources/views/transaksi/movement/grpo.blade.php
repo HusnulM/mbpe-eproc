@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Receipt Purchase Order')
+@section('title', 'Goods Receipt PO')
 
 @section('additional-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -23,10 +23,10 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Receipt Purchase Order</h3>
+                        <h3 class="card-title">Goods Receipt PO</h3>
                         <div class="card-tools">
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
-                                <i class="fas fa-save"></i> Simpan Receipt Purchase Order
+                                <i class="fas fa-save"></i> Post Goods Receipt PO
                             </button>
                         </div>
                     </div>
