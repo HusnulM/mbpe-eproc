@@ -224,7 +224,7 @@ class PrintDocumentController extends Controller
     }
 
     public function printpolist(Request $req){
-        $query = DB::table('v_polist')
+        $query = DB::table('v_polist2')
         ->select('id','ponum','podat','postat', 'approvestat','vendor','note','vendor_name','deptname', 'totalprice','createdby')
         ->distinct();
 
@@ -263,6 +263,7 @@ class PrintDocumentController extends Controller
             $query->where('createdby', Auth::user()->email);
         }
 
+        // $query->collate('utf8mb4_unicode_ci');
         $query->orderBy('id');
 
         return DataTables::queryBuilder($query)
