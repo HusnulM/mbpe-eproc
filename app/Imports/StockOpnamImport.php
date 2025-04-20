@@ -12,15 +12,22 @@ use DataTables, Auth, DB;
 
 class StockOpnamImport implements ToCollection, WithHeadingRow
 {
+    protected $req;
+
+    function __construct($req) {
+        $this->req = $req;
+    }
+
     /**
     * @param Collection $collection
     */
     public function collection(Collection $rows)
     {
+        // return $this->req;
         DB::beginTransaction();
         try{
             if($rows){
-                // dd($rows);
+                // dd($request);
                 $bulan  = date('m');
                 $tahun  = date('Y');
 
@@ -35,6 +42,27 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
                     'createdon'         => getLocalDatabaseDateTime(),
                     'createdby'         => Auth::user()->email ?? Auth::user()->username
                 ]);
+
+                if(isset($this->req['efile'])){
+                    $files = $this->req['efile'];
+                    $insertFiles = array();
+                    foreach ($files as $efile) {
+                        $filename = $efile->getClientOriginalName();
+                        $upfiles = array(
+                            'doc_object' => 'OPNAM',
+                            'doc_number' => $opnamNumber,
+                            'efile'      => $filename,
+                            'pathfile'   => '/files/OPNAM/'. $filename,
+                            'createdon'  => getLocalDatabaseDateTime(),
+                            'createdby'  => Auth::user()->username ?? Auth::user()->email
+                        );
+                        array_push($insertFiles, $upfiles);
+                        $efile->move('files/OPNAM/', $filename);
+                    }
+                    if(sizeof($insertFiles) > 0){
+                        insertOrUpdate($insertFiles,'t_attachments');
+                    }
+                }
 
                 $count = 0;
                 $insertData = array();
@@ -103,7 +131,10 @@ class StockOpnamImport implements ToCollection, WithHeadingRow
                             'approval_status' => 'A'
                         ]);
                     }
+
                     DB::commit();
+
+                    setOpnamNumber($opnamNumber);
                     return true;
                 }else{
                     DB::rollBack();

@@ -26,6 +26,23 @@ class StockOpnamController extends Controller
 
     }
 
+    public function getAttachment($id){
+        $header = DB::table('t_stock_opnam01')->where('id', $id)->first();
+        if($header){
+            $attachment = DB::table('t_attachments')
+                ->where('doc_object', 'OPNAM')
+                ->where('doc_number', $header->pidnumber)
+                ->first();
+            if($attachment){
+                return $attachment;
+            }else{
+                return null;
+            }
+        }else{
+            return null;
+        }
+    }
+
     public function stockOpnameDetails($id)
     {
         $query = DB::table('v_stock_opname_detail')
@@ -94,6 +111,8 @@ class StockOpnamController extends Controller
     }
 
     public function saveUploadOpname(Request $request){
+        // return $request;
+        // dd($_POST);
         $this->validate($request, [
             'file' => 'required|mimes:csv,xls,xlsx'
         ]);
@@ -108,10 +127,11 @@ class StockOpnamController extends Controller
 
         config(['excel.import.startRow' => 2]);
         // import data
-        $import = Excel::import(new StockOpnamImport(), 'excel/'.$file->getClientOriginalName());
+        $import = Excel::import(new StockOpnamImport($request), 'excel/'.$file->getClientOriginalName());
 
         //remove from server
 		// unlink('excel/'.$file->getClientOriginalName());
+
 
         if($import) {
             return Redirect::to("/logistic/stockopname")->withSuccess('Data Stock Opnam Berhasil di Upload');

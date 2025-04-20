@@ -3,6 +3,15 @@
 use Illuminate\Support\Facades\DB;
 
 $totalBaris = 0;
+$opnamNumber = null;
+
+function setOpnamNumber($Num){
+    $opnamNumber = $Num;
+}
+
+function getOpnamNumber(){
+    return $opnamNumber;
+}
 
 function resetPBJNotRealized(){
     DB::beginTransaction();

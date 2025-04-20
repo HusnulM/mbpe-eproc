@@ -153,9 +153,41 @@
     </div>
 </div>
 
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalPreviewFile">
+    <div class="modal-dialog modal-xl">
+        <form class="form-horizontal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPreviewFileTitle">Preview Document</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="position-relative row form-group">
+                    <div class="col-lg-12" id="fileViewer">
+                        <!-- <div id="example1"></div> -->
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> Close</button>
+                <a href="#" id="btnDownloadFile" class="btn btn-default btnDownloadFile" download="">
+                    <i class="fa fa-download"></i> Download Document
+                </a>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
 @endsection
 
 @section('additional-js')
+<script src="{{ asset('/assets/ckeditor/ckeditor.js') }}"></script>
+<script src="{{ asset('/assets/ckeditor/adapters/jquery.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     function validate(evt) {
         var theEvent = evt || window.event;
@@ -175,7 +207,28 @@
         }
     }
 
+
     $(document).ready(function(){
+
+        function previewFile(files){
+            // alert(base_url)
+            var pathfile = base_url+'/'+files;
+            if(files !== ""){
+                $('#fileViewer').html('');
+                $('#fileViewer').append(`
+                    <embed src="`+ pathfile +`" frameborder="0" width="100%" height="500px">
+
+                `);
+
+                var fileUri = pathfile;
+                fileUri = fileUri.replace("#toolbar=0", "?force=true");
+
+                document.getElementById("btnDownloadFile").href=fileUri;
+                $('#modalPreviewFile').modal('show');
+            } else{
+                swal("File Not Found", "", "warning");
+            }
+        }
 
         $('.btn-search').on('click', function(){
             var param = '?strdate='+ $('#datefrom').val() +'&enddate='+ $('#dateto').val();
@@ -217,7 +270,8 @@
                     {data: "pidnote", className: 'uid'},
                     {"defaultContent":
                         `<button class='btn btn-primary btn-sm button-print'> <i class='fa fa-search'></i> View Details </button>
-                        <button class='btn btn-primary btn-sm button-view-approval'> <i class='fa fa-search'></i> View Approval </button>
+                        <button class='btn btn-primary btn-sm button-view-approval'> <i class='fa fa-list'></i> View Approval </button>
+                        <button class='btn btn-primary btn-sm button-view-attachment'> <i class='fa fa-file'></i> View Attachment </button>
                         `,
                         "className": "text-center",
                     }
@@ -245,6 +299,43 @@
                 $('#modalOpnameApprovalTitle').append(`Stock Opnam <b> `+ selected_data.pidnumber + ` </b> approval details`);
                 $('#modalOpnameApprovals').modal('show');
             });
+
+            $('#tbl-bast-list tbody').on( 'click', '.button-view-attachment', function () {
+                var table = $('#tbl-bast-list').DataTable();
+                selected_data = [];
+                selected_data = table.row($(this).closest('tr')).data();
+
+                $.ajax({
+                    url:base_url+'/logistic/stockopname/getattachment/'+selected_data.id,
+                    method:'get',
+                    dataType:'JSON',
+                    beforeSend:function(){
+                    },
+                    success:function(data)
+                    {
+
+                    },
+                    error:function(err){
+                        console.log(err);
+                        toastr.error('Attahment does not exist!')
+                    }
+                }).done(function(res){
+                    console.log(res);
+                    if(res){
+                        previewFile('files/OPNAM/'+res.
+                        efile+'#toolbar=0');
+                    }else{
+                        toastr.error('Attahment does not exist!')
+                    }
+                })
+
+                // previewFile('files/OPNAM/Template Upload Opnam.xlsx#toolbar=0');
+                // $('modalPreviewFile').modal('show');
+                // loadApprovals(selected_data.id);
+
+            });
+
+
         }
 
         function loadDetails(_id){

@@ -77,6 +77,9 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Approval Status</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="card-tools">
@@ -110,6 +113,8 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                                                     <th>Item Code</th>
                                                     <th>Item Name</th>
                                                     <th style="text-align:center;">Actual Quantity</th>
+                                                    <th style="text-align:center;">System Quantity</th>
+                                                    <th style="text-align:center;">Diff Quantity</th>
                                                     <th>Unit</th>
                                                     <th>Unit Price</th>
                                                     <th>Total Price</th>
@@ -127,14 +132,20 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                                                         <td style="text-align:right;">
                                                             {{ number_format($row->actual_qty,0) }}
                                                         </td>
+                                                        <td style="text-align:right;">
+                                                            {{ number_format($row->quantity,0) }}
+                                                        </td>
+                                                        <td style="text-align:right;">
+                                                            {{ number_format($row->diffqty,0) }}
+                                                        </td>
                                                         <td>
                                                             {{ $row->matunit }}
                                                         </td>
-                                                        <td>
-                                                            {{ $row->unit_price }}
+                                                        <td style="text-align: right;">
+                                                            {{ number_format($row->unit_price,0) }}
                                                         </td>
-                                                        <td>
-                                                            {{ $row->total_price }}
+                                                        <td style="text-align: right;">
+                                                            {{ number_format($row->total_price,0) }}
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -146,6 +157,7 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="tab-pane fade" id="custom-content-above-approval" role="tabpanel" aria-labelledby="custom-content-above-approval-tab">
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -187,6 +199,39 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                                                         <td>{!! $row->approval_remark !!}</td>
                                                     </tr>
                                                     @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <th>No</th>
+                                                    <th>File Name</th>
+                                                    <th>Upload Date</th>
+                                                    <th></th>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($attachments as $key => $file)
+                                                    <tr>
+                                                        <td>{{ $key+1 }}</td>
+                                                        <td>
+                                                            {{ $file->efile }}
+                                                        </td>
+                                                        <td>
+                                                            <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/OPNAM/{{$file->efile}}#toolbar=0')">
+                                                                <i class="fa fa-search"></i> Preview File
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                                 </tbody>
                                             </table>
                                         </div>

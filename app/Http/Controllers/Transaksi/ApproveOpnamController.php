@@ -19,9 +19,12 @@ class ApproveOpnamController extends Controller
     public function approveDetail($id){
         $checkData = DB::table('t_stock_opnam01')->where('id', $id)->first();
         if($checkData){
-            $items = DB::table('v_stock_opnam_approval_details')
+
+            // $items = DB::table('v_stock_opnam_approval_details')
+            $items = DB::table('v_stock_opname_detail')
                         ->where('id', $id)
-                        ->where('approver', Auth::user()->id)
+                        ->where('diffqty', '<>', 0)
+                        // ->where('approver', Auth::user()->id)
                         ->get();
 
             $approvals = DB::table('v_stock_opnam_approval_details')
@@ -38,12 +41,15 @@ class ApproveOpnamController extends Controller
                         ->where('is_active', 'Y')
                         ->first();
 
+            $attachments = DB::table('t_attachments')->where('doc_object','OPNAM')->where('doc_number', $checkData->pidnumber)->get();
+
             return view('transaksi.opnam.approvedetail',
                 [
                     'header'           => $checkData,
                     'items'            => $items,
                     'approvals'        => $approvals,
                     'isApprovedbyUser' => $isApprovedbyUser,
+                    'attachments'      => $attachments
                 ]);
 
         }else{

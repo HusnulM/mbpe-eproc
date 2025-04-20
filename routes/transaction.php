@@ -285,6 +285,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/',                 'Transaksi\StockOpnamController@index')->middleware('checkAuth:logistic/stockopname');
         Route::get('/stockopnamelist',   'Transaksi\StockOpnamController@viewlist')->middleware('checkAuth:logistic/stockopname');
         // Route::get('/upload',           'Transaksi\StockOpnamController@index')->middleware('checkAuth:logistic/stockopname');
+        Route::get('/getattachment/{id}',   'Transaksi\StockOpnamController@getAttachment')->middleware('checkAuth:logistic/stockopname');
         Route::post('/save',            'Transaksi\StockOpnamController@saveUploadOpname')->middleware('checkAuth:logistic/stockopname');
         Route::get('/getlist',          'Transaksi\StockOpnamController@opnamlist')->middleware('checkAuth:logistic/stockopname');
         Route::get('/getdetails/{id}',   'Transaksi\StockOpnamController@stockOpnameDetails')->middleware('checkAuth:logistic/stockopname');

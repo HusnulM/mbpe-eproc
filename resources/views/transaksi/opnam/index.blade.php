@@ -61,13 +61,19 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-10">
-                                    <label for="browse-file">File</label>
+                                <div class="col-md-6">
+                                    <label for="browse-file">Excel File</label>
                                     <input type="file" name="file" class="form-control" required>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-6">
+                                    <label for="browse-file">Attachments</label>
+                                    <input type="file" name="efile[]" class="form-control" multiple>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10">
                                     <button type="submit" class="btn btn-primary btn-sm" style="margin-top:27px; width:100%;">
-                                        <i class="fa fa-folder-open"></i> Upload Data
+                                        <i class="fa fa-upload"></i> Upload Stock Opnam
                                     </button>
                                 </div>
                             </div>
