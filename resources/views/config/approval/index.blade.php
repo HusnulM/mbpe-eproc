@@ -45,6 +45,9 @@
                 <li class="nav-item">
                     <a class="nav-link" id="custom-content-above-bast-tab" data-toggle="pill" href="#custom-content-above-bast" role="tab" aria-controls="custom-content-above-bast" aria-selected="false">BAST</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-above-returbast-tab" data-toggle="pill" href="#custom-content-above-returbast" role="tab" aria-controls="custom-content-above-returbast" aria-selected="false">RETUR BAST</a>
+                </li>
             </ul>
             <!-- <div class="tab-custom-content">
                 <p class="lead mb-0">Custom Content goes here</p>
@@ -370,6 +373,46 @@
                     </div>
                 </div>
 
+                {{-- RETUR BAST --}}
+                <div class="tab-pane fade" id="custom-content-above-returbast" role="tabpanel" aria-labelledby="custom-content-above-returbast-tab">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-primary btn-sm btn-add-returbast-approval">
+                                        <i class="fas fa-plus"></i> Tambah Approval RETUR BAST
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table id="tbl-worflow-bast" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                    <thead>
+                                        <th>No</th>
+                                        <th>Creator</th>
+                                        <th>Approver</th>
+                                        <th>Approval Level</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($rtrbastwf as $key => $row)
+                                        <tr>
+                                            <td>{{ $key+1 }}</td>
+                                            <td>{{ $row->requester_name }}</td>
+                                            <td>{{ $row->approver_name }}</td>
+                                            <td>{{ $row->approver_level }}</td>
+                                            <td style="text-align:center;">
+                                                <a href="{{ url('config/workflow/deletereturnbastwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'>
+                                                    <i class='fa fa-trash'></i> DELETE
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -771,6 +814,13 @@
             $('#wfobject').val('BAST');
             $('#title-add-approval').html('');
             $('#title-add-approval').html('Tambah Approval BAST');
+            $('#modal-add-approval').modal('show');
+        });
+
+        $('.btn-add-returbast-approval').on('click', function(){
+            $('#wfobject').val('RETURBAST');
+            $('#title-add-approval').html('');
+            $('#title-add-approval').html('Tambah Approval RETUR BAST');
             $('#modal-add-approval').modal('show');
         });
 

@@ -31,7 +31,7 @@
                             <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="fa fa-save"></i> SAVE
                             </button>
-                            
+
                         </div>
                     </div>
                     <div class="card-body">
@@ -61,19 +61,19 @@
                                             <label for="partname">Part Name</label>
                                             <input type="text" name="partname" id="partname" class="form-control" autocomplete="off" required>
                                         </div>
-                                    </div>  
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
-                                            <label for="itemtype">Item Category</label>
+                                            <label for="itemtype">Item Spesification</label>
                                             <!-- <input type="text" name="itemtype" id="itemtype" class="form-control" autocomplete="off" required> -->
                                             <select name="itemtype" id="itemtype" class="form-control">
-                                                <option value="">Pilih Item Category</option>
+                                                <option value="">Pilih Item Spesification</option>
                                                 @foreach($matcat as $key => $row)
                                                 <option value="{{ $row->id }}">{{ $row->mattypedesc }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>  
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="itemunit">Item Base Unit</label>
@@ -85,8 +85,19 @@
                                             </select>
                                             <!-- <input type="text" name="itemunit" id="itemunit" class="form-control" autocomplete="off" required> -->
                                         </div>
-                                    </div>                                
-                                </div>                                
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="itemcatgr">Item Category</label>
+                                            <select name="itemcatgr" id="itemcatgr" class="form-control">
+                                                <option value="">Pilih Item Category</option>
+                                                @foreach($itemcat as $key => $row)
+                                                    <option value="{{ $row->item_category }}">{{ $row->item_category }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-lg-6 col-md-12">
                                 <table class="table table-stripped table-sm">

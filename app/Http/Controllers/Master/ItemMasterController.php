@@ -27,7 +27,8 @@ class ItemMasterController extends Controller
     public function create(){
         $matcat = DB::table('t_materialtype')->get();
         $matuom = DB::table('t_uom')->get();
-        return view('master.material.create', ['matcat' => $matcat, 'matuom' => $matuom]);
+        $itemcat = DB::table('t_item_category')->get();
+        return view('master.material.create', ['matcat' => $matcat, 'matuom' => $matuom, 'itemcat' => $itemcat]);
     }
 
     public function edit($id){
@@ -36,8 +37,16 @@ class ItemMasterController extends Controller
         $materialdata = DB::table('v_material')->where('id', $id)->first();
         // dd($id);
         $materialuom  = DB::table('t_material2')->where('material', $materialdata->material)->get();
+        $itemcat = DB::table('t_item_category')->get();
         // dd($materialuom);
-        return view('master.material.edit', ['matcat' => $matcat, 'matuom' => $matuom, 'materialdata' => $materialdata, 'materialuom' => $materialuom]);
+        return view('master.material.edit',
+            [
+                'matcat' => $matcat,
+                'matuom' => $matuom,
+                'materialdata' => $materialdata,
+                'materialuom'  => $materialuom,
+                'itemcat'      => $itemcat
+            ]);
     }
 
     public function itemLists(Request $request){
@@ -98,6 +107,7 @@ class ItemMasterController extends Controller
                     'partname'   => $req['partname'],
                     'partnumber' => $req['partnumber'],
                     'matunit'    => $req['itemunit'],
+                    'item_category' => $req['itemcatgr'],
                     'matuniqid'  => $current_timestamp,
                     'createdon'  => date('Y-m-d H:m:s'),
                     'createdby'  => Auth::user()->email ?? Auth::user()->username
@@ -156,7 +166,8 @@ class ItemMasterController extends Controller
                 'mattype'    => $req['itemtype'],
                 'partname'   => $req['partname'],
                 'partnumber' => $req['partnumber'],
-                'matunit'    => $req['itemunit']
+                'matunit'    => $req['itemunit'],
+                'item_category' => $req['itemcatgr'],
             ]);
 
             DB::table('t_material2')->where('material', $req['partnumber'])->delete();
@@ -216,7 +227,7 @@ class ItemMasterController extends Controller
             }
             insertOrUpdate($insertData,'t_materialtype');
             DB::commit();
-            return Redirect::to("/master/item")->withSuccess('New Item Category Created');
+            return Redirect::to("/master/item")->withSuccess('New Item Spesification Created');
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/master/item")->withError($e->getMessage());
@@ -232,7 +243,7 @@ class ItemMasterController extends Controller
                 'mattypedesc'   => $itemcate
             ]);
             DB::commit();
-            return Redirect::to("/master/item")->withSuccess('Item Category Updated');
+            return Redirect::to("/master/item")->withSuccess('Item Spesification Updated');
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/master/item")->withError($e->getMessage());

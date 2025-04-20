@@ -178,7 +178,7 @@ class ApproveBastController extends Controller
                 DB::commit();
                 $result = array(
                     'msgtype' => '200',
-                    'message' => 'Stock Opnam : '. $ptaNumber . ' berhasil di reject'
+                    'message' => 'BAST : '. $ptaNumber . ' berhasil di reject'
                 );
                 return $result;
             }else{

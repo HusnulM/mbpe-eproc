@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'List Retur BAST')
+@section('title', 'List Approve RETUR BAST')
 
 @section('additional-css')
 @endsection
@@ -11,50 +11,22 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">List Retur BAST</h3>
+                    <h3 class="card-title">List Approve RETUR BAST</h3>
                     <div class="card-tools">
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-12">
-                            <form action="{{ url('report/exportreturbast') }}" method="post">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-lg-2">
-                                        <label for="">Tanggal Retur BAST</label>
-                                        <input type="date" class="form-control" name="datefrom" id="datefrom" value="{{ $_GET['datefrom'] ?? '' }}">
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label for="">-</label>
-                                        <input type="date" class="form-control" name="dateto" id="dateto" value="{{ $_GET['dateto'] ?? '' }}">
-                                    </div>
-                                    <div class="col-lg-1" style="text-align:right;">
-                                        <br>
-                                        <button type="button" class="btn btn-default mt-2 btn-search">
-                                            <i class="fa fa-search"></i> Filter
-                                        </button>
-                                        {{-- <button type="submit" class="btn btn-success mt-2 btn-export">
-                                            <i class="fa fa-download"></i> Export Data
-                                        </button> --}}
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
                         <div class="table-responsive">
                             <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                 <thead>
                                     <th>No</th>
-                                    <th>Nomor Retur</th>
+                                    <th>Retur Number</th>
+                                    <th>Bast Number</th>
                                     <th>Tanggal Retur</th>
-                                    {{-- <th>No. BAST</th> --}}
+                                    <th>Terima Dari</th>
+                                    {{-- <th>Penerima</th> --}}
                                     <th>Remark</th>
-                                    <th>Di Terima Oleh</th>
-                                    <th>Di Serahkan Oleh</th>
-                                    {{-- <th>Warehouse</th> --}}
                                     <th></th>
                                 </thead>
                                 <tbody>
@@ -104,7 +76,7 @@
 
         $("#tbl-budget-list").DataTable();
 
-        // loadDocument('');
+        loadDocument('');
 
         function loadDocument(_params){
             var params = {
@@ -116,14 +88,14 @@
             $("#tbl-budget-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/logistic/returbast/listretur'+_params,
-                    // data: function (data) {
-                    //     data.params = {
-                    //         sac: "sac"
-                    //     }
-                    // },
+                    url: base_url+'/approve/retur/listretur'+_params,
+                    data: function (data) {
+                        data.params = {
+                            sac: "sac"
+                        }
+                    },
                     data: params,
-                    type: 'POST'
+                    // type: 'POST'
                 },
                 buttons: false,
                 searching: true,
@@ -138,20 +110,17 @@
                         }
                     },
                     {data: "nota_retur", className: 'uid'},
-
+                    {data: "no_bast", className: 'uid'},
                     {data: "tgl_retur", className: 'uid',
                         render: function (data, type, row){
                             return ``+ row.tgl_retur.tgl_retur + ``;
                         }
                     },
-                    // {data: "no_bast"},
+                    {data: "terima_dari"},
+                    // {data: "penerima", className: 'uid'},
                     {data: "remark", className: 'uid'},
-                    {data: "createdby", className: 'uid'},
-                    {data: "name"},
-                    // {data: "whsname"},
                     {"defaultContent":
                         `
-                        <button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
                         <button class='btn btn-primary btn-sm button-detail'> <i class='fa fa-search'></i> View Detail</button>
                         `,
                         "className": "text-center",
@@ -159,31 +128,11 @@
                 ]
             });
 
-            $('#tbl-budget-list tbody').on( 'click', '.button-print', function () {
-                var table = $('#tbl-budget-list').DataTable();
-                selected_data = [];
-                selected_data = table.row($(this).closest('tr')).data();
-                    window.open(
-                        base_url+"/logistic/returbast/print/"+selected_data.id,
-                        '_blank'
-                    );
-            });
-
             $('#tbl-budget-list tbody').on( 'click', '.button-detail', function () {
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                // window.location = "/logistic/returbast/detail/"+selected_data.id;
-                window.open(
-                        base_url+"/logistic/returbast/detail/"+selected_data.id,
-                        '_blank'
-                    );
-                // if(selected_data.doctype === "Corporate Procedure"){
-                    // window.open(
-                    //     base_url+"/printdoc/pr/print/"+selected_data.id,
-                    //     '_blank' // <- This is what makes it open in a new window.
-                    // );
-                // }
+                window.location = "/approve/retur/details/"+selected_data.retur_id;
             });
         }
 

@@ -23,6 +23,7 @@ class WorkflowController extends Controller
         $opnamwf  = DB::table('v_workflow_budget')->where('object', 'OPNAM')->get();
         $grpowf   = DB::table('v_workflow_budget')->where('object', 'GRPO')->get();
         $bastwf   = DB::table('v_workflow_budget')->where('object', 'BAST')->get();
+        $rtrbastwf   = DB::table('v_workflow_budget')->where('object', 'RETURBAST')->get();
 
         return view('config.approval.index',
             [ 'ctgrs' => $ctgrs, 'groups'   => $groups,
@@ -30,7 +31,7 @@ class WorkflowController extends Controller
               'pbjwf' => $pbjwf, 'spkwf'    => $spkwf,
               'prwf'  => $prwf,  'powf'     => $powf,
               'opnamwf' => $opnamwf, 'grpowf' => $grpowf,
-              'bastwf' => $bastwf
+              'bastwf' => $bastwf, 'rtrbastwf' => $rtrbastwf
             ]);
     }
 

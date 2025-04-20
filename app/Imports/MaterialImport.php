@@ -27,7 +27,7 @@ class MaterialImport implements ToCollection, WithHeadingRow
 
     public function collection(Collection $rows)
     {
-        
+
         foreach ($rows as $index => $row) {
             $current_timestamp = Carbon::now()->timestamp;
             $insertData = array();
@@ -38,6 +38,7 @@ class MaterialImport implements ToCollection, WithHeadingRow
                 'partname'   => $row['partname'],
                 'partnumber' => $row['partnumber'],
                 'matunit'    => $row['itemunit'],
+                'item_category' => $row['itemcategory'],
                 'matuniqid'  => $current_timestamp,
                 'createdon'  => getLocalDatabaseDateTime(),
                 'createdby'  => Auth::user()->email ?? Auth::user()->username

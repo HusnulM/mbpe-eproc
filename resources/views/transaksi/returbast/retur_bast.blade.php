@@ -146,6 +146,14 @@
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
 <script>
     $(document).ready(function(){
+        $(document).keypress(
+            function(event){
+                if (event.which == '13') {
+                    event.preventDefault();
+                }
+            }
+        );
+
         var count = 0;
         let selected_po_items = [];
         let _token   = $('meta[name="csrf-token"]').attr('content');

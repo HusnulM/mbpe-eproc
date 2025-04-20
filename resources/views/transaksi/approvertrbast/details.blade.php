@@ -83,7 +83,7 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                         </ul>
                     </div>
                     <div class="card-tools">
-                        <a href="{{ url('/logistic/returbast/list') }}" class="btn btn-default btn-sm">
+                        <a href="{{ url('/approve/retur') }}" class="btn btn-default btn-sm">
                             <i class="fa fa-arrow-left"></i> Back
                         </a>
                     </div>
@@ -95,9 +95,16 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                                 <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
                                     <div class="row">
                                         <div class="col-lg-12">
+                                        </div>
+
+                                        <div class="col-lg-12">
                                             <td colspan="9" style="text-align: right;">
-                                                <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-print">
-                                                    <i class="fa fa-print"></i> Print
+                                                <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
+                                                    <i class="fa fa-check"></i> APPROVE
+                                                </button>
+
+                                                <button type="button" class="btn btn-danger pull-right btn-sm" id="btn-reject-items">
+                                                    <i class="fa fa-xmark"></i> REJECT
                                                 </button>
                                             </td>
                                             <table id="tbl-pr-data" class="table table-bordered table-hover table-striped table-sm">
@@ -304,14 +311,88 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
         // $("#tbl-pr-data").DataTable();
         new DataTable('#tbl-pr-data');
 
-        $('#btn-print').on('click', function(){
-            window.open(
-                base_url+"/logistic/returbast/print/"+{{ $header->id }},
-                '_blank'
-            );
+        $('#checkAll').click(function(){
+            if(this.checked){
+                $('.checkbox').each(function(){
+                    this.checked = true;
+                });
+            }else{
+                $('.checkbox').each(function(){
+                    this.checked = false;
+                });
+            }
         });
 
+        $('#btn-approve-items').on('click', function(){
+            _action = 'A';
+            $('#modalApprovalTitle').html('Approve Note');
+            $('#modalApprovalNote').modal('show');
+        });
 
+        $('#btn-reject-items').on('click', function(){
+            _action = 'R';
+            $('#modalApprovalTitle').html('Reject Note');
+            $('#modalApprovalNote').modal('show');
+        });
+
+        $('#submit-approval').on('click', function(){
+            approveOrReject();
+        });
+
+        function approveOrReject(){
+            var prtemchecked = {
+                    "docid" : {{ $header->id }},
+                    "nota_retur" : "{{ $header->nota_retur }}",
+                    // "piditem" : _splchecked,
+                    "action" : _action,
+                    "_token": _token,
+                    "approvernote":$('#approver_note').val(),
+                }
+                console.log(prtemchecked)
+                $.ajax({
+                    url:base_url+'/approve/retur/save',
+                    method:'post',
+                    data:prtemchecked,
+                    dataType:'JSON',
+                    beforeSend:function(){
+                        $('#btn-approve-items').attr('disabled','disabled');
+                        $('#btn-reject-items').attr('disabled','disabled');
+                    },
+                    success:function(data)
+                    {
+
+                    },
+                    error:function(err){
+                        console.log(err);
+                        toastr.error(err)
+
+                        // setTimeout(function(){
+                        //     location.reload();
+                        // }, 2000);
+                    }
+                }).done(function(response){
+                    console.log(response);
+                    // $('#btn-approve').attr('disabled',false);
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        if(_action === "A"){
+                            toastr.success(response.message)
+                        }else if(_action === "R"){
+                            toastr.success(response.message)
+                        }
+
+                        setTimeout(function(){
+                            window.location.href = base_url+'/approve/retur';
+                        }, 2000);
+                    }else{
+                        toastr.error(response.message)
+                        setTimeout(function(){
+                            location.reload();
+                        }, 2000);
+                    }
+                });
+
+        }
     });
 </script>
 @endsection

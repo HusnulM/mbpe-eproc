@@ -84,10 +84,10 @@
         <tr>
             <td>No. BAST</td>
             <td>:</td>
-            <td>{{ $header->no_bast }}</td>
+            <td>{{ $items[0]->no_bast }}</td>
             <td>Warehouse</td>
             <td>:</td>
-            <td>{{ $header->whsname }}</td>
+            <td>{{ $items[0]->whsname }}</td>
         </tr>
         <tr>
             <td>Di Terima Oleh</td>
@@ -96,7 +96,7 @@
             <td>Di Serahkan Oleh</td>
             <td>:</td>
             <td>
-                {{ $header->diserahkan_oleh }}
+                {{ $header->diserahkan_oleh ?? $header->name }}
             </td>
         </tr>
     </table>
@@ -124,7 +124,7 @@
                     @endif
                 </td>
                 <td style="text-align:center;">{{ $row->unit }}</td>
-                <td>{{ $row->item_remark }}</td>
+                <td>{{ $row->item_remark ?? $row->remark }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -138,22 +138,37 @@
     <table style="width: 100%">
         <tr>
             <td style="text-align: center;">Dibuat Oleh,</td>
-            <td style="width:350px;"></td>
             <td style="text-align: center;">Diserahkan Oleh,</td>
+            <td style="text-align: center; width:250px;">Disetujui Oleh,</td>
         </tr>
         <tr>
             <td style="text-align: center;">
                 <img src="{{ getUserEsignByID($header->createdby) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
             </td>
-            <td style="width:30px;"></td>
             <td style="text-align: center;">
                 <img src="{{ $header->s_signfile }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
             </td>
+            <td style="width:30px; text-align: center;">
+                @if($approveSign)
+                    @if(checkIsLocalhost())
+                        <img src="{{ public_path($approveSign->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    @else
+                        <img src="{{ asset($approveSign->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    @endif
+                @else
+                <br>
+                @endif
+            </td>
         </tr>
         <tr>
-            <td style="text-align: center;"> <u> {{ getUserNameByID($header->createdby) }} </u></td>
-            <td style="width:30px;"></td>
-            <td style="text-align: center;"><u>{{ $header->diserahkan_oleh }}</u></td>
+            <td style="text-align: center;"> <u> {{ getUserNameByID($header->receive_from) }} </u></td>
+            <td style="text-align: center;"><u>{{ $header->diserahkan_oleh ?? $header->name }}</u></td>
+            <td style="text-align: center;">
+                @if($approval)
+                <u> {{ getUserNameByID($approval->approved_by) }} </u><br>
+                Date: {{ formatDate($approval->approval_date ?? null) }}
+                @endif
+            </td>
         </tr>
     </table>
 

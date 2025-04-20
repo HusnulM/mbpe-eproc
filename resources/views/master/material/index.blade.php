@@ -14,7 +14,7 @@
                     <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Item Master</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-content-above-itemtype-tab" data-toggle="pill" href="#custom-content-above-itemtype" role="tab" aria-controls="custom-content-above-itemtype" aria-selected="false">Item Category</a>
+                    <a class="nav-link" id="custom-content-above-itemtype-tab" data-toggle="pill" href="#custom-content-above-itemtype" role="tab" aria-controls="custom-content-above-itemtype" aria-selected="false">Item Spesification</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="custom-content-above-itemunit-tab" data-toggle="pill" href="#custom-content-above-itemunit" role="tab" aria-controls="custom-content-above-itemunit" aria-selected="false">Item Unit</a>
@@ -50,6 +50,7 @@
                                         <th>No</th>
                                         <th>Item Code</th>
                                         <th>Item Name</th>
+                                        <th>Spesification</th>
                                         <th>Item Category</th>
                                         <th>Item Unit</th>
                                         <th style="text-align:center;"></th>
@@ -68,7 +69,7 @@
                             <h3 class="card-title"></h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-success btn-sm btn-create-itemcat">
-                                    <i class="fas fa-plus"></i> Create Item Category
+                                    <i class="fas fa-plus"></i> Create Item Spesification
                                 </button>
                             </div>
                         </div>
@@ -77,7 +78,7 @@
                                 <table id="tbl-item-type" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                     <thead>
                                         <th>ID</th>
-                                        <th>Item Category</th>
+                                        <th>Item Spesification</th>
                                         <th style="text-align:center; width: 50px;"></th>
                                     </thead>
                                     <tbody>
@@ -129,7 +130,7 @@
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Add Item Category</h4>
+              <h4 class="modal-title">Add Item Spesification</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -139,7 +140,7 @@
                     <div class="col-lg-12">
                         <table id="tbl-item-category" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                             <thead>
-                                <th>Item Category</th>
+                                <th>Item Spesification</th>
                                 <th style="text-align:center;">
                                     <button type="button" class="btn btn-success btn-sm btn-add-new-itemcate">
                                         <i class="fa fa-plus"></i>
@@ -168,7 +169,7 @@
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Edit Item Category</h4>
+              <h4 class="modal-title">Edit Item Spesification</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -176,7 +177,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <label for="item-cate">Item Category</label>
+                        <label for="item-cate">Item Spesification</label>
                         <input type="text" class="form-control" name="itemcate" id="edit-item-cate">
                         <input type="hidden" class="form-control" name="itemcatid" id="edit-item-id">
                     </div>
@@ -293,6 +294,7 @@
                 {data: "material", className: 'uid'},
                 {data: "matdesc", className: 'fname'},
                 {data: "mattypedesc", className: 'uname'},
+                {data: "item_category", className: 'uname'},
                 {data: "matunit", className: 'uname'},
                 {"defaultContent":
                     `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button>

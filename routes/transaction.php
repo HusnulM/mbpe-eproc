@@ -274,6 +274,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => '/logistic/returbast'], function () {
         Route::get('/',                 'Transaksi\ReturBastController@index')->middleware('checkAuth:logistic/returbast');
         Route::get('/list',             'Transaksi\ReturBastController@listRetur')->middleware('checkAuth:logistic/returbast');
+        Route::get('/detail/{id}',      'Transaksi\ReturBastController@detail')->middleware('checkAuth:logistic/returbast');
         Route::get('/create/{id}',      'Transaksi\ReturBastController@create')->middleware('checkAuth:logistic/returbast');
         Route::get('/print/{id}',       'Transaksi\ReturBastController@printretur')->middleware('checkAuth:logistic/returbast');
         Route::post('/save',            'Transaksi\ReturBastController@save')->middleware('checkAuth:logistic/returbast');
@@ -320,5 +321,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/details/{p1}',             'Transaksi\ApproveBastController@detailBAST')->middleware('checkAuth:approve/bast');
         Route::get('/listopenbast',             'Transaksi\ApproveBastController@openBastList')->middleware('checkAuth:approve/bast');
         Route::post('/save',                    'Transaksi\ApproveBastController@save')->middleware('checkAuth:approve/bast');
+    });
+
+    Route::group(['prefix' => '/approve/retur'], function () {
+        Route::get('/',                         'Transaksi\ApproveReturBastController@index')->middleware('checkAuth:approve/retur');
+        Route::get('/details/{p1}',             'Transaksi\ApproveReturBastController@detailReturBAST')->middleware('checkAuth:approve/retur');
+        Route::get('/listretur',                'Transaksi\ApproveReturBastController@openReturBastList')->middleware('checkAuth:approve/retur');
+        Route::post('/save',                    'Transaksi\ApproveReturBastController@save')->middleware('checkAuth:approve/retur');
     });
 });
