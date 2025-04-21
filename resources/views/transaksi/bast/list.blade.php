@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'List BAST')
+@section('title', 'Good Issued')
 
 @section('additional-css')
 @endsection
@@ -11,7 +11,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">List BAST</h3>
+                    <h3 class="card-title">Good Issued</h3>
                     <div class="card-tools">
                         <a href="{{ url('/logistic/bast') }}" class="btn btn-default btn-sm">
                             <i class="fa fa-arrow-left"></i> Back

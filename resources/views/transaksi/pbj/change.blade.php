@@ -44,7 +44,7 @@
                                                 <label for="requestto">Tujuan Permintaan</label>
                                                 <select name="requestto" id="requestto" class="form-control" required>
                                                     <option value="{{ $pbjhdr->tujuan_permintaan }}">{{ $pbjhdr->tujuan_permintaan }}</option>
-                                                    <option value="Pengambilan">Pengambilan</option>
+                                                    <option value="Permintaan">Permintaan</option>
                                                     <option value="Pengeluaran">Pengeluaran</option>
                                                 </select>
                                                 {{-- <input type="text" name="requestto" class="form-control" value="{{ $pbjhdr->tujuan_permintaan }}" required> --}}

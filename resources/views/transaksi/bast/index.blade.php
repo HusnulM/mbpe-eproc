@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Create BAST | List PBJ')
+@section('title', 'Good Issued | List PBJ')
 
 @section('additional-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -15,7 +15,7 @@
     </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -24,7 +24,7 @@
                     <h3 class="card-title">List PBJ</h3>
                     <div class="card-tools">
                         <a href="{{ url('/logistic/bast/listbast') }}" class="btn btn-success btn-sm">
-                            <i class="fa fa-list"></i> List BAST
+                            <i class="fa fa-list"></i> List Good Issued
                         </a>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                                     <th></th>
                                 </thead>
                                 <tbody id="tbl-pbj-body">
-                
+
                                 </tbody>
                             </table>
                         </div>
@@ -52,8 +52,8 @@
                 </div>
             </div>
         </div>
-    </div>       
-                                    
+    </div>
+
 </div>
 @endsection
 
@@ -63,7 +63,7 @@
 
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
-<script>    
+<script>
     $(document).ready(function(){
         var count = 0;
         let selected_pr_items = [];
@@ -89,7 +89,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "pbjnumber", className: 'uid'},
                     {data: "tgl_pbj", className: 'fname'},
@@ -98,8 +98,8 @@
                     {data: "kepada", className: 'fname'},
                     {data: "unit_desc", className: 'fname'},
                     {data: "engine_model", className: 'fname'},
-                    {"defaultContent": 
-                        "<button type='button' class='btn btn-primary btn-sm button-create-bast'> <i class='fa fa-plus'></i> Create BAST</button>",
+                    {"defaultContent":
+                        "<button type='button' class='btn btn-primary btn-sm button-create-bast'> <i class='fa fa-plus'></i> Create Good Issued</button>",
                         "className": "text-center",
                     }
                 ],
@@ -110,7 +110,7 @@
                 var menuTable = $('#tbl-pbj-list').DataTable();
                 selected_data = [];
                 selected_data = menuTable.row($(this).closest('tr')).data();
-                window.location = base_url+"/logistic/bast/create/"+selected_data.id;                
+                window.location = base_url+"/logistic/bast/create/"+selected_data.id;
             });
         }
 
@@ -122,7 +122,7 @@
                 searchField.focus();
             }
         });
-        $('#find-vendor').select2({ 
+        $('#find-vendor').select2({
             placeholder: 'Type Vendor Name',
             width: '100%',
             minimumInputLength: 0,
@@ -163,7 +163,7 @@
 
         $('#find-vendor').on('change', function(){
             // alert(this.value)
-            
+
             var data = $('#find-vendor').select2('data')
             console.log(data);
 
@@ -178,7 +178,7 @@
             //gets rows of table
             var rowLength = oTable.rows.length;
 
-            //loops through rows    
+            //loops through rows
             for (i = 0; i < rowLength; i++){
                 //gets cells of current row
                 var oCells = oTable.rows.item(i).cells;

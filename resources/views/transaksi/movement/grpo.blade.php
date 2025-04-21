@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Goods Receipt PO')
+@section('title', 'Goods Received PO')
 
 @section('additional-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -23,10 +23,10 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Goods Receipt PO</h3>
+                        <h3 class="card-title">Goods Received PO</h3>
                         <div class="card-tools">
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
-                                <i class="fas fa-save"></i> Post Goods Receipt PO
+                                <i class="fas fa-save"></i> Post Goods Received PO
                             </button>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="grdate">Tanggal Terima PO</label>
+                                            <label for="grdate">Goods Received Date</label>
                                             <input type="date" name="grdate" class="form-control" required>
                                         </div>
                                     </div>

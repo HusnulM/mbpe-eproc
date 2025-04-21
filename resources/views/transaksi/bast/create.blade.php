@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Create BAST')
+@section('title', 'Good Issued')
 
 @section('additional-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -24,10 +24,10 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Create BAST</h3>
+                        <h3 class="card-title">Good Issued</h3>
                         <div class="card-tools">
                             <button type="submit" class="btn btn-primary btn-sm btn-submit">
-                                <i class="fas fa-save"></i> Save BAST
+                                <i class="fas fa-save"></i> Post Good Issued
                             </button>
                             <a href="{{ url('/logistic/bast') }}" class="btn btn-default btn-sm">
                                 <i class="fa fa-arrow-left"></i> Back
@@ -47,7 +47,7 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="tglreq">Tanggal BAST</label>
+                                            <label for="tglreq">Goods Issued Date</label>
                                             <input type="date" name="tglbast" class="form-control" required>
                                         </div>
                                     </div>

@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Detail BAST')
+@section('title', 'Detail Good Issued')
 
 @section('additional-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -24,7 +24,7 @@
                 @csrf
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Detail BAST <b>[ {{ $header->no_bast }} ]</b></h3>
+                        <h3 class="card-title">Detail Good Issued <b>[ {{ $header->no_bast }} ]</b></h3>
                         <div class="card-tools">
                         </div>
                     </div>
