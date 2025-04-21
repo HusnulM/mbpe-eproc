@@ -56,7 +56,7 @@
     </style>
 </head>
 <body>
-    <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">FORM BAST</h2>
+    <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">GOOD ISSUED</h2>
     <table border="0" cellspacing="0" cellpadding="0" class="customers" style="margin-bottom: 20px !important;">
         <tr>
             <td style="width:120px;">BAST Number</td>
