@@ -392,7 +392,7 @@ class ApproveOpnamController extends Controller
                 $insertData = array();
                 foreach($oldItems as $olddata => $old){
                     $count = $count + 1;
-                    $excelData = array(
+                    DB::table('t_inv02')->insert([
                         'docnum'       => $ptaNumber,
                         'docyear'      => $tahun,
                         'docitem'      => $count,
@@ -408,14 +408,31 @@ class ApproveOpnamController extends Controller
                         'shkzg'        => '-',
                         'createdon'    => getLocalDatabaseDateTime(),
                         'createdby'    => Auth::user()->email ?? Auth::user()->username
+                    ]);
+                    // $excelData = array(
+                    //     'docnum'       => $ptaNumber,
+                    //     'docyear'      => $tahun,
+                    //     'docitem'      => $count,
+                    //     'movement_code'=> '201',
+                    //     'material'     => $row->material,
+                    //     'matdesc'      => $row->matdesc,
+                    //     'batch_number' => $old->batchnum ?? 'BATCHOPNAM',
+                    //     'quantity'     => $old->quantity ?? 0,
+                    //     'unit'         => $row->matunit,
+                    //     'unit_price'   => $row->unit_price ?? 0,
+                    //     'total_price'  => $row->total_price ?? 0,
+                    //     'whscode'      => $row->whsid,
+                    //     'shkzg'        => '-',
+                    //     'createdon'    => getLocalDatabaseDateTime(),
+                    //     'createdby'    => Auth::user()->email ?? Auth::user()->username
 
-                    );
-                    array_push($insertData, $excelData);
+                    // );
+                    // array_push($insertData, $excelData);
                 }
-                if(sizeof($insertData) > 0){
-                    insertOrUpdate($insertData,'t_inv02');
-                    DB::commit();
-                }
+                // if(sizeof($insertData) > 0){
+                //     insertOrUpdate($insertData,'t_inv02');
+                //     DB::commit();
+                // }
             }
 
             DB::table('t_inv01')->insert([
