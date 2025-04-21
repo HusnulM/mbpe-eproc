@@ -371,7 +371,7 @@ class ApproveOpnamController extends Controller
         try{
             $pidData = DB::table('v_stock_opname_detail')
                 ->where('pidnumber', $pidNumber)
-                ->orWhere('id', $pidNumber)
+                ->Where('diffqty', '<>', 0)
                 ->get();
 
             // dd($_POST);
