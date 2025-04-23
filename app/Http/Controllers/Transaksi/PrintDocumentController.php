@@ -331,6 +331,12 @@ class PrintDocumentController extends Controller
         $vendor = DB::table('t_vendor')->where('vendor_code', $pohdr->vendor)->first();
         $userPO = DB::table('users')->where('email', $pohdr->createdby)->first();
 
+        $totalApprover = DB::table('v_po_approval_v2')
+                        ->distinct('approver_level')
+                        ->where('ponum', $pohdr->ponum)
+                        ->count('approver_level');
+
+        // return $totalApprover;
         $POApprover = DB::table('workflow_budget')
                 ->where('object', 'PO')
                 ->where('requester', $userPO->id)
@@ -410,7 +416,8 @@ class PrintDocumentController extends Controller
                 'firstApprovalDate'  => $firstApprovalDate ?? null,
                 'secondApprovalDate' => $secondApprovalDate ?? null,
                 'lastApprovalDate'   => $lastApprovalDate ?? null,
-                'lastApprovalDate2'  => $lastApprovalDate2 ?? null
+                'lastApprovalDate2'  => $lastApprovalDate2 ?? null,
+                'totalApprover'      => $totalApprover
             ]);
         }else{
             $pdf = PDF::loadview('transaksi.po.formpo',
@@ -425,7 +432,8 @@ class PrintDocumentController extends Controller
                 'firstApprovalDate'  => $firstApprovalDate ?? null,
                 'secondApprovalDate' => $secondApprovalDate ?? null,
                 'lastApprovalDate'   => $lastApprovalDate ?? null,
-                'lastApprovalDate2'  => $lastApprovalDate2 ?? null
+                'lastApprovalDate2'  => $lastApprovalDate2 ?? null,
+                'totalApprover'      => $totalApprover
             ]);
         }
         // $pdf->setOptions(['isPhpEnabled' => true]);

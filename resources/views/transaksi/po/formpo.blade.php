@@ -247,139 +247,238 @@
         </table>
 
         <br>
-        <table>
-            <tr>
-                <td style="width:250px;">
-                    @if($firstApprover)
-                    {{ $firstApprover->jabatan ?? '' }},
-                    @endif
-                </td>
-                <td style="width:30px;"></td>
-                <td style="width:250px;">
-                    @if($secondApprover)
-                    {{ $secondApprover->jabatan ?? '' }},
-                    @endif
-                </td>
-                <td style="width:30px;"></td>
-                <td style="width:250px;">
-                    @if($lastApprover)
-                    {{ $lastApprover->jabatan ?? '' }},
-                    @endif
-                </td>
-                @if($lastApprover2)
-                <td style="width:250px;">
-                    @if($lastApprover2)
+        @if($totalApprover == 4)
+            <table>
+                <tr>
+                    <td style="width:150px;">
+                        @if($firstApprover)
+                        {{ $firstApprover->jabatan ?? '' }},
+                        @endif
+                    </td>
+                    <td style="width:10px;"></td>
+                    <td style="width:200px;">
+                        @if($secondApprover)
+                        {{ $secondApprover->jabatan ?? '' }},
+                        @endif
+                    </td>
+                    <td style="width:10px;"></td>
+                    <td style="width:150px;">
+                        @if($lastApprover)
+                        {{ $lastApprover->jabatan ?? '' }},
+                        @endif
+                    </td>
+                    <td style="width:10px;"></td>
+                    <td style="width:150px;">
+                        @if($lastApprover2)
                         {{ $lastApprover2->jabatan ?? '' }},
-                    @endif
-                </td>
-                @endif
-            </tr>
-            <tr>
-                <td>
-                    @if($firstApprover)
-                        @if($firstApprovalDate->approval_date)
-                            @if(checkIsLocalhost())
-                            <img src="{{ public_path($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-                            @else
-                                @if($firstApprover->s_signfile)
-                                <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-                                @else
-                                <br><br><br>
-                                @endif
-                            @endif
-                        @else
-                            <br><br><br>
                         @endif
-                    @endif
-                </td>
-                <td></td>
-                <td>
-                    @if($secondApprover)
-                        @if($secondApprovalDate->approval_date)
-                            @if(checkIsLocalhost())
-                            <img src="{{ public_path($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @if($firstApprover)
+                            @if($firstApprovalDate->approval_date)
+                                @if(checkIsLocalhost())
+                                <img src="{{ public_path($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @else
+                                    @if($firstApprover->s_signfile)
+                                    <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                    @else
+                                    <br><br><br>
+                                    @endif
+                                @endif
                             @else
+                                <br><br><br>
+                            @endif
+                        @endif
+                    </td>
+                    <td></td>
+                    <td>
+                        @if($secondApprover)
+                            @if($secondApprovalDate->approval_date)
+                                @if(checkIsLocalhost())
+                                <img src="{{ public_path($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @else
 
-                                @if($secondApprover->s_signfile)
-                                <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-                                @else
-                                <br><br><br>
+                                    @if($secondApprover->s_signfile)
+                                    <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                    @else
+                                    <br><br><br>
+                                    @endif
                                 @endif
-                            @endif
-                        @else
-                            <br><br><br>
-                        @endif
-                    @endif
-                </td>
-                <td></td>
-                <td>
-                    @if($lastApprover)
-                        @if($lastApprovalDate->approval_date)
-                            @if(checkIsLocalhost())
-                            <img src="{{ public_path($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                             @else
-                                @if($lastApprover->s_signfile)
-                                    <img src="{{ asset($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-                                @else
                                 <br><br><br>
+                            @endif
+                        @endif
+                    </td>
+                    <td></td>
+                    <td>
+                        @if($lastApprover)
+                            @if($lastApprovalDate->approval_date)
+                                @if(checkIsLocalhost())
+                                <img src="{{ public_path($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @else
+                                    @if($lastApprover->s_signfile)
+                                        <img src="{{ asset($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                    @else
+                                    <br><br><br>
+                                    @endif
                                 @endif
-                            @endif
-                        @else
-                            <br><br><br>
-                        @endif
-                    @endif
-                </td>
-                @if($lastApprover2)
-                <td>
-                    @if($lastApprover2)
-                    @if($lastApprovalDate2->approval_date)
-                        @if(checkIsLocalhost())
-                        <img src="{{ public_path($lastApprover2->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-                        @else
-                            @if($lastApprover2->s_signfile)
-                                <img src="{{ asset($lastApprover2->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                             @else
-                            <br><br><br>
+                                <br><br><br>
                             @endif
                         @endif
-                    @else
-                        <br><br><br>
-                    @endif
-                    @endif
-                </td>
-                @endif
-            </tr>
-            <tr>
-                <td>
-                    @if($firstApprover)
-                    <u>{{ $firstApprover->name ?? '' }}</u> <br>
-                    Date: {{ formatDate($firstApprovalDate->approval_date ?? null) }}
-                    @endif
-                </td>
-                <td></td>
-                <td>
-                    @if($secondApprover)
-                    <u>{{ $secondApprover->name ?? '' }}</u> <br>
-                    Date: {{ formatDate($secondApprovalDate->approval_date ?? null) }}
-                    @endif
-                </td>
-                <td></td>
-                <td>
-                    @if($lastApprover)
-                    <u>{{ $lastApprover->name ?? '' }}</u> <br>
-                    Date: {{ formatDate($lastApprovalDate->approval_date ?? null) }}
-                    @endif
-                </td>
-                @if($lastApprover2)
-                <td>
-                    @if($lastApprover2)
-                    <u>{{ $lastApprover2->name ?? '' }}</u> <br>
-                    Date: {{ formatDate($lastApprovalDate2->approval_date ?? null) }}
-                    @endif
-                </td>
-                @endif
-            </tr>
-        </table>
+                    </td>
+                    <td></td>
+                    <td>
+                        @if($lastApprover2)
+                            @if($lastApprovalDate2->approval_date)
+                                @if(checkIsLocalhost())
+                                <img src="{{ public_path($lastApprover2->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @else
+                                    @if($lastApprover2->s_signfile)
+                                        <img src="{{ asset($lastApprover2->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                    @else
+                                    <br><br><br>
+                                    @endif
+                                @endif
+                            @else
+                                <br><br><br>
+                            @endif
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @if($firstApprover)
+                        <u>{{ $firstApprover->name ?? '' }}</u> <br>
+                        Date: {{ formatDate($firstApprovalDate->approval_date ?? null) }}
+                        @endif
+                    </td>
+                    <td></td>
+                    <td>
+                        @if($secondApprover)
+                        <u>{{ $secondApprover->name ?? '' }}</u> <br>
+                        Date: {{ formatDate($secondApprovalDate->approval_date ?? null) }}
+                        @endif
+                    </td>
+                    <td></td>
+                    <td>
+                        @if($lastApprover)
+                        <u>{{ $lastApprover->name ?? '' }}</u> <br>
+                        Date: {{ formatDate($lastApprovalDate->approval_date ?? null) }}
+                        @endif
+                    </td>
+                    <td></td>
+                    <td>
+                        @if($lastApprover2)
+                        <u>{{ $lastApprover2->name ?? '' }}</u> <br>
+                        Date: {{ formatDate($lastApprovalDate2->approval_date ?? null) }}
+                        @endif
+                    </td>
+                </tr>
+            </table>
+        @else
+            <table>
+                <tr>
+                    <td style="width:250px;">
+                        @if($firstApprover)
+                        {{ $firstApprover->jabatan ?? '' }},
+                        @endif
+                    </td>
+                    <td style="width:30px;"></td>
+                    <td style="width:250px;">
+                        @if($secondApprover)
+                        {{ $secondApprover->jabatan ?? '' }},
+                        @endif
+                    </td>
+                    <td style="width:30px;"></td>
+                    <td style="width:250px;">
+                        @if($lastApprover)
+                        {{ $lastApprover->jabatan ?? '' }},
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @if($firstApprover)
+                            @if($firstApprovalDate->approval_date)
+                                @if(checkIsLocalhost())
+                                <img src="{{ public_path($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @else
+                                    @if($firstApprover->s_signfile)
+                                    <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                    @else
+                                    <br><br><br>
+                                    @endif
+                                @endif
+                            @else
+                                <br><br><br>
+                            @endif
+                        @endif
+                    </td>
+                    <td></td>
+                    <td>
+                        @if($secondApprover)
+                            @if($secondApprovalDate->approval_date)
+                                @if(checkIsLocalhost())
+                                <img src="{{ public_path($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @else
+
+                                    @if($secondApprover->s_signfile)
+                                    <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                    @else
+                                    <br><br><br>
+                                    @endif
+                                @endif
+                            @else
+                                <br><br><br>
+                            @endif
+                        @endif
+                    </td>
+                    <td></td>
+                    <td>
+                        @if($lastApprover)
+                            @if($lastApprovalDate->approval_date)
+                                @if(checkIsLocalhost())
+                                <img src="{{ public_path($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @else
+                                    @if($lastApprover->s_signfile)
+                                        <img src="{{ asset($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                    @else
+                                    <br><br><br>
+                                    @endif
+                                @endif
+                            @else
+                                <br><br><br>
+                            @endif
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @if($firstApprover)
+                        <u>{{ $firstApprover->name ?? '' }}</u> <br>
+                        Date: {{ formatDate($firstApprovalDate->approval_date ?? null) }}
+                        @endif
+                    </td>
+                    <td></td>
+                    <td>
+                        @if($secondApprover)
+                        <u>{{ $secondApprover->name ?? '' }}</u> <br>
+                        Date: {{ formatDate($secondApprovalDate->approval_date ?? null) }}
+                        @endif
+                    </td>
+                    <td></td>
+                    <td>
+                        @if($lastApprover)
+                        <u>{{ $lastApprover->name ?? '' }}</u> <br>
+                        Date: {{ formatDate($lastApprovalDate->approval_date ?? null) }}
+                        @endif
+                    </td>
+                </tr>
+            </table>
+        @endif
     </div>
     <script type="text/php">
         if (isset($pdf)) {
