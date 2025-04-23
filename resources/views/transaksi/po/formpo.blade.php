@@ -250,25 +250,25 @@
         @if($totalApprover == 4)
             <table>
                 <tr>
-                    <td style="width:150px;">
+                    <td style="width:150px; text-align:center;">
                         @if($firstApprover)
                         {{ $firstApprover->jabatan ?? '' }},
                         @endif
                     </td>
                     <td style="width:10px;"></td>
-                    <td style="width:200px;">
+                    <td style="width:200px; text-align:center;">
                         @if($secondApprover)
                         {{ $secondApprover->jabatan ?? '' }},
                         @endif
                     </td>
                     <td style="width:10px;"></td>
-                    <td style="width:150px;">
+                    <td style="width:150px; text-align:center;">
                         @if($lastApprover)
                         {{ $lastApprover->jabatan ?? '' }},
                         @endif
                     </td>
                     <td style="width:10px;"></td>
-                    <td style="width:150px;">
+                    <td style="width:150px; text-align:center;">
                         @if($lastApprover2)
                         {{ $lastApprover2->jabatan ?? '' }},
                         @endif
@@ -381,19 +381,19 @@
         @else
             <table>
                 <tr>
-                    <td style="width:250px;">
+                    <td style="width:250px; text-align:center;">
                         @if($firstApprover)
                         {{ $firstApprover->jabatan ?? '' }},
                         @endif
                     </td>
                     <td style="width:30px;"></td>
-                    <td style="width:250px;">
+                    <td style="width:250px; text-align:center;">
                         @if($secondApprover)
                         {{ $secondApprover->jabatan ?? '' }},
                         @endif
                     </td>
                     <td style="width:30px;"></td>
-                    <td style="width:250px;">
+                    <td style="width:250px; text-align:center;">
                         @if($lastApprover)
                         {{ $lastApprover->jabatan ?? '' }},
                         @endif
