@@ -380,7 +380,22 @@ class PrintDocumentController extends Controller
             ->first();
         }
 
+        // Level 4
+        $POApprover = DB::table('workflow_budget')
+                ->where('object', 'PO')
+                ->where('requester', $userPO->id)
+                ->where('approver_level','4')
+                ->orderBy('approver_level','DESC')
+                ->first();
 
+        if($POApprover){
+            $lastApprover2 = DB::table('v_users')->where('id', $POApprover->approver)->first();
+            $lastApprovalDate2 = DB::table('v_po_approval_v2')
+            ->where('approver_level','4')
+            ->where('ponum', $pohdr->ponum)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
+        }
 
         if($pohdr->is_posolar === 'Y'){
             $pdf = PDF::loadview('transaksi.po.formposolar',
@@ -391,9 +406,11 @@ class PrintDocumentController extends Controller
                 'firstApprover'  => $firstApprover ?? null,
                 'secondApprover' => $secondApprover ?? null,
                 'lastApprover'   => $lastApprover ?? null,
+                'lastApprover2'  => $lastApprover2 ?? null,
                 'firstApprovalDate'  => $firstApprovalDate ?? null,
                 'secondApprovalDate' => $secondApprovalDate ?? null,
-                'lastApprovalDate'   => $lastApprovalDate ?? null
+                'lastApprovalDate'   => $lastApprovalDate ?? null,
+                'lastApprovalDate2'  => $lastApprovalDate2 ?? null
             ]);
         }else{
             $pdf = PDF::loadview('transaksi.po.formpo',
@@ -404,9 +421,11 @@ class PrintDocumentController extends Controller
                 'firstApprover'  => $firstApprover ?? null,
                 'secondApprover' => $secondApprover ?? null,
                 'lastApprover'   => $lastApprover ?? null,
+                'lastApprover2'  => $lastApprover2 ?? null,
                 'firstApprovalDate'  => $firstApprovalDate ?? null,
                 'secondApprovalDate' => $secondApprovalDate ?? null,
-                'lastApprovalDate'   => $lastApprovalDate ?? null
+                'lastApprovalDate'   => $lastApprovalDate ?? null,
+                'lastApprovalDate2'  => $lastApprovalDate2 ?? null
             ]);
         }
         // $pdf->setOptions(['isPhpEnabled' => true]);

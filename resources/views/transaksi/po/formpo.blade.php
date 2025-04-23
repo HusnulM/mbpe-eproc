@@ -266,6 +266,13 @@
                     {{ $lastApprover->jabatan ?? '' }},
                     @endif
                 </td>
+                @if($lastApprover2)
+                <td style="width:250px;">
+                    @if($lastApprover2)
+                        {{ $lastApprover2->jabatan ?? '' }},
+                    @endif
+                </td>
+                @endif
             </tr>
             <tr>
                 <td>
@@ -322,6 +329,25 @@
                         @endif
                     @endif
                 </td>
+                @if($lastApprover2)
+                <td>
+                    @if($lastApprover2)
+                    @if($lastApprovalDate2->approval_date)
+                        @if(checkIsLocalhost())
+                        <img src="{{ public_path($lastApprover2->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                        @else
+                            @if($lastApprover2->s_signfile)
+                                <img src="{{ asset($lastApprover2->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                            @else
+                            <br><br><br>
+                            @endif
+                        @endif
+                    @else
+                        <br><br><br>
+                    @endif
+                    @endif
+                </td>
+                @endif
             </tr>
             <tr>
                 <td>
@@ -344,6 +370,14 @@
                     Date: {{ formatDate($lastApprovalDate->approval_date ?? null) }}
                     @endif
                 </td>
+                @if($lastApprover2)
+                <td>
+                    @if($lastApprover2)
+                    <u>{{ $lastApprover2->name ?? '' }}</u> <br>
+                    Date: {{ formatDate($lastApprovalDate2->approval_date ?? null) }}
+                    @endif
+                </td>
+                @endif
             </tr>
         </table>
     </div>
