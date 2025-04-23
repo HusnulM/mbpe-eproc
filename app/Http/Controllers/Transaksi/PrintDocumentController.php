@@ -403,6 +403,7 @@ class PrintDocumentController extends Controller
             ->first();
         }
 
+        // $pdf->add_info('Title', 'Print Purchase Order '. $pohdr->ponum);
         if($pohdr->is_posolar === 'Y'){
             $pdf = PDF::loadview('transaksi.po.formposolar',
             [
@@ -436,20 +437,16 @@ class PrintDocumentController extends Controller
                 'totalApprover'      => $totalApprover
             ]);
         }
-        // $pdf->setOptions(['isPhpEnabled' => true]);
         $pdf->set_option("enable_php", true);
+        return $pdf->stream();
+
+        // $pdf->setOptions(['isPhpEnabled' => true]);
+        // return $pdf->download($pohdr->ponum. '.pdf');
         // $pdf = \App::make('dompdf.wrapper');
         // $pdf->setOptions("isPhpEnabled", true);
         // $pdf->setOptions(['isRemoteEnabled' => true]);
         // $pdf->setProtocol($_SERVER['DOCUMENT_ROOT']);
         // $pdf = PDF::loadview('transaksi.po.printpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
-        return $pdf->stream();
-        // $filename = $pohdr->ponum;
-        // $filename = str_replace('/', '-', $filename);
-        // $content = $pdf->output();
-        // file_put_contents('files/Document/'.$filename.'.pdf', $content);
-        // return "Ok";
-        // return $pdf->save('files/Document/'.$pohdr->ponum.'.pdf');
     }
 
     public function wolist(Request $req){
