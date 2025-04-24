@@ -212,8 +212,8 @@ class PbjController extends Controller
 
     public function rabList($param){
 
-        // $url     = 'https://mahakaryabangunpersada.com/rab/B807C072-05ADCCE0-C1C82376-3EC92EF1/'.$param;
-        $url     = 'https://mahakaryabangunpersada.com/rab/B807C072-05ADCCE0-C1C82376-3EC92EF1/';
+        $url     = 'https://mahakaryabangunpersada.com/rab/B807C072-05ADCCE0-C1C82376-3EC92EF1/'.$param;
+        // $url     = 'https://mahakaryabangunpersada.com/rab/B807C072-05ADCCE0-C1C82376-3EC92EF1/';
         // https://mahakaryabangunpersada.com/rab/B807C072-05ADCCE0-C1C82376-3EC92EF1/
         // dd($url);
         $execapi = mbpAPI($url, 'B807C072-05ADCCE0-C1C82376-3EC92EF1', null);
