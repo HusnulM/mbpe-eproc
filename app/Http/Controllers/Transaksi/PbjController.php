@@ -212,7 +212,16 @@ class PbjController extends Controller
 
     public function rabList($param){
 
-        $url     = 'https://mahakaryabangunpersada.com/rab/B807C072-05ADCCE0-C1C82376-3EC92EF1/'.$param;
+        $tahun = substr($param,0,4);
+        $bulan = substr($param,5,2);
+
+        $bulan = ltrim($bulan, '0');
+
+        $month = ((int)$bulan);
+
+        // dd('Bulan '. $month . ' - Tahun ' . $tahun);
+        $url     = 'https://mahakaryabangunpersada.com/rab/B807C072-05ADCCE0-C1C82376-3EC92EF1/';
+        // $url     = 'https://mahakaryabangunpersada.com/rab/B807C072-05ADCCE0-C1C82376-3EC92EF1/'.$param;
         // $url     = 'https://mahakaryabangunpersada.com/rab/B807C072-05ADCCE0-C1C82376-3EC92EF1/';
         // https://mahakaryabangunpersada.com/rab/B807C072-05ADCCE0-C1C82376-3EC92EF1/
         // dd($url);
@@ -226,23 +235,25 @@ class PbjController extends Controller
         $rabItems = array();
 
         foreach($response->data as $key => $row){
-
-            if($row->part_number !== "" && $row->part_number !== "000"){
-                // dd($row);
-                $data = array(
-                    'id'          => $row->id,
-                    'material'    => $row->part_number,
-                    'matdesc'     => $row->item,
-                    'partnumber'  => $row->part_number,
-                    'partname'    => $row->item,
-                    'availableQty'=> $row->qty,
-                    'matunit'     => $row->satuan,
-                    'kodebudget'  => $row->kodebudget,
-                    'bulan'       => $row->bulan,
-                    'tahun'       => $row->tahun,
-                    'avg_price'   => '0',
-                );
-                array_push($rabItems, $data);
+            // dd($row);
+            if($month == ((int)$row->bulan) && ((int)$tahun) == ((int)$row->tahun)){
+                if($row->part_number !== "" && $row->part_number !== "000"){
+                    // dd($row);
+                    $data = array(
+                        'id'          => $row->id,
+                        'material'    => $row->part_number,
+                        'matdesc'     => $row->item,
+                        'partnumber'  => $row->part_number,
+                        'partname'    => $row->item,
+                        'availableQty'=> $row->qty,
+                        'matunit'     => $row->satuan,
+                        'kodebudget'  => $row->kodebudget,
+                        'bulan'       => $row->bulan,
+                        'tahun'       => $row->tahun,
+                        'avg_price'   => '0',
+                    );
+                    array_push($rabItems, $data);
+                }
             }
         }
 
