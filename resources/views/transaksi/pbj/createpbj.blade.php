@@ -302,6 +302,8 @@
                             <th>Available Quantity</th>
                             <th>Unit</th>
                             <th>Kode Budget</th>
+                            <th>Budget Period</th>
+                            <th>Budget Year</th>
                             <th></th>
                         </thead>
                         <tbody></tbody>
@@ -378,6 +380,8 @@
                     {data: "availableQty", "className": "text-right"},
                     {data: "matunit", className: 'fname'},
                     {data: "kodebudget", className: 'fname'},
+                    {data: "bulan", className: 'fname'},
+                    {data: "tahun", className: 'fname'},
                     {"defaultContent":
                         "<button type='button' class='btn btn-primary btn-sm button-add-rab'> <i class='fa fa-plus'></i> Add</button>"
                     }
