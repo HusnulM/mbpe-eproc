@@ -635,6 +635,28 @@ class ApprovePurchaseOrderController extends Controller
             ->first();
         }
 
+        // Level 4
+        $POApprover = DB::table('workflow_budget')
+                ->where('object', 'PO')
+                ->where('requester', $userPO->id)
+                ->where('approver_level','4')
+                ->orderBy('approver_level','DESC')
+                ->first();
+
+        if($POApprover){
+            $lastApprover2 = DB::table('v_users')->where('id', $POApprover->approver)->first();
+            $lastApprovalDate2 = DB::table('v_po_approval_v2')
+            ->where('approver_level','4')
+            ->where('ponum', $pohdr->ponum)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
+        }
+
+        $totalApprover = DB::table('v_po_approval_v2')
+                        ->distinct('approver_level')
+                        ->where('ponum', $pohdr->ponum)
+                        ->count('approver_level');
+
         if($pohdr->is_posolar === 'Y'){
             $pdf = PDF::loadview('transaksi.po.formposolar',
             [
@@ -646,7 +668,9 @@ class ApprovePurchaseOrderController extends Controller
                 'lastApprover'   => $lastApprover ?? null,
                 'firstApprovalDate'  => $firstApprovalDate ?? null,
                 'secondApprovalDate' => $secondApprovalDate ?? null,
-                'lastApprovalDate'   => $lastApprovalDate ?? null
+                'lastApprovalDate'   => $lastApprovalDate ?? null,
+                'lastApprovalDate2'  => $lastApprovalDate2 ?? null,
+                'totalApprover'      => $totalApprover
             ]);
         }else{
             $pdf = PDF::loadview('transaksi.po.formpo',
@@ -659,7 +683,9 @@ class ApprovePurchaseOrderController extends Controller
                 'lastApprover'   => $lastApprover ?? null,
                 'firstApprovalDate'  => $firstApprovalDate ?? null,
                 'secondApprovalDate' => $secondApprovalDate ?? null,
-                'lastApprovalDate'   => $lastApprovalDate ?? null
+                'lastApprovalDate'   => $lastApprovalDate ?? null,
+                'lastApprovalDate2'  => $lastApprovalDate2 ?? null,
+                'totalApprover'      => $totalApprover
             ]);
         }
         $pdf->render();
