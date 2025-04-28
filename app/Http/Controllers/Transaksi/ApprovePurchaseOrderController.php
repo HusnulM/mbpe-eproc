@@ -313,7 +313,7 @@ class ApprovePurchaseOrderController extends Controller
                 ->where('ponum', $ptaNumber)
                 ->whereIn('poitem', $poItems)
                 // ->where('approver_id', Auth::user()->id)
-                // ->where('approver_level',$userAppLevel->approver_level)
+                ->where('approver_level',$userAppLevel->approver_level)
                 ->update([
                     'approval_status' => 'R',
                     'approval_remark' => $data['approvernote'],
