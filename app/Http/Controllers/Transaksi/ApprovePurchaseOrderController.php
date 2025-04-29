@@ -596,6 +596,7 @@ class ApprovePurchaseOrderController extends Controller
             $firstApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
             $firstApprovalDate = DB::table('v_po_approval_v2')
             ->where('approver_level','1')
+            ->where('approval_status', '!=','R')
             ->where('ponum', $pohdr->ponum)
             ->orderBy('approval_date', 'DESC')
             ->first();
@@ -614,6 +615,7 @@ class ApprovePurchaseOrderController extends Controller
             $secondApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
             $secondApprovalDate = DB::table('v_po_approval_v2')
             ->where('approver_level','2')
+            ->where('approval_status', '!=','R')
             ->where('ponum', $pohdr->ponum)
             ->orderBy('approval_date', 'DESC')
             ->first();
@@ -630,6 +632,7 @@ class ApprovePurchaseOrderController extends Controller
             $lastApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
             $lastApprovalDate = DB::table('v_po_approval_v2')
             ->where('approver_level','3')
+            ->where('approval_status', '!=','R')
             ->where('ponum', $pohdr->ponum)
             ->orderBy('approval_date', 'DESC')
             ->first();
@@ -647,6 +650,7 @@ class ApprovePurchaseOrderController extends Controller
             $lastApprover2 = DB::table('v_users')->where('id', $POApprover->approver)->first();
             $lastApprovalDate2 = DB::table('v_po_approval_v2')
             ->where('approver_level','4')
+            ->where('approval_status', '!=','R')
             ->where('ponum', $pohdr->ponum)
             ->orderBy('approval_date', 'DESC')
             ->first();
