@@ -180,7 +180,11 @@
             <td style="width:95px;">{{ $hdr->hm_km }}</td>
             <td style="width:100px;">Budget/Cost Code</td>
             <td>
+                @if($item[0]->budget_code == '0')
+                NONBUDGET
+                @else
                 {{ $item[0]->budget_code ?? 'NONBUDGET' }}
+                @endif
                 {{-- @if($item[0]->budget_code === '1' || $hdr->budget_cost_code === 'BUDGET')
                     Budget
                 @else
