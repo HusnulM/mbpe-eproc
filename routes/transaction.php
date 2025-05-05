@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/wo/detail/{p1}',      'Transaksi\PbjController@detailWO');//->middleware('checkAuth:transaction/pbj');
 
-        Route::get('/getrablist/{id}',                'Transaksi\PbjController@rabList')->middleware('checkAuth:transaction/pbj');
+        Route::get('/getrablist/{id}',                'Transaksi\PbjController@rabList');//->middleware('checkAuth:transaction/pbj');
 
     });
 
