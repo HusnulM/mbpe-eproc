@@ -473,7 +473,7 @@ class PbjController extends Controller
                     'hm_km'             => $req['hmkm'] ?? 0,
                     'km'                => $req['km'] ?? 0,
                     // 'budget_cost_code'  => $req['budgetcode'],
-                    'budget_cost_code'  => $budgetcode[0] ?? '0',
+                    'budget_cost_code'  => $budgetcode[0] ?? 'NONBUDGET',
                     'cheklistnumber'    => $req['checklistnum'] ?? null,
                     'idproject'         => $req['project'] ?? null,
                     'remark'            => $req['remark'],
@@ -507,7 +507,7 @@ class PbjController extends Controller
                         'woitem'       => $woitem[$i] ?? 0,
                         // 'whscode'      => $whscode[$i],
                         'whscode'      => $whscode,
-                        'budget_code'  => $budgetcode[$i] ?? '0',
+                        'budget_code'  => $budgetcode[$i] ?? 'NONBUDGET',
                         'createdon'    => getLocalDatabaseDateTime(),
                         'createdby'    => Auth::user()->email ?? Auth::user()->username
                     );
@@ -657,7 +657,7 @@ class PbjController extends Controller
                     'hm_km'             => $req['hmkm'] ?? 0,
                     'km'                => $req['km'] ?? 0,
                     // 'budget_cost_code'  => $req['budgetcode'],
-                    'budget_cost_code'  => $budgetcode[0] ?? '0',
+                    'budget_cost_code'  => $budgetcode[0] ?? 'NONBUDGET',
                     'remark'            => $req['remark'],
                     'periode'           => $req['periode'],
                     'idproject'         => $req['project'],
@@ -701,7 +701,7 @@ class PbjController extends Controller
                         'wonum'        => $wonum[$i] ?? null,
                         'woitem'       => $woitem[$i] ?? 0,
                         'whscode'      => $whscode[$i] ?? $req['whscode'],
-                        'budget_code'  => $budgetcode[$i] ?? '0',
+                        'budget_code'  => $budgetcode[$i] ?? 'NONBUDGET',
                         'createdon'    => getLocalDatabaseDateTime(),
                         'createdby'    => Auth::user()->email ?? Auth::user()->username
                     );
