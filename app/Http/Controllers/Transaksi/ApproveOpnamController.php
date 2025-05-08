@@ -271,7 +271,7 @@ class ApproveOpnamController extends Controller
             $bulan  = date('m');
             $tahun  = date('Y');
             $prefix = 'PID';
-            $ptaNumber = generateNextNumber($prefix, 'PID', $tahun, '', '');
+            $ptaNumber = generateNextNumber2($prefix, 'PID', $tahun, $bulan, '');
 
             DB::table('t_inv01')->insert([
                 'docnum'            => $ptaNumber,
@@ -380,7 +380,7 @@ class ApproveOpnamController extends Controller
             $tahun    = date('Y');
             $prefix   = 'ISSUEPID';
 
-            $ptaNumber = generateNextNumber($prefix, 'ISSUEPID', $tahun, '', '');
+            $ptaNumber = generateNextNumber2($prefix, 'ISSUEPID', $tahun, $bulan, '');
 
             // Create Inventory Movement Negatif untuk meng 0 kan stock Lama
             foreach ($pidData as $index => $row) {
