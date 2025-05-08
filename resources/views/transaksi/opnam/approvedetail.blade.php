@@ -457,7 +457,7 @@ https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.css --}}
                     }else{
                         toastr.error(response.message)
                         setTimeout(function(){
-                            location.reload();
+                           location.reload();
                         }, 2000);
                     }
                 });

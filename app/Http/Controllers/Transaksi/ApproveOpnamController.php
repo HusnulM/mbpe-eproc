@@ -192,7 +192,7 @@ class ApproveOpnamController extends Controller
                     ]);
 
                     $buangStockLama = $this->postOldDocument($ptaNumber);
-
+                    // dd($buangStockLama);
                     if($buangStockLama['msgtype'] == '200'){
                         $postPID        = $this->postPIDDocument($ptaNumber);
                         if($postPID['msgtype'] == '200'){
@@ -271,7 +271,7 @@ class ApproveOpnamController extends Controller
             $bulan  = date('m');
             $tahun  = date('Y');
             $prefix = 'PID';
-            $ptaNumber = generateNextNumber2($prefix, 'PID', $tahun, $bulan, '');
+            $ptaNumber = generateNextNumber($prefix, 'PID', $tahun, $bulan, '');
 
             DB::table('t_inv01')->insert([
                 'docnum'            => $ptaNumber,
@@ -380,16 +380,17 @@ class ApproveOpnamController extends Controller
             $tahun    = date('Y');
             $prefix   = 'ISSUEPID';
 
-            $ptaNumber = generateNextNumber2($prefix, 'ISSUEPID', $tahun, $bulan, '');
+            $ptaNumber = null;
+            $ptaNumber = generateNextNumber($prefix, 'ISSUEPID', $tahun, $bulan, '');
 
             // Create Inventory Movement Negatif untuk meng 0 kan stock Lama
+            $count = 0;
             foreach ($pidData as $index => $row) {
                 $oldItems = DB::table('t_inv_stock')
                             ->where('material', $row->material)
                             ->where('whscode', $row->whsid)
                             ->where('quantity', '>', 0)
                             ->get();
-                $count = 0;
                 $insertData = array();
                 foreach($oldItems as $olddata => $old){
                     $count = $count + 1;
@@ -410,32 +411,33 @@ class ApproveOpnamController extends Controller
                         'createdon'    => getLocalDatabaseDateTime(),
                         'createdby'    => Auth::user()->email ?? Auth::user()->username
                     ]);
-                    // $excelData = array(
-                    //     'docnum'       => $ptaNumber,
-                    //     'docyear'      => $tahun,
-                    //     'docitem'      => $count,
-                    //     'movement_code'=> '201',
-                    //     'material'     => $row->material,
-                    //     'matdesc'      => $row->matdesc,
-                    //     'batch_number' => $old->batchnum ?? 'BATCHOPNAM',
-                    //     'quantity'     => $old->quantity ?? 0,
-                    //     'unit'         => $row->matunit,
-                    //     'unit_price'   => $row->unit_price ?? 0,
-                    //     'total_price'  => $row->total_price ?? 0,
-                    //     'whscode'      => $row->whsid,
-                    //     'shkzg'        => '-',
-                    //     'createdon'    => getLocalDatabaseDateTime(),
-                    //     'createdby'    => Auth::user()->email ?? Auth::user()->username
+                    $excelData = array(
+                        'docnum'       => $ptaNumber,
+                        'docyear'      => $tahun,
+                        'docitem'      => $count,
+                        'movement_code'=> '201',
+                        'material'     => $row->material,
+                        'matdesc'      => $row->matdesc,
+                        'batch_number' => $old->batchnum ?? 'BATCHOPNAM',
+                        'quantity'     => $old->quantity ?? 0,
+                        'unit'         => $row->matunit,
+                        'unit_price'   => $row->unit_price ?? 0,
+                        'total_price'  => $row->total_price ?? 0,
+                        'whscode'      => $row->whsid,
+                        'shkzg'        => '-',
+                        'createdon'    => getLocalDatabaseDateTime(),
+                        'createdby'    => Auth::user()->email ?? Auth::user()->username
 
-                    // );
-                    // array_push($insertData, $excelData);
+                    );
+                    array_push($insertData, $excelData);
                 }
                 // if(sizeof($insertData) > 0){
                 //     insertOrUpdate($insertData,'t_inv02');
                 //     DB::commit();
                 // }
             }
-
+            // return $insertData;
+            // dd($insertData);
             DB::table('t_inv01')->insert([
                 'docnum'            => $ptaNumber,
                 'docyear'           => $tahun,
