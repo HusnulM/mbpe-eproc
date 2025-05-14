@@ -239,6 +239,9 @@ class ApproveBastController extends Controller
                             $warehouseID = $pbjdtl->whscode;
                         }
 
+                        $matdesc = str_replace('"','\"',$row->matdesc);
+                        $matCode = str_replace('"','\"',$row->material);
+
                         DB::select('call spIssueMaterialWithBatchFIFO(
                             "'. $row->material .'",
                             "'. $warehouseID .'",
@@ -246,7 +249,7 @@ class ApproveBastController extends Controller
                             "'. $issueDoc .'",
                             "'. date('Y') .'",
                             "201",
-                            "'. $row->matdesc .'",
+                            "'. $matdesc .'",
                             "'. $row->unit .'",
                             "-",
                             "'. $row->refdoc .'",
