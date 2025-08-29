@@ -162,7 +162,7 @@
                                                 @endforeach
                                                 </tbody>
                                                 <tfoot>
-                                                    <td colspan="9" style="text-align: right;">
+                                                    <td colspan="11" style="text-align: right;">
                                                         <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
                                                             <i class="fa fa-check"></i> APPROVE
                                                         </button>
