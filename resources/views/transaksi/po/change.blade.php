@@ -184,6 +184,7 @@
                                                                         <th>Unit</th>
                                                                         <th>Unit Price</th>
                                                                         <th>PR Reference</th>
+                                                                        {{-- <th>Remark Item</th> --}}
                                                                         <th style="text-align:right;">
                                                                             <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
                                                                                 <i class="fa fa-plus"></i>
@@ -223,6 +224,11 @@
                                                                                     <button type="button" class="btn btn-sm btn-danger btn-delete-po-item" data-ponum="{{ $row->ponum }}" data-poitem="{{ $row->poitem }}">
                                                                                         <i class="fa fa-trash"></i>
                                                                                     </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="7">
+                                                                                    <input type="text" name="remarkitem[]" value="{{ $row->remark_item }}" class="form-control">
                                                                                 </td>
                                                                             </tr>
                                                                         @endforeach
@@ -699,6 +705,11 @@
                                 </button>
                             </td>
                         </tr>
+                        <tr>
+                            <td colspan="7">
+                                <input type="text" name="remarkitem[]" value='' class="form-control" placeholder="Remark Item...">
+                            </td>
+                        </tr>
                     `);
 
                     $('#btnRemove'+fCount).on('click', function(e){
@@ -888,6 +899,11 @@
                                 <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">
                                     <i class="fa fa-trash"></i>
                                 </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">
+                                <input type="text" name="remarkitem[]" value='' class="form-control" placeholder="Remark Item...">
                             </td>
                         </tr>
                     `);

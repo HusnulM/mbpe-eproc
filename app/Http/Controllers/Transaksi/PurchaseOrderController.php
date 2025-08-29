@@ -170,6 +170,7 @@ class PurchaseOrderController extends Controller
             $pritem   = $req['pritem'];
             $project  = $req['project'];
             $kodebudget  = $req['kodebudget'];
+            $remarkitem  = $req['remarkitem'];
 
             $insertData = array();
             $poItems    = array();
@@ -220,6 +221,7 @@ class PurchaseOrderController extends Controller
                     'budget_code'  => $budgetCode,
                     'budget_code_num' => $kodebudget[$i] ?? 'NONBUDGET',
                     'budget_period'=> $budgetPriod,
+                    'remark_item'  => $remarkitem[$i] ?? null,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
@@ -413,6 +415,7 @@ class PurchaseOrderController extends Controller
             $pritem   = $req['pritem'];
             $poitem   = $req['poitem'];
             $kodebudget = $req['kodebudget'];
+            $remarkitem  = $req['remarkitem'];
 
             $insertData = array();
             $poItems    = array();
@@ -455,6 +458,7 @@ class PurchaseOrderController extends Controller
                     'budget_code'  => $budgetCode,
                     'budget_code_num' => $kodebudget[$i] ?? 'NONBUDGET',
                     'budget_period'=> $budgetPriod,
+                    'remark_item'  => $remarkitem[$i] ?? null,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => $pohdr->createdby,
                     // Auth::user()->email ?? Auth::user()->username

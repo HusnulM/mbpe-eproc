@@ -106,6 +106,8 @@
                                                     <th>Part Number</th>
                                                     <th>Description</th>
                                                     <th>Kode Budget</th>
+                                                    <th>No. PBJ</th>
+                                                    <th>No. PR</th>
                                                     <th style="text-align:center;">Quantity</th>
                                                     <th>Unit</th>
                                                     <th>Unit Price</th>
@@ -131,9 +133,16 @@
                                                             {{ $row->matdesc }}
                                                         </td>
                                                         <td>{{ $row->budget_code_num }}</td>
+                                                        <td>
+                                                            {{ $row->pbjnumber }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $row->prnum }}
+                                                        </td>
                                                         <td style="text-align:right;">
                                                             {{ number_format($row->quantity,3) }}
                                                         </td>
+
                                                         <td>
                                                             {{ $row->unit }}
                                                         </td>
@@ -144,6 +153,12 @@
                                                             {{ number_format($row->price * $row->quantity,0) }}
                                                         </td>
                                                     </tr>
+                                                    @if($row->remark_item != null)
+                                                    <tr>
+                                                        <td></td>
+                                                        <td colspan="10">{{ $row->remark_item }}</td>
+                                                    </tr>
+                                                    @endif
                                                 @endforeach
                                                 </tbody>
                                                 <tfoot>

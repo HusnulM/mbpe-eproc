@@ -135,6 +135,7 @@
                                                                             <th>Kode Budget</th>
                                                                             <th>Project</th>
                                                                             <th>Remark PBJ</th>
+                                                                            <th>Remark PO Item</th>
                                                                         </thead>
                                                                         <tbody id="tbl-pbj-body">
                                                                         @foreach($poitem as $key => $row)
@@ -150,6 +151,7 @@
                                                                                 <td>{{ $row->budget_code_num }}</td>
                                                                                 <td>{{ $row->nama_project }}</td>
                                                                                 <td>{{ $row->remarkpbj }}</td>
+                                                                                <td>{{ $row->remark_item }}</td>
                                                                             </tr>
                                                                         @endforeach
                                                                         </tbody>

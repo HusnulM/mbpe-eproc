@@ -19,12 +19,12 @@ class ApprovePurchaseOrderController extends Controller
     public function approveDetail($id){
         $prhdr = DB::table('v_po01')->where('id', $id)->first();
         if($prhdr){
-            $checkAllowApprove = DB::table('v_po_approval_v2')
+            $checkAllowApprove = DB::table('v_po_approval_v3')
                             ->where('ponum', $prhdr->ponum)
                             ->where('approver',Auth::user()->id)
                             ->first();
             if($checkAllowApprove){
-                $items       = DB::table('v_po_approval_v2')
+                $items       = DB::table('v_po_approval_v3')
                                 ->where('ponum', $prhdr->ponum)
                                 ->where('approver',Auth::user()->id)
                                 ->get();
@@ -33,7 +33,7 @@ class ApprovePurchaseOrderController extends Controller
                                 ->where('ponum', $prhdr->ponum)
                                 ->get();
 
-                $approvals   = DB::table('v_po_approval_v2')
+                $approvals   = DB::table('v_po_approval_v3')
                                 ->where('ponum', $prhdr->ponum)
                                 ->get();
 
@@ -93,7 +93,7 @@ class ApprovePurchaseOrderController extends Controller
             $params = $request->params;
             $whereClause = $params['sac'];
         }
-        $query = DB::table('v_po_approval_v2')
+        $query = DB::table('v_po_approval_v3')
                  ->select('id', 'ponum', 'podat', 'vendor', 'vendor_name', 'note')
                  ->distinct()
                  ->where('approver',Auth::user()->id)
@@ -594,7 +594,7 @@ class ApprovePurchaseOrderController extends Controller
                 // return $POApprover;
         if($POApprover){
             $firstApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
-            $firstApprovalDate = DB::table('v_po_approval_v2')
+            $firstApprovalDate = DB::table('v_po_approval_v3')
             ->where('approver_level','1')
             ->where('approval_status', '!=','R')
             ->where('ponum', $pohdr->ponum)
@@ -613,7 +613,7 @@ class ApprovePurchaseOrderController extends Controller
 
         if($POApprover){
             $secondApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
-            $secondApprovalDate = DB::table('v_po_approval_v2')
+            $secondApprovalDate = DB::table('v_po_approval_v3')
             ->where('approver_level','2')
             ->where('approval_status', '!=','R')
             ->where('ponum', $pohdr->ponum)
@@ -630,7 +630,7 @@ class ApprovePurchaseOrderController extends Controller
 
         if($POApprover){
             $lastApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
-            $lastApprovalDate = DB::table('v_po_approval_v2')
+            $lastApprovalDate = DB::table('v_po_approval_v3')
             ->where('approver_level','3')
             ->where('approval_status', '!=','R')
             ->where('ponum', $pohdr->ponum)
@@ -648,7 +648,7 @@ class ApprovePurchaseOrderController extends Controller
 
         if($POApprover){
             $lastApprover2 = DB::table('v_users')->where('id', $POApprover->approver)->first();
-            $lastApprovalDate2 = DB::table('v_po_approval_v2')
+            $lastApprovalDate2 = DB::table('v_po_approval_v3')
             ->where('approver_level','4')
             ->where('approval_status', '!=','R')
             ->where('ponum', $pohdr->ponum)
@@ -656,7 +656,7 @@ class ApprovePurchaseOrderController extends Controller
             ->first();
         }
 
-        $totalApprover = DB::table('v_po_approval_v2')
+        $totalApprover = DB::table('v_po_approval_v3')
                         ->distinct('approver_level')
                         ->where('ponum', $pohdr->ponum)
                         ->count('approver_level');
